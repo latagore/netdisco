@@ -47,6 +47,7 @@ lib/App/Netdisco/DB/Result/Admin.pm
 lib/App/Netdisco/DB/Result/Community.pm
 lib/App/Netdisco/DB/Result/Device.pm
 lib/App/Netdisco/DB/Result/DeviceIp.pm
+lib/App/Netdisco/DB/Result/DeviceLog.pm
 lib/App/Netdisco/DB/Result/DeviceModule.pm
 lib/App/Netdisco/DB/Result/DevicePort.pm
 lib/App/Netdisco/DB/Result/DevicePortLog.pm
@@ -326,6 +327,7 @@ share/views/ajax/datatabledefaults.tt
 share/views/ajax/device/addresses.tt
 share/views/ajax/device/addresses_csv.tt
 share/views/ajax/device/details.tt
+share/views/ajax/device/log.tt
 share/views/ajax/device/modules.tt
 share/views/ajax/device/netmap.tt
 share/views/ajax/device/ports.tt
@@ -420,3 +422,4 @@ t/11-portsort.t
 t/html/portsort.html
 t/js/qunit-tap.js
 t/js/run_qunit.js
+lib/App/NetdiscoX/Web/Plugin/Device/Log.pm
