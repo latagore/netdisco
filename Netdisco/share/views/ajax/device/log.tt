@@ -16,12 +16,17 @@ $(document).ready(function() {
     "columns": [{
         "data": 'creation',
         "render": function(data, type, row, meta) {
-          return he.encode(data || '');
+          var d = he.encode(data || '');
+          d = d.replace(' ', "<br />");
+          return "<div class='ndx-log'>" + d + "</div>";
         }
       }, {
         "data": 'log',
         "render": function(data, type, row, meta) {
-          return he.encode(data || '');
+          var d = data || '';
+          d = d.replace("<BR> OLD", "<BR> <strong>OLD</strong>");
+          d = d.replace("<BR> NEW", "<BR> <strong>NEW</strong>");
+          return "<div class='ndx-log'>" + d + "</div>";
         }
       }, {
         "data": 'username',
@@ -29,7 +34,40 @@ $(document).ready(function() {
           return he.encode(data || '');
         }
       }
-    ],
-[% INCLUDE 'ajax/datatabledefaults.tt' -%]
+    ]
+
+
+    ,"processing": true
+    ,"stateSave": true
+    ,"pageLength": [% settings.table_pagesize %]
+    ,"lengthMenu": [% table_showrecordsmenu %]
+    ,"dom": '<"top"l<"nd_datatables-pager"p>f>rit<"bottom"><"clear">'
+    ,"language": {
+      "search": '_INPUT_'
+      ,"searchPlaceholder": 'Filter records...'
+      ,"lengthMenu": "Show _MENU_ records."
+      ,"info":         "&nbsp;Showing _START_ to _END_ of _TOTAL_"
+      ,"infoFiltered": "(filtered from _MAX_ total)"
+      ,"infoEmpty":    "&nbsp;No matching entries"
+    }
+    ,"stateSaveParams": function (settings, data) {
+      // make sure filter is never saved
+      data.search.search = "";
+      // make sure paging position is not saved
+      data.start = 0;
+      [% IF is_custom_report %]
+      
+      // order logs by most recent date
+      data.order = "";
+      [% END %]
+      data.order = [[0, 'desc']];
+
+    }
+
   });
-});</script>
+});
+
+$('#device-log-data-table').ready(function(){
+	$('#device-log-data-table').DataTable().columns.adjust().draw();
+});
+</script>
