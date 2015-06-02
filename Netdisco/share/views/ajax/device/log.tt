@@ -35,6 +35,24 @@ $(document).ready(function() {
         }
       }
     ]
+    // make log messages sorted by most recent
+    ,"stateSaveParams": function (settings, data) {
+      // make sure filter is never saved
+      data.search.search = "";
+      // make sure paging position is not saved
+      data.start = 0;
+      [% IF is_custom_report %]
+      
+      // order logs by most recent date
+      data.order = "";
+      [% END %]
+      data.order = [[0, 'desc']];
+
+    }
+    // make the log message column unsortable
+    ,"aoColumnDefs": [
+      { 'bSortable': false, 'aTargets': [ 1 ] }
+    ]
 
 
     ,"processing": true
@@ -50,20 +68,6 @@ $(document).ready(function() {
       ,"infoFiltered": "(filtered from _MAX_ total)"
       ,"infoEmpty":    "&nbsp;No matching entries"
     }
-    ,"stateSaveParams": function (settings, data) {
-      // make sure filter is never saved
-      data.search.search = "";
-      // make sure paging position is not saved
-      data.start = 0;
-      [% IF is_custom_report %]
-      
-      // order logs by most recent date
-      data.order = "";
-      [% END %]
-      data.order = [[0, 'desc']];
-
-    }
-
   });
 });
 
