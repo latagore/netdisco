@@ -1,4 +1,3 @@
-#!/usr/bin/perl
 package App::Netdisco::Web::Plugin::Device::Ports;
 
 use Dancer ':syntax';
