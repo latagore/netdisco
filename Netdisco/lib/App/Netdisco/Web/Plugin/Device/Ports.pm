@@ -1,3 +1,4 @@
+#!/usr/bin/perl
 package App::Netdisco::Web::Plugin::Device::Ports;
 
 use Dancer ':syntax';
@@ -162,6 +163,9 @@ get '/ajax/content/device/ports' => require_login sub {
     # retrieve neighbor devices, if asked for
     $set = $set->search_rs({}, { prefetch => [{neighbor_alias => 'device'}] })
       if param('c_neighbors');
+
+    # put in the York specific port information
+    $set = $set->search(undef, { join  => 'port_info'});
 
     # sort ports (empty set would be a 'no records' msg)
     my $results = [ sort { &App::Netdisco::Util::Web::sort_port($a->port, $b->port) } $set->all ];

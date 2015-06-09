@@ -28,11 +28,6 @@ __PACKAGE__->table("portinfo");
   data_type: 'inet'
   is_nullable: 0
 
-=head2 dns
-
-  data_type: 'text'
-  is_nullable: 0
-
 =head2 port
 
   data_type: 'text'
@@ -43,57 +38,57 @@ __PACKAGE__->table("portinfo");
   data_type: 'text'
   is_nullable: 1
 
-=head2 xroom
+=head2 room
 
   data_type: 'text'
   is_nullable: 1
 
-=head2 xxjack
+=head2 jack
 
   data_type: 'text'
   is_nullable: 1
 
-=head2 xxriser1
+=head2 riser1
 
   data_type: 'text'
   is_nullable: 1
 
-=head2 xxxpairs1
+=head2 pairs1
 
   data_type: 'text'
   is_nullable: 1
 
-=head2 xxxriser2
+=head2 riser2
 
   data_type: 'text'
   is_nullable: 1
 
-=head2 xxxxpairs2
+=head2 pairs2
 
   data_type: 'text'
   is_nullable: 1
 
-=head2 xxxxxcable
+=head2 cable
 
   data_type: 'text'
   is_nullable: 1
 
-=head2 xxxxxgrid
+=head2 grid
 
   data_type: 'text'
   is_nullable: 1
 
-=head2 xxxxxwired
+=head2 wired
 
   data_type: 'text'
   is_nullable: 1
 
-=head2 xxxxxxcomment
+=head2 comment
 
   data_type: 'text'
   is_nullable: 1
 
-=head2 xxbuilding
+=head2 building
 
   data_type: 'text'
   is_nullable: 1
@@ -115,33 +110,31 @@ __PACKAGE__->table("portinfo");
 __PACKAGE__->add_columns(
   "ip",
   { data_type => "inet", is_nullable => 0 },
-  "dns",
-  { data_type => "text", is_nullable => 0 },
   "port",
   { data_type => "text", is_nullable => 0 },
   "port_excel",
   { data_type => "text", is_nullable => 1 },
-  "xroom",
+  "room",
   { data_type => "text", is_nullable => 1 },
-  "xxjack",
+  "jack",
   { data_type => "text", is_nullable => 1 },
-  "xxriser1",
+  "riser1",
   { data_type => "text", is_nullable => 1 },
-  "xxxpairs1",
+  "pairs1",
   { data_type => "text", is_nullable => 1 },
-  "xxxriser2",
+  "riser2",
   { data_type => "text", is_nullable => 1 },
-  "xxxxpairs2",
+  "pairs2",
   { data_type => "text", is_nullable => 1 },
-  "xxxxxcable",
+  "cable",
   { data_type => "text", is_nullable => 1 },
-  "xxxxxgrid",
+  "grid",
   { data_type => "text", is_nullable => 1 },
-  "xxxxxwired",
+  "wired",
   { data_type => "text", is_nullable => 1 },
-  "xxxxxxcomment",
+  "comment",
   { data_type => "text", is_nullable => 1 },
-  "xxbuilding",
+  "building",
   { data_type => "text", is_nullable => 1 },
   "last_modified",
   {
@@ -160,27 +153,26 @@ __PACKAGE__->add_columns(
 
 =item * L</ip>
 
-=item * L</dns>
-
 =item * L</port>
 
 =back
 
 =cut
 
-__PACKAGE__->set_primary_key("ip", "dns", "port");
+__PACKAGE__->set_primary_key("ip", "port");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-06-03 09:09:21
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ezS54ZLPqtLNt7prLyDIPg
+# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-06-08 09:41:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3ucgcSTA0x90T9ZUs5e0mA
 
-__PACKAGE__->might_have(
-	device_port => "App::Netdisco::DB::Result::DevicePort",
-	{
-		'foreign.ip' => 'self.ip',
-		'foreign.port' => 'self.port'
-	},
+__PACKAGE__->belongs_to(
+       device_port => "App::Netdisco::DB::Result::DevicePort",
+       {
+               'foreign.ip' => 'self.ip',
+               'foreign.port' => 'self.port'
+       },
 );
+
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 1;

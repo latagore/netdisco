@@ -137,30 +137,6 @@ sub with_vlan_count {
       });
 }
 
-=head2 with_york_port_infos
-
-This is a modifier for any C<search()> which adds York specific port info.
-
-=over 4
-
-=item TODO
-
-=back
-
-=cut
-
-sub with_york_port_infos {
-  my ($rs, $cond, $attrs) = @_;
-
-  return $rs
-    ->search_rs($cond, $attrs)
-    ->search({},
-      {
-        join => 'port_infos'
-      }
-    );
-}
-
 =head2 with_york_port_info
 
 This is a modifier for any C<search()> which adds the York port info that
@@ -180,9 +156,10 @@ sub with_york_port_info {
   return $rs
     ->search_rs($cond, $attrs)
     ->search(
-      #{ 'port_infos.dns' => 'me.dns' },
       {},
-      { join => 'port_infos' }
+      {
+	join => [ 'port_info']
+      }
     );
 }
 
