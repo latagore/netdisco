@@ -161,6 +161,19 @@ sub store_device {
   $device->set_column( snmp_class => $snmp->class );
   $device->set_column( last_discover => \'now()' );
 
+  # compare with the existing entry in the database
+  my $olddevice = get_device($device->ip);
+  my $log = undef;
+  # if the previous uptime is greater than the current, log a reset
+  if ($olddevice->uptime_age > $device->uptime_age){
+    $log = schema('netdisco')->resultset('device_log')->
+      new({ip => $device->ip,
+           dns => $device->dns,
+           log => "Device reset: uptime decreased from ".$olddevice->uptime_age
+                    ." to ". $newdevice->uptime_age
+	   });
+  }
+
   schema('netdisco')->txn_do(sub {
     my $gone = $device->device_ips->delete;
     debug sprintf ' [%s] device - removed %d aliases',
@@ -169,6 +182,7 @@ sub store_device {
     $device->device_ips->populate($resolved_aliases);
     debug sprintf ' [%s] device - added %d new aliases',
       $device->ip, scalar @aliases;
+    $log->insert unless $log == undef;
   });
 }
 
