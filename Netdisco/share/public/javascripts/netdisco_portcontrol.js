@@ -109,7 +109,7 @@ $(document).ready(function() {
       $(this).siblings('td').find('.nd_device-details-edit').hide(); // details
     }
   });
-  $('.tab-content').on('focus', '[contenteditable=true]', function() {
+  $('.tab-content').on('focus', '.nd_editable-cell[contenteditable=true]', function() {
       $(this).children('.nd_edit-icon').hide(); // ports
       $(this).siblings('td').find('.nd_device-details-edit').hide(); // details
   });
@@ -138,7 +138,7 @@ $(document).ready(function() {
   var dirty = false;
 
   // activity for contenteditable control
-  $('.tab-content').on('keydown', '[contenteditable=true]', function(event) {
+  $('.tab-content').on('keydown', '.nd_editable-cell[contenteditable=true]', function(event) {
     var cell = this,
         td = $(cell).closest('td'),
         esc = event.which == 27,
@@ -171,7 +171,7 @@ $(document).ready(function() {
   });
 
   // activity for contenteditable control
-  $('.tab-content').on('blur', '[contenteditable=true]', function(event) {
+  $('.tab-content').on('blur', '.nd_editable-cell[contenteditable=true]', function(event) {
     if (dirty) {
       document.execCommand('undo');
       dirty = false;
