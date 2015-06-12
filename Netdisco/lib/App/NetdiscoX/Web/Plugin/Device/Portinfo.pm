@@ -7,6 +7,13 @@ use Dancer::Plugin::Auth::Extensible;
 
 use App::Netdisco::Web::Plugin;
 
+use File::Share ':all';
+register_template_path(
+  dist_dir( 'App-NetdiscoX-Web-Plugin-Device-Portinfo' ));
+register_css('portinfo');
+register_javascript('portinfo');
+
+# Device port column for port cable info
 register_device_port_column({ name => 'yorkportinfo_room', 
 	label => 'Room',
 	position => 'right',
@@ -51,5 +58,9 @@ register_device_port_column({ name => 'yorkportinfo_comment',
 	label => 'Comment',
 	position => 'right',
 	default => 'on' });
+
+get '/ajax/portinfocontrol' => require_role port_control => sub {
+
+};
 
 1;

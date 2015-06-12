@@ -1,1 +1,1 @@
-[% row.port_info.wired %]
+<div class='york-port-info' contenteditable='true'>[% row.port_info.wired %]</div>

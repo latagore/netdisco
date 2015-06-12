@@ -1,0 +1,4 @@
+td:hover .york-port-info:empty::before {
+  content: 'empty';
+  color: #888888;
+}
