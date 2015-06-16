@@ -1,15 +1,16 @@
 // ask for changes with AJAX
 var porttable = $('#dp-data-table').DataTable();
 function changeportinfo (e) {
-  var td = $(e).closest('td');
+  var div = $(e);
   
   $.ajax({
-    type: 'POST'
+    type: 'GET'
     ,url: uri_base + '/ajax/portinfocontrol'
     ,data: {
-      device:  td.data('for-device')
-      ,port:   td.data('for-port')
-      ,column: porttable.column(td).header().innerHTML.trim()
+      device:  div.data('for-device')
+      ,port:   div.data('for-port')
+      ,column: div.data('column')
+      ,value: div.text()
     }
   });
 };

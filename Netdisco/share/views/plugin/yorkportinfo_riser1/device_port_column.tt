@@ -1,1 +1,1 @@
-<div class='york-port-info' contenteditable='true'>[% row.port_info.riser1 %]</div>
+<div data-column='riser1' data-for-device='[% device.ip %]' data-for-port='[% row.port %]' class='york-port-info' contenteditable='true'>[% row.port_info.riser1 %]</div>
