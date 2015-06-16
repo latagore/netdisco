@@ -1,4 +1,8 @@
-td:hover .york-port-info:empty::before {
-  content: 'empty';
-  color: #888888;
+.york-port-info[contenteditable]{
+  margin-right: 25px;
+}
+
+.nd_portinfo-edit-icon {
+  float: right;
+  cursor: pointer;
 }

@@ -1,3 +1,36 @@
+// add dynamic css classes because there is no easy way with
+// out of the box Netdisco integration
+$(document).ready(function (){
+$('.tab-content').on('mouseover', 'td:has(div.york-port-info)',
+  function(event) {
+    $(this).prepend("<i class='icon-edit nd_portinfo-edit-icon'></i>");
+  }
+);
+$('.tab-content').on('mouseout', 'td:has(div.york-port-info)', 
+  function(event) {
+    $(".nd_portinfo-edit-icon").remove();
+  }
+);
+$('.tab-content').on('click', 'td:has(div.york-port-info)', 
+  function(event) {
+      var div = $(this).children(".york-port-info");
+      div.focus();
+  }
+);
+
+$('.tab-content').on('focus', '.york-port-info',
+  function(event) {
+    $(".nd_portinfo-edit-icon").remove();
+    $(this).closest("td")[0].style.backgroundColor="#FFFFD3";
+  }
+);
+$('.tab-content').on('blur', '.york-port-info',
+  function(event) {
+    $(this).closest("td")[0].style.backgroundColor="";
+  }
+);
+});
+
 // ask for changes with AJAX
 var porttable = $('#dp-data-table').DataTable();
 function changeportinfo (e) {
