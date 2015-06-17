@@ -143,8 +143,19 @@ sub store_device {
   $device->set_column( dns => $hostname ) if $hostname;
 
   # check if the device was reset and log it if it was
-  my $log = _check_device_reset($device, $snmp);
+  my $logstring = _check_device_reset($device, $snmp);
+  
+  # check if the device os version changed
+  $logstring .= _check_device_os_version($device, $snmp);
 
+  my $log;
+  
+  $log = schema('netdisco')->resultset('DeviceLog')->
+              new({ip => $device->ip,
+              dns => $device->dns,
+              log => $logstring}) if $logstring ne "";
+           
+  
   my @properties = qw/
     snmp_ver
     description uptime contact name location
@@ -172,14 +183,13 @@ sub store_device {
     $device->device_ips->populate($resolved_aliases);
     debug sprintf ' [%s] device - added %d new aliases',
       $device->ip, scalar @aliases;
-    $log->insert if defined $log;
+    $log->insert if $log;
   });
 }
 
 # compare with the existing entry in the database
 sub _check_device_reset {
   my ($device, $snmp) = @_;
-  my $log = undef;
   my $olduptime = $device->uptime/100;
   my $uptime = $snmp->uptime/100;
 
@@ -197,16 +207,22 @@ sub _check_device_reset {
                        ($uptime/(60*60))%24,    # hours
                        ($uptime/60)%60,         # minutes
                        $uptime%60);             # seconds
-    $log = schema('netdisco')->resultset('DeviceLog')->
-      new({ip => $device->ip,
-           dns => $device->dns,
-           log => "device reset: uptime decreased from ".$olduptimeage
-                    ." to ". $uptimeage
-	   });
+    return "device reset: uptime decreased from ".$olduptimeage
+                    ." to ". $uptimeage;
   }
 
-  return $log;
+  return ""
 }
+
+sub _check_device_os_version {
+  my ($device, $snmp) = @_;
+  if ($device->os_ver ne $snmp->os_ver){
+    return "os version changed from " . $device->os_ver
+           . " to " . $snmp->os_ver;
+  }
+  return "";
+}
+
 =head2 store_interfaces( $device, $snmp )
 
 Given a Device database object, and a working SNMP connection, discover and
