@@ -190,6 +190,9 @@ sub store_device {
 # compare with the existing entry in the database
 sub _check_device_reset {
   my ($device, $snmp) = @_;
+  
+  return "" unless (defined $device->uptime); #don't log anything if this is a new device
+  
   my $olduptime = $device->uptime/100;
   my $uptime = $snmp->uptime/100;
 
@@ -216,7 +219,7 @@ sub _check_device_reset {
 
 sub _check_device_os_version {
   my ($device, $snmp) = @_;
-  if ($device->os_ver ne $snmp->os_ver){
+  if (defined $device->os_ver and $device->os_ver ne $snmp->os_ver){
     return "os version changed from " . $device->os_ver
            . " to " . $snmp->os_ver;
   }
