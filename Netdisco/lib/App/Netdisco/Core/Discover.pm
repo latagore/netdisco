@@ -142,6 +142,9 @@ sub store_device {
   my $hostname = hostname_from_ip($device->ip);
   $device->set_column( dns => $hostname ) if $hostname;
 
+  # check if the device was reset and log it if it was
+  my $log = _check_device_reset($device, $snmp);
+
   my @properties = qw/
     snmp_ver
     description uptime contact name location
@@ -161,19 +164,6 @@ sub store_device {
   $device->set_column( snmp_class => $snmp->class );
   $device->set_column( last_discover => \'now()' );
 
-  # compare with the existing entry in the database
-  my $olddevice = get_device($device->ip);
-  my $log = undef;
-  # if the previous uptime is greater than the current, log a reset
-  if ($olddevice->uptime_age > $device->uptime_age){
-    $log = schema('netdisco')->resultset('device_log')->
-      new({ip => $device->ip,
-           dns => $device->dns,
-           log => "Device reset: uptime decreased from ".$olddevice->uptime_age
-                    ." to ". $newdevice->uptime_age
-	   });
-  }
-
   schema('netdisco')->txn_do(sub {
     my $gone = $device->device_ips->delete;
     debug sprintf ' [%s] device - removed %d aliases',
@@ -182,10 +172,41 @@ sub store_device {
     $device->device_ips->populate($resolved_aliases);
     debug sprintf ' [%s] device - added %d new aliases',
       $device->ip, scalar @aliases;
-    $log->insert unless $log == undef;
+    $log->insert if defined $log;
   });
 }
 
+# compare with the existing entry in the database
+sub _check_device_reset {
+  my ($device, $snmp) = @_;
+  my $log = undef;
+  my $olduptime = $device->uptime/100;
+  my $uptime = $snmp->uptime/100;
+
+  # if the previous uptime is greater than the current, log a reset
+  if ($olduptime > $uptime){
+    # uptime_age from DBIC is old since it is cached
+    # format our own uptime age to a human readable format
+    my $olduptimeage = sprintf("%d days %02d:%02d:%02d",
+                       int($olduptime/(24*60*60)), # days
+                       ($olduptime/(60*60))%24,    # hours
+                       ($olduptime/60)%60,         # minutes
+                       $olduptime%60);             # seconds
+    my $uptimeage = sprintf("%d days %02d:%02d:%02d",
+                       int($uptime/(24*60*60)), # days
+                       ($uptime/(60*60))%24,    # hours
+                       ($uptime/60)%60,         # minutes
+                       $uptime%60);             # seconds
+    $log = schema('netdisco')->resultset('DeviceLog')->
+      new({ip => $device->ip,
+           dns => $device->dns,
+           log => "device reset: uptime decreased from ".$olduptimeage
+                    ." to ". $uptimeage
+	   });
+  }
+
+  return $log;
+}
 =head2 store_interfaces( $device, $snmp )
 
 Given a Device database object, and a working SNMP connection, discover and
