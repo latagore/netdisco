@@ -158,7 +158,7 @@ sub with_york_port_info {
     ->search(
       {},
       {
-	join => [ 'port_info']
+	      prefetch => [ 'port_info']
       }
     );
 }

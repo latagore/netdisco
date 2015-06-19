@@ -164,7 +164,7 @@ get '/ajax/content/device/ports' => require_login sub {
       if param('c_neighbors');
 
     # put in the York specific port information
-    $set = $set->search(undef, { join  => 'port_info'});
+    $set = $set->with_york_port_info;
 
     # sort ports (empty set would be a 'no records' msg)
     my $results = [ sort { &App::Netdisco::Util::Web::sort_port($a->port, $b->port) } $set->all ];

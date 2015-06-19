@@ -285,12 +285,12 @@ __PACKAGE__->belongs_to( oui => 'App::Netdisco::DB::Result::Oui',
 
 =head2 port_info
 
-Returns the C<portinfo> table entry matching this Port. portinfo provides 
-York specific port information.
+Returns the C<portinfo> table entry matching this Port, if any. port_info
+provides York specific port information.
 
 =cut
 
-__PACKAGE__->has_one(
+__PACKAGE__->might_have(
 	port_info => 'App::Netdisco::DB::Result::Portinfo',
 	{ 
 		'foreign.ip' => 'self.ip',

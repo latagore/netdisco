@@ -45,6 +45,14 @@ function changeportinfo (e) {
       ,column: div.data('column')
       ,value: div.text()
     }
+    ,success: function() {
+      toastr.info('Submitted change request');
+    }
+    ,error: function() {
+      toastr.error('Failed to submit change request');
+      div.text(td.data('default'));
+      div.blur();
+    }
   });
 };
 

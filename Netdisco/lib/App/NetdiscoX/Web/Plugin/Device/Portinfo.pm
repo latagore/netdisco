@@ -72,14 +72,11 @@ get '/ajax/portinfocontrol' => require_role port_control => sub {
   my $device = schema('netdisco')->resultset('Device')
     ->search_for_device(param('device')) 
     or send_error('Bad device', 400);
-  my $portinfo = $device->ports->search({port => param('port')})
-    ->first()->port_info
+  my $port = $device->ports->search({port => param('port')})->first()
     or send_error('Bad Port', 400);  
-         
-  $portinfo->update({ "$column" => "$value" }); 
   
-  warn "$portinfo->port, $column, $value";
-
+  $port->update_or_create_related("port_info", { "$column" => "$value" }); 
+  
   template 'plugin/portinfo/portinfo.tt', {
   
     
