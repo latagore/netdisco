@@ -105,6 +105,11 @@ __PACKAGE__->table("portinfo");
   data_type: 'text'
   is_nullable: 1
 
+=head2 phoneext
+
+  data_type: 'text'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -145,6 +150,8 @@ __PACKAGE__->add_columns(
   },
   "last_modified_by",
   { data_type => "text", is_nullable => 1 },
+  "phoneext",
+  { data_type => "text", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -162,8 +169,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("ip", "port");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-06-08 09:41:44
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3ucgcSTA0x90T9ZUs5e0mA
+# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-06-19 15:52:09
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:lcS7yZUvEtCT+fHb3WiBRw
 
 __PACKAGE__->belongs_to(
        device_port => "App::Netdisco::DB::Result::DevicePort",
@@ -172,7 +179,6 @@ __PACKAGE__->belongs_to(
                'foreign.port' => 'self.port'
        },
 );
-
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 1;

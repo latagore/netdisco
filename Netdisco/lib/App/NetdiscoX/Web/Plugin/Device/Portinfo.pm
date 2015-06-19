@@ -18,7 +18,7 @@ register_javascript('portinfo');
 # Device port column for port cable info
 use constant PORT_COLUMNS => qw/
   room building jack riser1 pairs1 riser2 pairs2 cable
-  grid wired comment/;
+  grid wired comment phoneext/;
 
 register_device_port_column({ name => 'yorkportinfo_room', 
 	label => 'Room',
@@ -60,6 +60,10 @@ register_device_port_column({ name => 'yorkportinfo_wired',
 	label => 'Wired',
 	position => 'right',
 	default => 'on' });
+register_device_port_column({ name => 'yorkportinfo_phoneext', 
+	label => 'Phone Extension',
+	position => 'right',
+	default => 'on' });
 register_device_port_column({ name => 'yorkportinfo_comment', 
 	label => 'Comment',
 	position => 'right',
@@ -74,7 +78,7 @@ get '/ajax/portinfocontrol' => require_role port_control => sub {
     or send_error('Bad device', 400);
   my $port = $device->ports->search({port => param('port')})->first()
     or send_error('Bad Port', 400);  
-  
+
   $port->update_or_create_related("port_info", { "$column" => "$value" }); 
   
   template 'plugin/portinfo/portinfo.tt', {
