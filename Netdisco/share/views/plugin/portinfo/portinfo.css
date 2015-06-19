@@ -1,6 +1,11 @@
 .york-port-info[contenteditable]{
   margin-right: 25px;
 }
+td:hover .york-port-info[contenteditable]:empty:before,
+.york-port-info[contenteditable]:focus:empty:before {
+  content: "empty";
+  color: #888;
+}
 
 .nd_portinfo-edit-icon {
   float: right;

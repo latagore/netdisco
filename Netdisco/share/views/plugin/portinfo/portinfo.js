@@ -1,12 +1,12 @@
 // add dynamic css classes because there is no easy way with
 // out of the box Netdisco integration
 $(document).ready(function (){
-$('.tab-content').on('mouseover', 'td:has(div.york-port-info)',
+$('.tab-content').on('mouseenter', 'td:has(div.york-port-info)',
   function(event) {
     $(this).prepend("<i class='icon-edit nd_portinfo-edit-icon'></i>");
   }
 );
-$('.tab-content').on('mouseout', 'td:has(div.york-port-info)', 
+$('.tab-content').on('mouseleave', 'td:has(div.york-port-info)', 
   function(event) {
     $(".nd_portinfo-edit-icon").remove();
   }
