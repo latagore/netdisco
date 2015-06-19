@@ -690,6 +690,12 @@ sub store_modules {
           last_discover => \'now()',
       };
   }
+  my @oldmodules = $device->modules->all;
+  my $logstring = _check_modules_change(\@oldmodules, \@modules);
+  my $log = $device->logs->new({
+    dns => $device->dns,
+    username => "auto update",
+    log => $logstring}) if $logstring;
 
   schema('netdisco')->txn_do(sub {
     my $gone = $device->modules->delete;
@@ -698,7 +704,119 @@ sub store_modules {
     $device->modules->populate(\@modules);
     debug sprintf ' [%s] modules - added %d new chassis modules',
       $device->ip, scalar @modules;
+    $log->insert if $logstring;
   });
+}
+
+sub _check_modules_change {
+  my ($arg1, $arg2) = @_;
+  # create hash with single key combining description and name 
+  # to uniquely identify modules
+  my $sep = "~~"; #separates the description and name in the key
+  my %oldmodules;
+  foreach (@$arg1){
+      $oldmodules{$_->description.$sep.$_->name} = $_;
+  }
+  my %newmodules;
+  foreach (@$arg2){
+      # have to call desc and name differently than oldmodules
+      # because arg1 comes from DB and arg2 comes from SNMP
+      $newmodules{$_->{description}.$sep.$_->{name}} = $_;
+  }
+  my @logs;
+  
+  # check for changes in slots where modules are changed or removed
+  # process them in the order of the index
+  my @present; 
+  my @added;
+  my @removed;
+  foreach (
+      sort {$oldmodules{$a}->index <=> $oldmodules{$b}->index} 
+      keys %oldmodules){
+    push (@present, $_) if exists $newmodules{$_};
+    push (@removed, $_) unless exists $newmodules{$_};
+  }
+  foreach (sort 
+      {$newmodules{$a}->{index} <=> $newmodules{$b}->{index}} 
+      keys %newmodules){
+    push (@added, $_) unless exists $oldmodules{$_};
+  }
+  
+  my @properties = qw/
+      type name class hw_ver fw_ver sw_ver
+      model serial fru
+    /;
+    
+  debug [scalar @present, scalar @added, scalar @removed];
+  foreach my $key(@added){
+    my $addedmodule = $newmodules{$key};
+    my $log = "Module ("
+           ."class="   . $addedmodule->{class}
+           .", name="  . $addedmodule->{name}
+           .", desc="  . $addedmodule->{description}
+           .") added: <ul>";
+    #log all the properties of the module
+    foreach my $property(@properties){
+      $log .= "<li>$property: " . $addedmodule->{$property} . "</li>"
+        if $addedmodule->{$property};
+    }
+    $log .= "</ul>";
+    push @logs, $log if $log;
+  }
+  
+  foreach my $key(@removed){
+    my $removedmodule = $oldmodules{$key};
+    my $log = "Module ("
+           ."class="   . $removedmodule->class
+           .", name="  . $removedmodule->name
+           .", desc="  . $removedmodule->description
+           .") added: <ul>";
+    #log all the properties of the module
+    foreach my $property(@properties){
+      $log .= "<li>$property: " . $removedmodule->$property . "</li>"
+        if $removedmodule->$property;
+    }
+    $log .= "</ul>";
+    push @logs, $log if $log;
+  }
+
+  foreach my $key(@present){
+    my $log = "";
+
+    my $oldmodule = $oldmodules{$key};
+    my $newmodule = $newmodules{$key}; 
+    
+    # check if any of the properties changed
+    foreach my $property(@properties){
+
+      # have to get $property differently because $oldmodule comes from
+      # DB while $newmodule comes from SNMP
+      
+      # need special processing because SNMP and DB represent boolean differently
+      if ($property eq "fru"){
+        my $oldmodulefru = $oldmodule->fru == 0 ? "false" : "true";
+        if ($oldmodulefru ne $newmodule->{fru}){
+          $log .= "<li>$property: "
+            . $oldmodule->$property . " => " . $newmodule->{$property}
+            ."</li>";
+        }
+      } else {
+        if ($oldmodule->$property ne $newmodule->{$property}){
+         $log .= "<li>$property: "
+           . $oldmodule->$property . " => " . $newmodule->{$property}
+           ."</li>";
+        }
+      }
+    }
+    $log = "Module ("
+           ."class=, ".$oldmodule->class
+           .", name=".$oldmodule->name
+           .", desc=".$oldmodule->description
+           .") changed: <ul>$log</ul>" if $log;
+    push @logs, $log if $log;
+  }
+  
+  return join("\n", @logs);     
 }
 
 =head2 store_neighbors( $device, $snmp )
