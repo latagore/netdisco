@@ -189,6 +189,15 @@ Returns the row from the community string table, if one exists.
 __PACKAGE__->might_have(
     community => 'App::Netdisco::DB::Result::Community', 'ip');
 
+=head2 logs
+
+Returns the rows from the device logs table.
+
+=cut
+
+__PACKAGE__->has_many(
+    logs => 'App::Netdisco::DB::Result::DeviceLog', 'ip');
+
 =head1 ADDITIONAL METHODS
 
 =head2 renumber( $new_ip )
