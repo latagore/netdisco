@@ -10,7 +10,6 @@ use App::Netdisco::Web::Plugin;
 use File::Share ':all';
 register_template_path(
   dist_dir( 'App-NetdiscoX-Web-Plugin-Device-Age' ));
-warn  dist_dir( 'App-NetdiscoX-Web-Plugin-Device-Log' );
 register_css('age');
 register_javascript('age');
 
