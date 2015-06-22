@@ -61,7 +61,7 @@ $(document).ready(function() {
           $('.nd_old-info-warning').click(function(){
             // can't slide up on nd_old-info-warning div with CSS display: table, 
             // so we use an inner element workaround instead...
-            $(this).children('div').slideUp();
+            $(this).children('div').slideUp().parent().fadeOut();
           });
                     
         }
