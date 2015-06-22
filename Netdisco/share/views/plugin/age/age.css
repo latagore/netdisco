@@ -1,0 +1,21 @@
+.nd_old-info-warning {
+  display: table;
+  
+  background-color: #FFC;
+  border: 3px solid #FF0;
+  border-radius: 4px 4px 4px 4px;
+  
+  padding: 4px;
+  margin: 0 auto;
+  horizontal-align: center;
+}
+
+.nd_old-info-warning:hover {
+  cursor: pointer;
+}
+
+.nd_old-info-warning * {
+  text-align: center;
+  margin: 0;
+  line-height: default;
+}
