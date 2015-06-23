@@ -1,5 +1,4 @@
-// add dynamic css classes because there is no easy way with
-// out of the box Netdisco integration
+// Add focus and hover appearance
 $(document).ready(function (){
 $('.tab-content').on('mouseenter', 'td:has(div.york-port-info)',
   function(event) {
@@ -81,11 +80,38 @@ $('.tab-content').on('keydown', '.york-port-info[contenteditable=true]', functio
     }
 });
 
-$('div.york-port-info').on('blur', '[contenteditable=true]', function (event) {
-    if (dirty) {
+$('.tab-content').on('blur', 'div.york-port-info[contenteditable=true]', function (event) {
+    if (pdirty) {
         document.execCommand('undo');
-        dirty = false;
+        pdirty = false;
         $(this).blur();
     }
+});
+
+// Add a building dropdown
+// Suggestions initially ordered alphabetically and
+// re-ordered with the most recent item at the top when an item is selected
+$.ajax('/ajax/plugin/buildings', {
+  dataType: "json",
+  success: function(data){
+    buildingSuggestions = data;
+    console.log("buildings loaded");    
+
+    // add autocomplete functionality when field recieves focus
+    $('.tab-content').on('focus', '[data-column=building]', function(){
+      $(this).autocomplete({
+        source: function(request, response){
+          var suggest = [];
+          for (var i = 0, l = buildingSuggestions.length; i < l; i++){
+            if (buildingSuggestions[i].toLowerCase()
+               .indexOf(request.term.toLowerCase()) >= 0){
+              suggest.push(buildingSuggestions[i]);
+            }
+          }
+          response(suggest);
+        }
+      });
+    });
+  }
 });
 });

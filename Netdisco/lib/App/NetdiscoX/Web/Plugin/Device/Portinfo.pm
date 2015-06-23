@@ -69,7 +69,7 @@ register_device_port_column({ name => 'yorkportinfo_comment',
 	position => 'right',
 	default => 'on' });
 
-get '/ajax/portinfocontrol' => require_role port_control => sub {
+ajax '/ajax/portinfocontrol' => require_role port_control => sub {
   my $column = param('column');
   my $value = param('value');
   send_error('Bad port info column') unless grep { $_ eq $column } PORT_COLUMNS;
@@ -81,10 +81,22 @@ get '/ajax/portinfocontrol' => require_role port_control => sub {
 
   $port->update_or_create_related("port_info", { "$column" => "$value" }); 
   
-  template 'plugin/portinfo/portinfo.tt', {
+  template 'plugin/portinfo/portinfo.tt', {}, {layout => undef};
+};
+
+ajax '/ajax/plugin/buildings' => require_login sub {
+  my @results = schema('netdisco')->resultset('Portinfo')->search(undef,
+    { columns => "building", order_by => "building", distinct => 1 })
+    ->all;
+  my @buildings;
+  foreach my $result (@results) {
+    push @buildings, $result->building if $result->building;
+  }
   
-    
-  }, {layout => undef};
+  content_type('text/json');
+  template 'plugin/portinfo/buildings.tt', 
+    { json => to_json(\@buildings) },
+    { layout => undef };
 };
 
 1;
