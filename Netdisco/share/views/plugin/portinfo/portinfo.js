@@ -1,6 +1,6 @@
 // Add focus and hover appearance
 $(document).ready(function (){
-$('.tab-content').on('mouseenter', 'td:has(div.york-port-info)',
+$('.tab-content').on('mouseenter', 'td:has(div.york-port-info[contenteditable=true])',
   function(event) {
     $(this).prepend("<i class='icon-edit nd_portinfo-edit-icon'></i>");
   }
@@ -10,7 +10,7 @@ $('.tab-content').on('mouseleave', 'td:has(div.york-port-info)',
     $(".nd_portinfo-edit-icon").remove();
   }
 );
-$('.tab-content').on('click', 'td:has(div.york-port-info)', 
+$('.tab-content').on('click', 'td:has(div.york-port-info[contenteditable=true])', 
   function(event) {
       var div = $(this).children(".york-port-info");
       div.focus();
