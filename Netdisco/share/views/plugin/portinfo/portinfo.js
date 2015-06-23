@@ -95,7 +95,6 @@ $.ajax('/ajax/plugin/buildings', {
   dataType: "json",
   success: function(data){
     buildingSuggestions = data;
-    console.log("buildings loaded");    
 
     // add autocomplete functionality when field recieves focus
     $('.tab-content').on('focus', '[data-column=building]', function(){
