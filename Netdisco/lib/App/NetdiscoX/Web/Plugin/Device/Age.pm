@@ -14,7 +14,7 @@ register_css('age');
 register_javascript('age');
 
 # ajax for getting device age
-get '/ajax/deviceage' => require_login sub {
+ajax '/ajax/deviceage' => require_login sub {
     my $q = param('device');
     my $device = schema('netdisco')->resultset('Device')
       ->search_for_device($q) or send_error('Bad device', 400);
