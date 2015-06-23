@@ -1,13 +1,21 @@
 .nd_old-info-warning {
-  display: table;
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+
+  padding: 4px;
+  horizontal-align: center;
+}
+
+.nd_old-info-warning div {
+  width: 400px;
+  margin: 0 auto; 
+  padding: 5px;
+  
   
   background-color: #FFC;
   border: 3px solid #FF0;
   border-radius: 4px 4px 4px 4px;
-  
-  padding: 4px;
-  margin: 0 auto;
-  horizontal-align: center;
 }
 
 .nd_old-info-warning:hover {

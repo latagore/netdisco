@@ -47,7 +47,7 @@ $(document).ready(function() {
             $('.navbar').after(
               '<div class="nd_old-info-warning" title="Hide">'
               + '<div>'
-              + '<h5><strong>Warning</strong></h5>'
+              + '<h5><strong>Warning - Old Information</strong></h5>'
               + warningMsg
               + '<p><small>Some information may not be reliable. Warnings are given after ' 
               + ageLimit  + (ageLimit === 1 ? ' day' : ' days')
