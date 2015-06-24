@@ -81,6 +81,7 @@ ajax '/ajax/portinfocontrol' => require_role port_control => sub {
 
   $port->update_or_create_related("port_info", { "$column" => "$value" }); 
   
+  content_type('text/plain');
   template 'plugin/portinfo/portinfo.tt', {}, {layout => undef};
 };
 

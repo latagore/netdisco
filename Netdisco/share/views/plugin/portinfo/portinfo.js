@@ -45,6 +45,16 @@ function changeportinfo (e) {
       ,value: div.text()
     }
     ,success: function() {
+      var td = div.closest('td');
+      td[0].dataset.dirty = "false";
+      td.animate({
+          backgroundColor: "#AFA"
+        }, 100)
+        .delay(500)
+        .animate({
+          backgroundColor: "#FFF"
+        }, 700);
+      div[0].dataset.original = div.text();
       toastr.info('Submitted change request');
     }
     ,error: function() {
@@ -60,23 +70,34 @@ var pdirty = false; // is port_info_dirty?
 // activity for contenteditable control
 $(document).ready(function() {
 $('.tab-content').on('keydown', '.york-port-info[contenteditable=true]', function (event) {
-    var cell = this,
-        td = $(cell).closest('td'),
+    var div = this,
+        td = $(div).closest('td'),
         esc = event.which == 27,
         nl = event.which == 13;
 
     if (esc) {
-        $(cell).blur();
+        $(div).blur();
     } else if (nl) {
+        // stop the event from bubbling to the default netdisco event handler
         event.stopPropagation();
         event.preventDefault();
         
-        changeportinfo(cell);
+        $(div).blur();
+        changeportinfo(div);
 
         pdirty = false;
-        $(cell).blur();
     } else {
-        pdirty = true;
+      // save the original to revert to and compare against
+      if (this.dataset.original === undefined) {
+        this.dataset.original = $(div).text();
+      } else {
+        if ($(div).text() !== this.dataset.original){
+          // save attr to td to proper css appearance
+          td[0].dataset.dirty="true";
+        } else {
+          td[0].dataset.dirty="false";
+        }
+      }
     }
 });
 

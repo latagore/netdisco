@@ -1,12 +1,22 @@
-.york-port-info[contenteditable]{
+/* Make space for edit icon on hover */
+#dp-data-table .york-port-info[contenteditable]{
   margin-right: 25px;
 }
-td:hover .york-port-info[contenteditable]:empty:before,
-.york-port-info[contenteditable]:focus:empty:before {
+
+/* Color dirty cells  */
+#dp-data-table td[data-dirty=true]{
+  border: 1px solid #000;
+}
+
+/* Put placeholder for editable cells on hover and focus 
+   for empty cells because of ff bug */
+#dp-data-table td:hover .york-port-info[contenteditable]:empty:before,
+#dp-data-table .york-port-info[contenteditable]:focus:empty:before {
   content: "empty";
   color: #888;
 }
 
+/* style for edit icon that appears on hover */
 .nd_portinfo-edit-icon {
   float: right;
   cursor: pointer;
