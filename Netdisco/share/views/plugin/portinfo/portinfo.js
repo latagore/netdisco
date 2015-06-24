@@ -80,11 +80,16 @@ $('.tab-content').on('keydown', '.york-port-info[contenteditable=true]', functio
     }
 });
 
-$('.tab-content').on('blur', 'div.york-port-info[contenteditable=true]', function (event) {
-    if (pdirty) {
-        document.execCommand('undo');
-        pdirty = false;
-        $(this).blur();
+$('.tab-content').on('blur', 'div.york-port-info[contenteditable=true][data-column=building]', 
+    function (event) {
+    var t = $(event.target);
+    var building = t.text().trim();
+    if (building != ""){
+      var index = buildingSuggestions.indexOf(building); 
+      if (index >= 0){
+        buildingSuggestions.splice(index, 1);
+      }
+      buildingSuggestions.unshift(building);
     }
 });
 
