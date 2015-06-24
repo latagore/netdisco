@@ -1,25 +1,43 @@
-// Add focus and hover appearance
 $(document).ready(function (){
-$('.tab-content').on('mouseenter', 'td:has(div.york-port-info[contenteditable=true])',
+
+//make sure that we only do this on the right page
+
+var queryDict = {}
+  location.search.substr(1).split("&").forEach(function(item) {queryDict[item.split("=")[0]] = item.split("=")[1]});
+// queryDict conveniently taken from http://stackoverflow.com/a/21210643/4961854
+
+if (location.pathname.indexOf('/device') === 0 && queryDict.tab === "ports"){
+// Add focus and hover appearance
+$('.tab-content').append("<i id='nd_portinfo-edit-icon' class='icon-edit nd_portinfo-edit-icon'></i>");
+var editicon = $('#nd_portinfo-edit-icon');
+
+$('.tab-content').on('mouseover', 'td',
   function(event) {
-    $(this).prepend("<i class='icon-edit nd_portinfo-edit-icon'></i>");
+    if ($(this).children('.york-port-info[contenteditable]').length === 1){
+      $(this).prepend(editicon);
+      editicon.show();
+    }
   }
 );
-$('.tab-content').on('mouseleave', 'td:has(div.york-port-info)', 
+$('.tab-content').on('mouseout', 'td', 
   function(event) {
-    $(".nd_portinfo-edit-icon").remove();
+    if ($(this).children('.york-port-info[contenteditable]').length === 1){
+      editicon.hide();
+    }
   }
 );
-$('.tab-content').on('click', 'td:has(div.york-port-info[contenteditable=true])', 
+$('.tab-content').on('click', 'td:has(.york-port-info[contenteditable])', 
   function(event) {
-      var div = $(this).children(".york-port-info");
-      div.focus();
+    var children = $(this).children('.york-port-info[contenteditable]');
+    if (children.length){
+      children.focus();
+    }
   }
 );
 
 $('.tab-content').on('focus', '.york-port-info',
   function(event) {
-    $(".nd_portinfo-edit-icon").remove();
+    editicon.hide();
     $(this).closest("td")[0].style.backgroundColor="#FFFFD3";
   }
 );
@@ -28,7 +46,6 @@ $('.tab-content').on('blur', '.york-port-info',
     $(this).closest("td")[0].style.backgroundColor="";
   }
 );
-});
 
 // ask for changes with AJAX
 var porttable = $('#dp-data-table').DataTable();
@@ -46,6 +63,7 @@ function changeportinfo (e) {
     }
     ,success: function() {
       var td = div.closest('td');
+      td[0].title="";
       td[0].dataset.dirty = "false";
       td.animate({
           backgroundColor: "#AFA"
@@ -65,10 +83,7 @@ function changeportinfo (e) {
   });
 };
 
-var pdirty = false; // is port_info_dirty?
-
 // activity for contenteditable control
-$(document).ready(function() {
 $('.tab-content').on('keydown', '.york-port-info[contenteditable=true]', function (event) {
     var div = this,
         td = $(div).closest('td'),
@@ -84,8 +99,6 @@ $('.tab-content').on('keydown', '.york-port-info[contenteditable=true]', functio
         
         $(div).blur();
         changeportinfo(div);
-
-        pdirty = false;
     } else {
       // save the original to revert to and compare against
       if (this.dataset.original === undefined) {
@@ -93,8 +106,10 @@ $('.tab-content').on('keydown', '.york-port-info[contenteditable=true]', functio
       } else {
         if ($(div).text() !== this.dataset.original){
           // save attr to td to proper css appearance
+          td[0].title="This change has not been saved.";
           td[0].dataset.dirty="true";
         } else {
+          td[0].title="";
           td[0].dataset.dirty="false";
         }
       }
@@ -127,10 +142,13 @@ $.ajax('/ajax/plugin/buildings', {
       $(this).autocomplete({
         source: function(request, response){
           var suggest = [];
-          for (var i = 0, l = buildingSuggestions.length; i < l; i++){
+          var size = 0;
+          var max = 5;
+          for (var i = 0, l = buildingSuggestions.length; i < l && size < max; i++){
             if (buildingSuggestions[i].toLowerCase()
                .indexOf(request.term.toLowerCase()) >= 0){
               suggest.push(buildingSuggestions[i]);
+              max++;
             }
           }
           response(suggest);
@@ -139,4 +157,6 @@ $.ajax('/ajax/plugin/buildings', {
     });
   }
 });
+
+}
 });
