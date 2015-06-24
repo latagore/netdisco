@@ -105,14 +105,9 @@ $(document).ready(function() {
         if (this.dataset.original === undefined) {
           this.dataset.original = $(div).text();
         } else {
-          if ($(div).text() !== this.dataset.original) {
-            // save attr to td to proper css appearance
-            td[0].title = "This change has not been saved.";
-            td[0].dataset.dirty = "true";
-          } else {
-            td[0].title = "";
-            td[0].dataset.dirty = "false";
-          }
+          // save attr to td to proper css appearance
+          td[0].title = "This change has not been saved.";
+          td[0].dataset.dirty = "true";
         }
       }
     });
