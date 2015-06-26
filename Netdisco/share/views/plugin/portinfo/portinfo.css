@@ -4,16 +4,15 @@
 }
 
 /* Color dirty cells  */
-#dp-data-table td[data-dirty=true]{
+#dp-data-table .nd_portinfo-data-dirty{
   border: 1px solid #000;
+  font-style: italic;
 }
 
-/* Put placeholder for editable cells on hover and focus 
+/* Put nbsp placeholder for editable cells on focus 
    for empty cells because of ff bug */
-#dp-data-table td:hover .york-port-info[contenteditable]:empty:before,
 #dp-data-table .york-port-info[contenteditable]:focus:empty:before {
-  content: "empty";
-  color: #888;
+  content: "\00a0";
 }
 
 /* style for edit icon that appears on hover */

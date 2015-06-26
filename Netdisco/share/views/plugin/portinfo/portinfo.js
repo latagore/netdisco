@@ -7,10 +7,12 @@ $(document).ready(function() {
   });
   // queryDict conveniently taken from http://stackoverflow.com/a/21210643/4961854
   if (location.pathname.indexOf('/device') === 0 && queryDict.tab === "ports") {
+    var porttable = $('#dp-data-table').DataTable();    
+
     // Add focus and hover appearance
     $('.tab-content').append("<i id='nd_portinfo-edit-icon' class='icon-edit nd_portinfo-edit-icon'></i>");
     var editicon = $('#nd_portinfo-edit-icon');
-
+    editicon.hide();
     $('.tab-content').on('mouseover', 'td',
       function(event) {
         if ($(this).children('.york-port-info[contenteditable]').length === 1) {
@@ -43,13 +45,16 @@ $(document).ready(function() {
     );
     $('.tab-content').on('blur', '.york-port-info',
       function(event) {
-        $(this).closest("td")[0].style.backgroundColor = "";
+        var td = $(this).closest("td");
+        td[0].style.backgroundColor = "";
+        // more hacks... autosuggest has hidden text for accessibility
+        // we save only the data we want, even though it has a performance
+        // impact
+        $('#dp-data-table').DataTable().cell(td).data(this.outerHTML);
       }
     );
 
     // ask for changes with AJAX
-    var porttable = $('#dp-data-table').DataTable();
-
     function changeportinfo(e) {
       var div = $(e);
 
@@ -65,7 +70,7 @@ $(document).ready(function() {
         success: function() {
           var td = div.closest('td');
           td[0].title = "";
-          td[0].dataset.dirty = "false";
+          td.removeClass("nd_portinfo-data-dirty");
           td.animate({
               backgroundColor: "#AFA"
             }, 100)
@@ -107,11 +112,12 @@ $(document).ready(function() {
         } else {
           // save attr to td to proper css appearance
           td[0].title = "This change has not been saved.";
-          td[0].dataset.dirty = "true";
+          td.addClass("nd_portinfo-data-dirty");
         }
       }
     });
 
+    // Modify building suggestions on blur
     $('.tab-content').on('blur', 'div.york-port-info[contenteditable=true][data-column=building]',
       function(event) {
         var t = $(event.target);
