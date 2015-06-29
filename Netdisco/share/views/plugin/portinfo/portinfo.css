@@ -25,15 +25,4 @@
 #dp-data-table_submit-port-info {
   float: right;
   margin-right: 10px;
-  /* match appearance of pagination buttons  */
-  color: #000;
-  background-color: transparent;
-  border: 1px solid #DDD;
-  border-radius: 4px;
-  padding: 4px 12px;
-}
-
-#dp-data-table_submit-port-info[disabled]{
-  color: #999;
-  cursor: default;
 }

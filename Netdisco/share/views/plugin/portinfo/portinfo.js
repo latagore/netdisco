@@ -15,9 +15,18 @@ $(document).ready(function() {
       mutations.forEach( function(mutation) {
         if (mutation.addedNodes.length > 0 ) forEach.call (mutation.addedNodes, function(node) {
           if (node.id === "dp-data-table") {
-            $('#dp-data-table_filter').after("<button type='button' id='dp-data-table_submit-port-info'><i class='icon-save'/> Save Port Info</button>")
-            $('#dp-data-table_submit-port-info').prop("disabled", true);
             observer.disconnect();
+
+            $('#dp-data-table_filter').after("<button class='btn' id='dp-data-table_submit-port-info'><i class='icon-save'/> Save Port Info</button>")
+              var submitportinfobtn = $('#dp-data-table_submit-port-info');
+              submitportinfobtn.prop("disabled", true);
+              submitportinfobtn.click(function() {
+                $('td.nd_portinfo-data-dirty .york-port-info')
+                  .get().forEach(function(div) {
+                    changeportinfo(div);
+                  });
+              submitportinfobtn.prop('disabled', true);
+            });
           }
         })
       })
@@ -100,11 +109,9 @@ $(document).ready(function() {
               backgroundColor: "#FFF"
             }, 700);
           div[0].dataset.original = div.text();
-          toastr.info('Submitted change request');
         },
         error: function() {
           toastr.error('Failed to submit change request');
-          div.text(td.data('default'));
           div.blur();
         }
       });
@@ -134,6 +141,8 @@ $(document).ready(function() {
           // save attr to td to proper css appearance
           td[0].title = "This change has not been saved.";
           td.addClass("nd_portinfo-data-dirty");
+          
+          $('#dp-data-table_submit-port-info').prop("disabled", false);
         }
       }
     });
