@@ -95,12 +95,12 @@
         </span>
       [% END %]
       [% END %]
-        <a class="nd_this-port-only nd_port-only-first" href="[% uri_for('/device',
-            self_options) %]&q=[% params.q | uri %]&f=[% row.port | uri %]&prefer=port">
-          [% IF row.is_master %]
-            <small><i class="icon-group muted"></i></small>&nbsp;
-          [% END %]
-        [% row.port | html_entity %]</a>
+        [% IF row.is_master %]
+          <small><i class="icon-group muted"></i></small>&nbsp;
+        [% END %]
+        <span class="nd_this-port-only nd_port-only-first">
+        [% row.port | html_entity %]
+        </span>
         [% IF row.slave_of %]<br/>
           <a class="nd_this-port-only" href="[% uri_for('/device',
               self_options) %]&q=[% params.q | uri %]&f=[% row.slave_of | uri %]&prefer=port">

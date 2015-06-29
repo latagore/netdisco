@@ -659,12 +659,12 @@ form .clearfix.success input {
   float: left;
 }
 
-div.nd_datatables-pager {
+.nd_datatables-pager {
   float: left;
   margin-left: 25px;
 }
 
-div.nd_datatables-info {
+.dataTables_info {
   float:left;
 }
 
