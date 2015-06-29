@@ -4,7 +4,6 @@
   width: 100%;
 
   padding: 4px;
-  horizontal-align: center;
 }
 
 .nd_old-info-warning div {
@@ -25,5 +24,4 @@
 .nd_old-info-warning * {
   text-align: center;
   margin: 0;
-  line-height: default;
 }
