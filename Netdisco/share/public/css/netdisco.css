@@ -655,9 +655,21 @@ form .clearfix.success input {
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* dataTables */
 
+.dataTables_length {
+  float: left;
+}
+
 div.nd_datatables-pager {
   float: left;
-  margin-left: 50px;
+  margin-left: 25px;
+}
+
+div.nd_datatables-info {
+  float:left;
+}
+
+.dataTables_filter {
+  float: right;
 }
 
 td.nd_nowrap {

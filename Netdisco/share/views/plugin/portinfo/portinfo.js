@@ -9,6 +9,27 @@ $(document).ready(function() {
   if (location.pathname.indexOf('/device') === 0 && queryDict.tab === "ports") {
     var porttable = $('#dp-data-table').DataTable();    
 
+    // Add port info submit button
+    var forEach = Array.prototype.forEach;
+    var observer = new MutationObserver(function(mutations) {
+      mutations.forEach( function(mutation) {
+        if (mutation.addedNodes.length > 0 ) forEach.call (mutation.addedNodes, function(node) {
+          if (node.id === "dp-data-table") {
+            $('#dp-data-table_filter').after("<button type='button' id='dp-data-table_submit-port-info'><i class='icon-save'/> Save Port Info</button>")
+            $('#dp-data-table_submit-port-info').prop("disabled", true);
+            observer.disconnect();
+          }
+        })
+      })
+    });
+    
+    observer.observe(document.body, {
+      childList: true
+      , subtree: true
+      , attributes: false
+      , characterData: false
+    });
+    
     // Add focus and hover appearance
     $('.tab-content').append("<i id='nd_portinfo-edit-icon' class='icon-edit nd_portinfo-edit-icon'></i>");
     var editicon = $('#nd_portinfo-edit-icon');
