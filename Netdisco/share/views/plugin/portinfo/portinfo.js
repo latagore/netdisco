@@ -1,6 +1,11 @@
-$(document).ready(function() {
+  
+// create edit icon element just once
+var editicon = $("<i id='nd_portinfo-edit-icon' class='icon-edit nd_portinfo-edit-icon'></i>");
+editicon.hide();
 
+$(document).ready(function() {
   addPortInfoFunctionality();
+  $('#nd_search-results').on('click', 'li a',  function() {addPortInfoFunctionality();});
 
   // adds all the custom functionality
   function addPortInfoFunctionality(){
@@ -52,14 +57,12 @@ $(document).ready(function() {
 
   // needed to make port info fields like vanilla netdisco editable fields
   function makePortInfoFieldsInteractive (){
-    $('.tab-content').append("<i id='nd_portinfo-edit-icon' class='icon-edit nd_portinfo-edit-icon'></i>");
-    var editicon = $('#nd_portinfo-edit-icon');
-    editicon.hide();
+    //var editicon = $('#nd_portinfo-edit-icon');
     
     $('.tab-content').on('mouseover', 'td',
       function(event) {
         if ($(this).children('.york-port-info[contenteditable]').length === 1) {
-          $(this).prepend(editicon);
+          editicon.prependTo(this);
           editicon.show();
         }
       }

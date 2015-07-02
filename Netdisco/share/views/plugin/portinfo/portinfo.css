@@ -19,6 +19,9 @@
 .nd_portinfo-edit-icon {
   float: right;
   cursor: pointer;
+  /* don't increase the height of the row when hovering
+     Problem because of silly firefox bug.. */
+  line-height: 80%;
 }
 
 /* make Save Port Info button float on the right */
