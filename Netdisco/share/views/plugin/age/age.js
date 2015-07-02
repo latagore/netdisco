@@ -14,11 +14,11 @@ $(document).ready(function() {
           var response = JSON.parse(ajax.responseText);
 
           // days since last discover/macsuck/arpnip
-          var discoverAge = response.discoverAge;
-          var macsuckAge  = response.macsuckAge;
-          var arpnipAge   = response.arpnipAge;
+          var discoverAge = parseInt(response.discoverAge);
+          var macsuckAge  = parseInt(response.macsuckAge);
+          var arpnipAge   = parseInt(response.arpnipAge);
           // limit on entry age in days before a warning is given
-          var ageLimit    = response.ageLimit;
+          var ageLimit    = parseInt(response.ageLimit);
 
           var warningMsg = '';
 
@@ -26,19 +26,21 @@ $(document).ready(function() {
             warningMsg += "<p>The last successful discover on this device was " + discoverAge
             + (discoverAge === 1 ? " day" : " days")
             + " ago.</p>"
-          } // devices have to have been discovered, wouldn't be shown otherwise
+          } else if (!discoverAge) {
+            warningMsg += "<p>No discover job has successfully completed on this device.</p>";
+          }
           if (macsuckAge >= ageLimit){
             warningMsg += "<p>The last successful macsuck on this device was " + macsuckAge
             + (macsuckAge === 1 ? " day" : " days")
             + " ago.</p>"
-          } else if (macsuckAge === ""){
+          } else if (!macsuckAge){
             warningMsg += "<p>No macsuck job has successfully completed on this device.</p>";
           }
           if (arpnipAge >= ageLimit){
             warningMsg += "<p>The last arpnip on this device was " + arpnipAge
             + (arpnipAge === 1 ? " day" : " days")
             + " ago.</p>"
-          } else if (arpnipAge === ""){
+          } else if (!arpnipAge){
             warningMsg += "<p>No arpnip job has successfully completed on this device.</p>";
           }
 
