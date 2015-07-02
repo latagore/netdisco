@@ -165,7 +165,7 @@ $(document).ready(function() {
                 if (buildingSuggestions[i].toLowerCase()
                   .indexOf(request.term.toLowerCase()) >= 0) {
                   suggest.push(buildingSuggestions[i]);
-                  max++;
+                  size++;
                 }
               }
               response(suggest);
