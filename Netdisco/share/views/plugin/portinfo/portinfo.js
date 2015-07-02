@@ -1,15 +1,25 @@
 $(document).ready(function() {
 
-  //make sure that we only do this on the right page
-  var queryDict = {}
-  location.search.substr(1).split("&").forEach(function(item) {
-    queryDict[item.split("=")[0]] = item.split("=")[1]
-  });
-  // queryDict conveniently taken from http://stackoverflow.com/a/21210643/4961854
-  if (location.pathname.indexOf('/device') === 0 && queryDict.tab === "ports") {
-    var porttable = $('#dp-data-table').DataTable();    
+  addPortInfoFunctionality();
 
-    // Add port info submit button
+  // adds all the custom functionality
+  function addPortInfoFunctionality(){
+    //make sure that we only do this on the right page
+    var queryDict = {}
+    location.search.substr(1).split("&").forEach(function(item) {
+      queryDict[item.split("=")[0]] = item.split("=")[1]
+    });
+    // queryDict conveniently taken from http://stackoverflow.com/a/21210643/4961854
+    if (location.pathname.indexOf('/device') === 0 && queryDict.tab === "ports") {
+      var porttable = $('#dp-data-table').DataTable();    
+
+      addSavePortInfoButton();
+      makePortInfoFieldsInteractive();
+      addBuildingSuggestions();
+    }
+  }
+  function addSavePortInfoButton(){
+    // use a mutation observer because we don't know when the data-table will be loaded
     var forEach = Array.prototype.forEach;
     var observer = new MutationObserver(function(mutations) {
       mutations.forEach( function(mutation) {
@@ -31,18 +41,21 @@ $(document).ready(function() {
         })
       })
     });
-    
+      
     observer.observe(document.body, {
       childList: true
       , subtree: true
       , attributes: false
       , characterData: false
     });
-    
-    // Add focus and hover appearance
+  }
+
+  // needed to make port info fields like vanilla netdisco editable fields
+  function makePortInfoFieldsInteractive (){
     $('.tab-content').append("<i id='nd_portinfo-edit-icon' class='icon-edit nd_portinfo-edit-icon'></i>");
     var editicon = $('#nd_portinfo-edit-icon');
     editicon.hide();
+    
     $('.tab-content').on('mouseover', 'td',
       function(event) {
         if ($(this).children('.york-port-info[contenteditable]').length === 1) {
@@ -83,40 +96,7 @@ $(document).ready(function() {
         $('#dp-data-table').DataTable().cell(td).data(this.outerHTML);
       }
     );
-
-    // ask for changes with AJAX
-    function changeportinfo(e) {
-      var div = $(e);
-
-      $.ajax({
-        type: 'GET',
-        url: uri_base + '/ajax/portinfocontrol',
-        data: {
-          device: div.data('for-device'),
-          port: div.data('for-port'),
-          column: div.data('column'),
-          value: div.text()
-        },
-        success: function() {
-          var td = div.closest('td');
-          td[0].title = "";
-          td.removeClass("nd_portinfo-data-dirty");
-          td.animate({
-              backgroundColor: "#AFA"
-            }, 100)
-            .delay(500)
-            .animate({
-              backgroundColor: "#FFF"
-            }, 700);
-          div[0].dataset.original = div.text();
-        },
-        error: function() {
-          toastr.error('Failed to submit change request');
-          div.blur();
-        }
-      });
-    };
-
+    
     // activity for contenteditable control
     $('.tab-content').on('keydown', '.york-port-info[contenteditable=true]', function(event) {
       var div = this,
@@ -146,7 +126,9 @@ $(document).ready(function() {
         }
       }
     });
+  }
 
+  function addBuildingSuggestions() {
     // Modify building suggestions on blur
     $('.tab-content').on('blur', 'div.york-port-info[contenteditable=true][data-column=building]',
       function(event) {
@@ -189,6 +171,38 @@ $(document).ready(function() {
         });
       }
     });
+  }
+  
+  // make a call to change the port info for a port
+  function changeportinfo(e) {
+    var div = $(e);
 
+    $.ajax({
+      type: 'GET',
+      url: uri_base + '/ajax/portinfocontrol',
+      data: {
+        device: div.data('for-device'),
+        port: div.data('for-port'),
+        column: div.data('column'),
+        value: div.text()
+      },
+      success: function() {
+        var td = div.closest('td');
+        td[0].title = "";
+        td.removeClass("nd_portinfo-data-dirty");
+        td.animate({
+            backgroundColor: "#AFA"
+          }, 100)
+          .delay(500)
+          .animate({
+            backgroundColor: "#FFF"
+          }, 700);
+        div[0].dataset.original = div.text();
+      },
+      error: function() {
+        toastr.error('Failed to submit change request');
+        div.blur();
+      }
+    });
   }
 });
