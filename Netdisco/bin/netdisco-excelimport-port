@@ -1,0 +1,141 @@
+#!/usr/bin/perl
+#
+# Converts excel files into database update queries row by row based on columns specified
+#
+
+use strict;
+use warnings;
+
+use FindBin;
+FindBin::again();
+use Path::Class 'dir';
+
+BEGIN {
+  # stuff useful locations into @INC
+  unshift @INC,
+    dir($FindBin::RealBin)->parent->subdir('lib')->stringify,
+    dir($FindBin::RealBin, 'lib')->stringify;
+
+  unshift @INC,
+    split m/:/, ($ENV{NETDISCO_INC} || '');
+}
+
+use App::Netdisco;
+use Dancer::Plugin::DBIC;
+use Spreadsheet::ParseExcel;
+use Getopt::Long;
+use Data::Dumper;
+my ($file, $ip);
+GetOptions(
+    "file=s"   => \$file,
+    "ip=s"     => \$ip
+) or die "error in arguments";
+
+# Defines the CSV/excel column to DB column mapping
+# Use a hash {$accessor => $hash|$columnname} on the right hand side when
+# the database relationship is complicated
+# Below, the spreadsheet "Building" column is mapped to the related
+# "port_info" accessor using the "building" column
+my $map = {
+  Port => "port",
+  Building => {port_info => "building"},
+  Room => {port_info => "room"},
+  Cable => {port_info => "jack"},
+  "Riser 1" => {port_info => "riser1"},
+  "Pair 1" => {port_info => "pairs1"},
+  "Riser 2" => {port_info => "riser2"},
+  "Pair 2" => {port_info => "pairs2"},
+  "Floor Grid" => {port_info => "grid"},
+  Pigtail => {port_info => "cable"},
+  Wired => {port_info => "wired"},
+  "Phone Extension" => {port_info => "phoneext"},
+  Comment => {port_info => "comment"}
+};
+
+my $excel = new Spreadsheet::ParseExcel;
+my $book = $excel->Parse($file);
+my $worksheet = $book->{Worksheet}->[0];
+
+my @errors;
+my @warnings;
+my @data;
+
+## map the excel data to a form that we want
+# assume first row is the header
+my ($minrow, $maxrow) = $worksheet->row_range();
+my ($mincol, $maxcol) = $worksheet->col_range();
+# get the column to index mapping for those file columns 
+# that have a mapping to the database
+my %colmap;
+foreach my $col ($mincol..$maxcol){
+  my $column = $worksheet->get_cell($minrow, $col)->value;
+  if (exists $map->{$column}) {
+    $colmap{$column} = $col;
+  } else {
+    push @warnings, "Ignoring column '$column' at column $col, no "
+     . "corresponding database mapping. Check your spelling or contact "
+     . "your system administrator.";
+  }
+}
+# read all the row entries, excluding header
+foreach my $rowindex ($minrow+1..$maxrow){
+  my %datarow;
+  foreach my $columnname (keys %colmap){
+    my $value = $worksheet->get_cell($rowindex, $colmap{$columnname});
+    # library returns a silly undef if no value in the cell...
+    $value = defined $value ? $value->value : undef;
+    $datarow{$columnname} = $value;
+  }
+  push @data, \%datarow;
+}
+## map the data to database changes
+#go through the data and update the database
+my $linenumber = $minrow;
+my $numberOfEntriesUpdated = 0;
+foreach my $row (@data) {
+  my $dbrow = schema('netdisco')->resultset("DevicePort")->find((
+    $row->{'Port'}, $ip
+  ));
+  unless (defined $dbrow) {
+    push @errors, "No port '" . $row->{'Port'}
+                  . "' in device '" . $ip
+                  . "' at line $linenumber";
+  } else {
+    schema('netdisco')->txn_do(sub {
+      # DB objects to be updated
+      my @update;
+      # make all the changes locally
+      foreach my $key(keys %$row){
+        next if $key eq "Port";
+        my $relation = $map->{$key};
+        my $obj = $dbrow;
+        # iteratively navigate to find the db object we want
+        # check that $relation points to a column name, not a column from a related object
+        while (ref $relation eq ref {}){
+          # move towards the object to be updated
+          $obj = $obj->find_or_create_related((keys %$relation)[0], {});
+          $relation = (values %$relation)[0];
+        }
+        $obj->set_column($relation, $row->{$key});
+        push @update, $obj;
+      }
+      # update all the objects in the database
+      my $updated = 0;
+      foreach my $obj(@update){
+        if ($obj->is_changed){
+          my $rv = $obj->update;
+          $updated = 1;
+        }
+      }
+      # TODO update last changed field and user
+      $numberOfEntriesUpdated++ if $updated;
+    });
+  }
+  $linenumber++
+}
+print "Warnings:\n".join("\n", @warnings)."\n" if @warnings;
+print "Errors:\n".join("\n", @errors)."\n" if @errors;
+print "Number of entries: ". scalar @data . "\n";
+print "Number of entries updated: $numberOfEntriesUpdated\n";
+print "Completed successfully. \n" unless @errors;
+exit scalar @errors > 0 ? 1 : 0;
