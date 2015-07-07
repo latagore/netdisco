@@ -48,13 +48,11 @@ $(document).ready(function() {
             // insert warning message element
             $('.navbar').after(
               '<div class="nd_old-info-warning" title="Hide">'
-              + '<div>'
               + '<h5><strong>Warning - Old Information</strong></h5>'
               + warningMsg
               + '<p><small>Some information may not be reliable. Warnings are given after ' 
               + ageLimit  + (ageLimit === 1 ? ' day' : ' days')
               + '.</small></p>'
-              + '</div>'
               + '</div>');
           }
           
@@ -63,7 +61,7 @@ $(document).ready(function() {
           $('.nd_old-info-warning').click(function(){
             // can't slide up on nd_old-info-warning div with CSS display: table, 
             // so we use an inner element workaround instead...
-            $(this).children('div').slideUp().parent().fadeOut();
+            $(this).slideUp().fadeOut();
           });
                     
         }
