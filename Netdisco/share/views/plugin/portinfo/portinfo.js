@@ -32,14 +32,15 @@ $(document).ready(function() {
           if (node.id === "dp-data-table") {
             observer.disconnect();
 
-            $('#dp-data-table_filter').after("<button class='btn' id='dp-data-table_submit-port-info'><i class='icon-save'/> Save Port Info</button>")
-              var submitportinfobtn = $('#dp-data-table_submit-port-info');
-              submitportinfobtn.prop("disabled", true);
-              submitportinfobtn.click(function() {
-                $('td.nd_portinfo-data-dirty .york-port-info')
-                  .get().forEach(function(div) {
-                    changeportinfo(div);
-                  });
+            $('#dp-data-table_filter').after("<button class='btn' id='dp-data-table_submit-port-info'><i class='icon-save'/> Save Port Info</button>");
+            var submitportinfobtn = $('#dp-data-table_submit-port-info');
+            submitportinfobtn.prop("disabled", true);
+            
+            submitportinfobtn.click(function() {
+              $('td.nd_portinfo-data-dirty .york-port-info')
+                .get().forEach(function(div) {
+                  changeportinfo(div);
+                });
               submitportinfobtn.prop('disabled', true);
             });
           }
