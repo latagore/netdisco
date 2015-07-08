@@ -22,24 +22,15 @@
     <tr>
       <td class="nd_center-cell nd_devport-icon">
         [% IF row.up_admin != 'up' %]
-        <i class="icon-remove"></i>
+        <i class="icon-remove" title="Admin Down" rel="tooltip" data-animation=""></i>
         [% ELSIF row.up == 'up' AND row.stp == 'blocking' AND row.vlan_count < 2 %]
-        <i class="icon-fullscreen text-info"></i>
+        <i class="icon-fullscreen text-info" title="Admin Up, Link Up, STP Blocking State" rel="tooltip" data-animation=""></i>
         [% ELSIF row.has_column_loaded('is_free') AND row.is_free %]
-        <i class="icon-arrow-down text-success"></i>
+        <i class="icon-arrow-down text-success" title="Free Port" rel="tooltip" data-animation=""></i>
         [% ELSIF row.up_admin == 'up' AND (row.up != 'up' AND row.up != 'dormant') %]
-        <i class="icon-arrow-down text-error"></i>
+        <i class="icon-arrow-down text-error" title="Admin Up, Link Down" rel="tooltip" data-animation=""></i>
         [% ELSE %]
-        <i class="icon-angle-up text-success"></i>
-        [% END %]
-        [% IF row.slave_of %]<br/>
-          [% IF row.get_column('agg_master_up_admin') != 'up' %]
-            <small><i class="icon-group muted"></i></small>
-          [% ELSIF row.get_column('agg_master_up') == 'up' %]
-            <small><i class="icon-group text-success"></i></small>
-          [% ELSE %]
-            <small><i class="icon-group text-error"></i></small>
-          [% END %]
+        <i class="icon-angle-up text-success" title="Admin Up, Link Up"  rel="tooltip" data-animation=""></i>
         [% END %]
       </td>
 
@@ -95,13 +86,23 @@
         </span>
       [% END %]
       [% END %]
-        [% IF row.is_master %]
-          <small><i class="icon-group muted"></i></small>&nbsp;
+        [% IF row.slave_of %]
+           <small><i class="icon-user muted" title="Aggregrate Link Slave" rel="tooltip" data-animation=""></i></small>
         [% END %]
-        <span class="nd_this-port-only nd_port-only-first">
-        [% row.port | html_entity %]
-        </span>
+        [% IF row.is_master %]
+          <small><i class="icon-group muted" title="Aggregate Link Master" rel="tooltip" data-animation=""></i></small>
+          <a class="nd_this-port-only nd_port-only-first">[% row.port | html_entity %]</a>
+        [% ELSE %]
+          <span class="nd_this-port-only nd_port-only-first">[% row.port | html_entity %]</span>
+        [% END %]
         [% IF row.slave_of %]<br/>
+          [% IF row.get_column('agg_master_up_admin') != 'up' %]
+            <small><i class="icon-group muted" title="Aggregate Link Master, Admin Down" rel="tooltip" data-animation=""></i></small>
+          [% ELSIF row.get_column('agg_master_up') == 'up' %]
+            <small><i class="icon-group text-success" title="Aggregate Link Master, Admin Up, Link Up" rel="tooltip" data-animation="" ></i></small>
+          [% ELSE %]
+            <small><i class="icon-group text-error" title="Agggregate Link Master: Admin Up, Link Down" rel="tooltip" data-animation=""></i></small>
+          [% END %]
           <a class="nd_this-port-only" href="[% uri_for('/device',
               self_options) %]&q=[% params.q | uri %]&f=[% row.slave_of | uri %]&prefer=port">
           [% row.slave_of | html_entity %]</a>

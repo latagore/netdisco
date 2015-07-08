@@ -68,7 +68,9 @@
 
     // clickable device port names can simply resubmit AJAX rather than
     // fetch the whole page again.
-    $('#ports_pane').on('click', '.nd_this-port-only', function(event) {
+    // only applies to aggregate link master ports, since it's pointless
+    // otherwise
+    $('#ports_pane').on('click', 'a.nd_this-port-only', function(event) {
       event.preventDefault(); // link is real so prevent page submit
 
       var port = $(this).text();
