@@ -173,6 +173,12 @@ div.content > div.tab-content table.nd_floatinghead thead {
   margin-right: 25px;
 }
 
+/* nudge cell content when port_control controls are disabled to make room
+   for log button */
+.nd_this-port-only {
+  margin-right: 15px;
+}
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* styles to position table cell content */
 
