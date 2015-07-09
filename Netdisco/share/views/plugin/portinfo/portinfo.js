@@ -105,6 +105,7 @@ $(document).ready(function() {
         // more hacks... autosuggest has hidden text for accessibility
         // we save only the data we want, even though it has a performance
         // impact
+        // we do this so we can have sorting on current values in columns
         $('#dp-data-table').DataTable().cell(td).data(this.outerHTML);
       }
     );
@@ -123,8 +124,8 @@ $(document).ready(function() {
         event.stopPropagation();
         event.preventDefault();
 
-        $(div).blur();
         changeportinfo(div);
+        $(div).blur();
       } else {
         // save the original to revert to and compare against
         if (this.dataset.original === undefined) {
@@ -188,6 +189,7 @@ $(document).ready(function() {
   // make a call to change the port info for a port
   function changeportinfo(e) {
     var div = $(e);
+    var td = div.closest('td');
 
     $.ajax({
       type: 'GET',
@@ -199,7 +201,6 @@ $(document).ready(function() {
         value: div.text()
       },
       success: function() {
-        var td = div.closest('td');
         td[0].title = "";
         td.removeClass("nd_portinfo-data-dirty");
         td.animate({
