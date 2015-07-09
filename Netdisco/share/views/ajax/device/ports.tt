@@ -404,14 +404,21 @@
 
 <script>
 $(document).ready(function() {
-    $('#dp-data-table').dataTable({
+    var windowHeight = window.innerHeight;
+    var table = $('#dp-data-table').dataTable({
         "columnDefs": [
             { "sortable": false, "targets": 0 },
             { "searchable": false, "targets": 0 },
             { "type": 'portsort', "targets": [ 'portsort' ] }
         ],
         "order": [[ 1, 'asc' ]],
+        scrollX: true,
+        scrollY: windowHeight - 200,
 [% INCLUDE 'ajax/datatabledefaults.tt' -%]
+    } );
+    //new $.fn.dataTable.FixedHeader( table );
+    new $.fn.dataTable.FixedColumns( table, {
+      "leftColumns": 2
     } );
 } );
 </script>

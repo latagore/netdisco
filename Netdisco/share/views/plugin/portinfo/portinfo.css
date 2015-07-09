@@ -30,16 +30,10 @@
   margin-right: 10px;
 }
 
-/* help make table fit the page, 
-   doesn't actually do anything by itself */
-html, body, .container-fluid, .content, .tab-content {
-  height: 100%
+/* allow tooltips to work despite datatables plugin 
+   positioning for columns */
+#dp-data-table_wrapper .DTFC_LeftBodyWrapper,
+#dp-data-table_wrapper .DTFC_LeftBodyLiner{
+  position: static !important;
 }
 
-/* make the table fit the page */
-#ports_pane {
-  /* hardcoded the size of the header + tabs,
-     want the table to fill the rest of the space */
-  max-height: calc(100% - 100px);
-  overflow: auto;
-}
