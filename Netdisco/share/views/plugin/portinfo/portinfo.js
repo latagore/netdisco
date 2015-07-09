@@ -4,9 +4,15 @@ var editicon = $("<i id='nd_portinfo-edit-icon' class='icon-edit nd_portinfo-edi
 editicon.hide();
 
 $(document).ready(function() {
+  // need to add all the listeners only once, since they don't go away
+  // unless the page is refreshed or changed
   addPortInfoFunctionality();
-  $('#nd_search-results').on('click', 'li a',  function() {addPortInfoFunctionality();});
-
+  $('#nd_search-results').on('click', 'li a',  function() {
+    addSavePortInfoButton();
+  });
+  $('.nd_sidebar').on('submit', '#ports_form', function() {
+    addSavePortInfoButton();
+  });
   // adds all the custom functionality
   function addPortInfoFunctionality(){
     //make sure that we only do this on the right page
@@ -31,18 +37,20 @@ $(document).ready(function() {
         if (mutation.addedNodes.length > 0 ) forEach.call (mutation.addedNodes, function(node) {
           if (node.id === "dp-data-table") {
             observer.disconnect();
-
-            $('#dp-data-table_filter').after("<button class='btn' id='dp-data-table_submit-port-info'><i class='icon-save'/> Save Port Info</button>");
-            var submitportinfobtn = $('#dp-data-table_submit-port-info');
-            submitportinfobtn.prop("disabled", true);
             
-            submitportinfobtn.click(function() {
-              $('td.nd_portinfo-data-dirty .york-port-info')
-                .get().forEach(function(div) {
-                  changeportinfo(div);
-                });
-              submitportinfobtn.prop('disabled', true);
-            });
+            if (!$('#dp-data-table_submit-port-info').length){
+              $('#dp-data-table_filter').after("<button class='btn btn-info' id='dp-data-table_submit-port-info'><i class='icon-save'/> Save Port Info</button>");
+              var submitportinfobtn = $('#dp-data-table_submit-port-info');
+              submitportinfobtn.prop("disabled", true);
+            
+              submitportinfobtn.click(function() {
+                $('td.nd_portinfo-data-dirty .york-port-info')
+                  .get().forEach(function(div) {
+                    changeportinfo(div);
+                  });
+                submitportinfobtn.prop('disabled', true);
+              });
+            }
           }
         })
       })
