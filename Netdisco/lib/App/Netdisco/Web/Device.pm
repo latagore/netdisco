@@ -8,7 +8,7 @@ use URL::Encode 'url_params_mixed';
 
 hook 'before' => sub {
   my @default_port_columns_left = (
-    { name => 'c_admin',       label => 'Port Controls',     default => ''   },
+    { name => 'c_admin',       label => 'Port Controls',     default => 'on'   },
     { name => 'c_port',        label => 'Port',              default => 'on' },
   );
 
