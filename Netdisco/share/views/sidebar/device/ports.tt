@@ -40,6 +40,7 @@
                   <li><i class="icon-li icon-link text-warning"></i>&nbsp; Manual Topology</li>
                   <li><i class="icon-li icon-link"></i>&nbsp; Neighbor Device</li>
                   <li><i class="icon-li icon-unlink text-error"></i>&nbsp; Neighbor Inacessible</li>
+                  <li><i class="icon-li icon-hdd"></i>&nbsp; Node</li>
                   <li><i class="icon-li icon-phone"></i>&nbsp; IP Phone</li>
                   <li><i class="icon-li icon-signal"></i>&nbsp; Wireless Client</li>
                   <li><i class="icon-li icon-book"></i>&nbsp; Archived Data</li>

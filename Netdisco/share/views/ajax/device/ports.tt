@@ -285,12 +285,12 @@
               [% ' type: '_ row.remote_type IF row.remote_type %])<br/>
             [% END %]
           [% ELSIF row.remote_ip %]
-            <i class="icon-unlink text-error"></i>&nbsp;
             [% IF row.remote_type AND row.remote_type.match('(?i)ip.phone') %]
               <i class="icon-phone"></i>&nbsp;
             [% ELSIF row.remote_type AND row.remote_type.match('^AP:\s') %]
               <i class="icon-signal"></i>&nbsp;
             [% END %]
+            <i class="icon-unlink text-error"></i>&nbsp;
             <a href="[% search_node %]&q=[% row.remote_ip | uri %]">
               [% row.remote_ip | html_entity %]
               [% ' - ' IF row.remote_port %][% row.remote_port | html_entity %]</a><br/>
@@ -301,16 +301,20 @@
           [% ELSE %]
             <i class="icon-unlink text-error"></i>&nbsp; (possible uplink)
           [% END %]
+          [% '<hr />' IF params.c_nodes AND row.$nodes %]
         [% END %]
-        [% IF params.c_nodes %]
+        [% IF params.c_nodes AND row.$nodes %]
+        <ul class="nd_node-list icons-ul">
         [% FOREACH node IN row.$nodes %]
-          [% '<br/>' IF (row.remote_ip OR row.is_uplink) OR NOT loop.first %]
+          <li >
           [% '<i class="icon-book"></i>&nbsp; ' IF NOT node.active %]
           [% IF row.remote_type AND row.remote_type.match('(?i)ip.phone') %]
-            <i class="icon-phone"></i>&nbsp;
+            <i class="icon-li icon-phone"></i>
           [% ELSIF node.wireless.defined
                    OR (row.remote_type AND row.remote_type.match('^AP:\s')) %]
-            <i class="icon-signal"></i>&nbsp;
+            <i class="icon-li icon-signal"></i>
+          [% ELSE %]
+            <i class="icon-li icon-hdd"></i>
           [% END %]
           <a href="[% search_node %]&q=[% node.net_mac.$mac_format_call | uri %]">
             [% node.net_mac.$mac_format_call | html_entity %]</a>
@@ -331,17 +335,25 @@
             [% END %]
             )
           [% END %]
-          [% ' (' _ node.time_last_age _ ')' IF params.n_age %]
-          [% IF params.n_ip %]
+          [% '<br />(' _ node.time_last_age _ ')' IF params.n_age %]
+          [% IF params.n_ip AND node.ips %]
+            <ul class="nd_node-ip-list">
             [% FOREACH ip IN node.ips %]
-            <br/>&nbsp; [% '<i class="icon-book"></i>&nbsp; ' IF NOT ip.active %]
+              <li>
+              [% '<i class="icon-book"></i>&nbsp; ' IF NOT node.active %]
               [% SET dns = ip.dns %]
               [% IF dns %]
-              <a href="[% search_node %]&q=[% ip.ip | uri %]">[% dns %] ([% ip.ip | html_entity %])</a>
+              <a href="[% search_node %]&q=[% ip.ip | uri %]">
+                [% dns %]<br />([% ip.ip | html_entity %])
+              </a>
               [% ELSE %]
-              <a href="[% search_node %]&q=[% ip.ip | uri %]">[% ip.ip | html_entity %]</a>
+              <a href="[% search_node %]&q=[% ip.ip | uri %]">
+                [% ip.ip | html_entity %]
+              </a>
               [% END %]
+              </li>
             [% END %]
+            </ul>
           [% END %]
           [% IF params.n_netbios %]
             [% FOREACH nbt IN node.netbios %]
@@ -349,7 +361,9 @@
             <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% nbt.nbuser || '[No User]' | html_entity %]@<a href="[% search_node %]&q=[% nbt.ip | uri %]">[% nbt.ip | html_entity %]</a>
             [% END %]
           [% END %]
+          </li>
         [% END %]
+        </ul>
         [% END %]
       </td>
       [% END %]

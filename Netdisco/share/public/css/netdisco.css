@@ -257,6 +257,21 @@ td > form.nd_inline-form {
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* style for port table node list */
+.nd_node-list {
+  margin: 0;
+}
+
+.nd_node-list li {
+  list-style: none;
+  white-space: nowrap;
+}
+
+.nd_node-ip-list li {
+  list-style: disc;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* style for port_control controls */
 
 /* edit icon in details tab is in the label (not content) cell so nudge to RHS*/
@@ -676,6 +691,10 @@ form .clearfix.success input {
 
 .dataTables_filter {
   float: right;
+}
+
+.dataTable hr {
+  margin: 5px 0;
 }
 
 td.nd_nowrap {
