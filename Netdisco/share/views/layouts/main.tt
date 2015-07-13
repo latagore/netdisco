@@ -58,7 +58,7 @@
   <link rel="stylesheet" href="[% uri_base %]/css/daterangepicker-bs2.css"/>
   <link rel="stylesheet" href="[% uri_base %]/css/dataTables.bootstrap.css"/>
   <link rel="stylesheet" href="[% uri_base %]/css/nd_print.css" media="print"/>
-  <link rel="stylesheet" href="[% uri_base %]/css/dataTables.fixedColumns.min.css" />
+  <link rel="stylesheet" href="[% uri_base %]/css/dataTables.fixedColumns.css" />
 
   [% FOREACH add_css IN settings._additional_css %]
   <link rel="stylesheet" href="[% uri_base %]/plugin/[% add_css %]/[% add_css %].css"/>
