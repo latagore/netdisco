@@ -166,14 +166,22 @@ $(document).ready(function() {
   $('.nd_field-copy-icon').hide();
   $('.nd_field-clear-icon').hide();
 
-  // activate typeahead on the main search box, for device names only
-  $('#nq').typeahead({
-    source: function (query, process) {
-      return $.get( uri_base + '/ajax/data/devicename/typeahead', { query: query }, function (data) {
-        return process(data);
+  // activate jQuery autocomplete on the main search box, for device names only
+  var maxSuggestions = 5; // max number of suggestions
+  $('#nq').autocomplete({
+    source: function (request, response) {
+      $.ajax({ 
+        url: uri_base + '/ajax/data/devicename/typeahead', 
+        data: { query: request.term }, 
+        success: function (data) {
+          data.splice(maxSuggestions, Number.MAX_VALUE);
+          return response(data); 
+        },
+        error: function(){
+          return response([]); // suggest no data on error
+        }
       });
     }
-    ,matcher: function () { return true; } // trust backend
     ,minLength: 3
   });
 
