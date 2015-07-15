@@ -103,13 +103,13 @@ hook 'before' => sub {
       }
 
       # not stored in the cookie
-      params->{'age_num'} ||= 3;
-      params->{'age_unit'} ||= 'months';
+      params->{'age_num'} ||= setting('ports_free_threshold') || 3 ;
+      params->{'age_unit'} ||= setting('ports_free_threshold_unit') || 'months';
       params->{'mac_format'} ||= 'IEEE';
 
       if (param('reset')) {
-          params->{'age_num'} = 3;
-          params->{'age_unit'} = 'months';
+          params->{'age_num'} =  setting('ports_free_threshold') || 3;
+          params->{'age_unit'} =  setting('ports_free_threshold_unit') || 'months';
           params->{'mac_format'} = 'IEEE';
 
           # nuke the port params cookie
