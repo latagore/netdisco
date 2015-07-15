@@ -1083,6 +1083,20 @@ This is a set of regular expressions matched against the whole MAC address
  wap_ouis:
    - '^a4:0c:c3'
 
+=head3 C<ports_free_threshold>
+
+Value: Integer Number. Default: 3.
+
+Default number of months until a down port is indicated as free in the web
+view. The unit can be changed with C<ports_free_threshold_unit>.
+
+=head3 C<ports_free_threshold_unit>
+
+Value: C<days|weeks|months|years>. Default: C<months>.
+
+The unit for when a down port is indicated as free in the web view. See 
+C<ports_free_threshold>.
+
 =head2 Backend Daemon
 
 =head3 C<workers>
