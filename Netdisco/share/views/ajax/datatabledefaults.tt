@@ -3,7 +3,7 @@
     ,"stateSave": true
     ,"pageLength": [% settings.table_pagesize %]
     ,"lengthMenu": [% table_showrecordsmenu %]
-    ,"dom": '<"top"<"nd_table-header-left"l<"nd_datatables-pager"p><"nd_datatables-info"i>><"nd_table-header-right"f>>rt<"bottom"><"clear">'
+    ,"dom": '<"top"<"nd_table-header-left"l<"nd_datatables-pager"p><"nd_datatables-info"i>><"nd_table-header-right"f>><"clear">rt<"bottom"><"clear">'
     ,"language": {
       "search": '_INPUT_'
       ,"searchPlaceholder": 'Filter records...'

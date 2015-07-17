@@ -700,3 +700,8 @@ form .clearfix.success input {
 td.nd_nowrap {
   white-space: nowrap;
 }
+
+/* use for clearinng float on data table headers*/
+.clear {
+  clear: both;
+}

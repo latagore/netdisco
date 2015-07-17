@@ -6,25 +6,25 @@
         Total Ports 
         <i class='icon-question-sign text-info' 
           title='Total number of physical interfaces' 
-          rel='tooltip' data-animation=''>
+          rel='tooltip' data-animation=''></i>
       </th>
       <th class="nd_center-cell">
         Free
         <i class='icon-question-sign text-info' 
           title='Physical interfaces with no active nodes in the past 14 months' 
-          rel='tooltip' data-animation=''>
+          rel='tooltip' data-animation=''></i>
       </th>
       <th class="nd_center-cell">
         In Use 
         <i class='icon-question-sign text-info' 
           title='Physical interfaces with an active node in the past 14 months' 
-          rel='tooltip' data-animation=''>
+          rel='tooltip' data-animation=''></i>
       </th>
       <th class="nd_center-cell">
         Disabled 
         <i class='icon-question-sign text-info' 
           title='Physical interfaces with admin state down and VLAN 1000' 
-          rel='tooltip' data-animation=''>
+          rel='tooltip' data-animation=''></i>
       </th>
     </tr>
   </thead>
@@ -67,8 +67,8 @@ $(document).ready(function() {
                 }
             }
         ],
+        scrollY: window.innerHeight - 200,
 [% INCLUDE 'ajax/datatabledefaults.tt' -%]
     });
-
 });
 </script>
