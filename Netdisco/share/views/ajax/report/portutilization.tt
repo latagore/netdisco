@@ -2,10 +2,30 @@
   <thead>
     <tr>
       <th>Device</th>
-      <th class="nd_center-cell">Total Ports</th>
-      <th class="nd_center-cell">In Use</th>
-      <th class="nd_center-cell">Disabled</th>
-      <th class="nd_center-cell">Free</th>
+      <th class="nd_center-cell">
+        Total Ports 
+        <i class='icon-question-sign text-info' 
+          title='Total number of physical interfaces' 
+          rel='tooltip' data-animation=''>
+      </th>
+      <th class="nd_center-cell">
+        Free
+        <i class='icon-question-sign text-info' 
+          title='Physical interfaces with no active nodes in the past 14 months' 
+          rel='tooltip' data-animation=''>
+      </th>
+      <th class="nd_center-cell">
+        In Use 
+        <i class='icon-question-sign text-info' 
+          title='Physical interfaces with an active node in the past 14 months' 
+          rel='tooltip' data-animation=''>
+      </th>
+      <th class="nd_center-cell">
+        Disabled 
+        <i class='icon-question-sign text-info' 
+          title='Physical interfaces with admin state down and VLAN 1000' 
+          rel='tooltip' data-animation=''>
+      </th>
     </tr>
   </thead>
 </table>
@@ -28,6 +48,12 @@ $(document).ready(function() {
                     return data.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
             }, {
+                "data": 'ports_free',
+                "searchable": false,
+                "render": function(data, type, row, meta) {
+                    return data.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            }, {
                 "data": 'ports_in_use',
                 "searchable": false,
                 "render": function(data, type, row, meta) {
@@ -35,12 +61,6 @@ $(document).ready(function() {
                 }
             }, {
                 "data": 'ports_disabled',
-                "searchable": false,
-                "render": function(data, type, row, meta) {
-                    return data.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                }
-            }, {
-                "data": 'ports_free',
                 "searchable": false,
                 "render": function(data, type, row, meta) {
                     return data.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
