@@ -1,5 +1,6 @@
 package App::Netdisco::DB::ResultSet::DevicePort;
 use base 'App::Netdisco::DB::ResultSet';
+use Data::Dumper;
 
 use strict;
 use warnings;
@@ -63,13 +64,15 @@ sub with_is_free {
     ->search_rs($cond, $attrs)
     ->search({},
       {
-        '+columns' => { is_free =>
-          \["me.up != 'up' and "
-              ."age(now(), to_timestamp(extract(epoch from device.last_discover) "
-                ."- (device.uptime - me.lastchange)/100)) "
-              ."> ?::interval",
-            [{} => $interval]] },
-        join => 'device',
+        '+columns' => { 
+          # hard code the sql query because the perl DB interface is the bane
+          # of existence and very difficult to do simple nested queries
+          is_free => \[
+            "me.remote_ip IS NULL AND NOT EXISTS("
+              ."select node.switch from node where now() - node.time_last <= "
+              ."?::interval and node.switch = me.ip and node.port = me.port)"
+            , $interval]
+        }
       });
 }
 
