@@ -99,12 +99,13 @@ sub only_free_ports {
       {
         'me.up' => { '!=' => 'up' },
       },{
-        where =>
-          \["age(now(), to_timestamp(extract(epoch from device.last_discover) "
-                ."- (device.uptime - me.lastchange)/100)) "
-              ."> ?::interval",
-            [{} => $interval]],
-      join => 'device' },
+        where => \[
+            "me.remote_ip IS NULL AND NOT EXISTS("
+              ."select node.switch from node where now() - node.time_last <= "
+              ."?::interval and node.switch = me.ip and node.port = me.port)"
+              ."AND me.type != 'propVirtual'"
+            , $interval]
+        },
     );
 }
 
