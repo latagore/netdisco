@@ -20,17 +20,19 @@
   <tbody>
     [% FOREACH row IN results %]
     <tr>
-      <td class="nd_center-cell nd_devport-icon">
+      <td class="nd_center-cell nd_devport-icon nd_nowrap">
         [% IF row.up_admin != 'up' %]
         <i class="icon-remove" title="Admin Down" rel="tooltip" data-animation=""></i>
         [% ELSIF row.up == 'up' AND row.stp == 'blocking' AND row.vlan_count < 2 %]
         <i class="icon-fullscreen text-info" title="Admin Up, Link Up, STP Blocking State" rel="tooltip" data-animation=""></i>
-        [% ELSIF row.has_column_loaded('is_free') AND row.is_free %]
-        <i class="icon-arrow-down text-success" title="Free Port" rel="tooltip" data-animation=""></i>
         [% ELSIF row.up_admin == 'up' AND (row.up != 'up' AND row.up != 'dormant') %]
         <i class="icon-arrow-down text-error" title="Admin Up, Link Down" rel="tooltip" data-animation=""></i>
         [% ELSE %]
         <i class="icon-angle-up text-success" title="Admin Up, Link Up"  rel="tooltip" data-animation=""></i>
+        [% END %]
+        
+        [% IF row.has_column_loaded('is_free') AND row.is_free %]
+        <i class="icon-undo text-success" title="Free Port" rel="tooltip" data-animation=""></i>
         [% END %]
       </td>
 
