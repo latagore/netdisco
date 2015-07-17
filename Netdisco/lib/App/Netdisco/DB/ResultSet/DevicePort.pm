@@ -71,6 +71,7 @@ sub with_is_free {
             "me.remote_ip IS NULL AND NOT EXISTS("
               ."select node.switch from node where now() - node.time_last <= "
               ."?::interval and node.switch = me.ip and node.port = me.port)"
+              ."AND me.type != 'propVirtual'"
             , $interval]
         }
       });
