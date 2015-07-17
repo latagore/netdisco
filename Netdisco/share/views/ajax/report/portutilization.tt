@@ -4,7 +4,7 @@
       <th>Device</th>
       <th class="nd_center-cell">Total Ports</th>
       <th class="nd_center-cell">In Use</th>
-      <th class="nd_center-cell">Shutdown</th>
+      <th class="nd_center-cell">Disabled</th>
       <th class="nd_center-cell">Free</th>
     </tr>
   </thead>
@@ -34,7 +34,7 @@ $(document).ready(function() {
                     return data.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
             }, {
-                "data": 'ports_shutdown',
+                "data": 'ports_disabled',
                 "searchable": false,
                 "render": function(data, type, row, meta) {
                     return data.replace(/\B(?=(\d{3})+(?!\d))/g, ",");

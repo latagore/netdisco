@@ -10,15 +10,47 @@ __PACKAGE__->table_class('DBIx::Class::ResultSource::View');
 __PACKAGE__->table('port_utilization');
 __PACKAGE__->result_source_instance->is_virtual(1);
 __PACKAGE__->result_source_instance->view_definition(<<ENDSQL
- SELECT d.dns AS dns, d.ip as ip,
-     sum(CASE WHEN (dp.type != 'propVirtual') THEN 1 ELSE 0 END) as port_count,
-     sum(CASE WHEN (dp.type != 'propVirtual' AND dp.up_admin = 'up' AND dp.up = 'up') THEN 1 ELSE 0 END) as ports_in_use,
-     sum(CASE WHEN (dp.type != 'propVirtual' AND dp.up_admin != 'up') THEN 1 ELSE 0 END) as ports_shutdown,
-     sum(CASE WHEN (dp.type != 'propVirtual' AND dp.up_admin = 'up' AND dp.up != 'up') THEN 1 ELSE 0 END) as ports_free
-   FROM device d LEFT JOIN device_port dp
-     ON d.ip = dp.ip
-   GROUP BY d.dns, d.ip
-   ORDER BY d.dns, d.ip
+  select device.dns, device.ip,
+  -- default 0 for devices with no non-virtual ports
+  coalesce(port_count,0) port_count, 
+  coalesce(ports_disabled, 0) ports_disabled, 
+  coalesce(ports_in_use,0) ports_in_use,
+  coalesce(ports_free,0) ports_free
+  from device
+
+  left join (
+    select t.ip, sum(case when (t.is_free) then 1 else 0 end) ports_free, sum(case when (t.is_free) then 0 else 1 end) ports_in_use from 
+      (
+      select device_port.ip, device_port.port,
+      -- there is no connected device or node => free 
+      device_port.remote_ip IS NULL AND
+      NOT EXISTS (
+        select node.switch from node 
+        where (now() - node.time_last <= interval '14 months') 
+        AND node.switch = device_port.ip AND node.port = device_port.port 
+      ) is_free 
+      from device_port
+      where (up_admin = 'up' or device_port.vlan = '1000') and device_port.type <> 'propVirtual'
+    ) t
+    group by t.ip
+  ) up_ports
+  on up_ports.ip = device.ip
+
+  left join (
+    select device_port.ip, count(*) ports_disabled 
+    from device_port
+    where  device_port.type <> 'propVirtual' and device_port.up_admin != 'up' and (device_port.vlan <> '1000' or device_port.vlan IS NULL)
+    group by device_port.ip
+  ) ports_disabled
+  on ports_disabled.ip = device.ip
+
+  left join (
+    select device_port.ip, count(*) port_count from device_port
+    where device_port.type <> 'propVirtual'
+    group by device_port.ip
+  ) all_ports
+  on all_ports.ip = device.ip
+  order by device.dns, device.ip
 ENDSQL
 );
 
@@ -35,7 +67,7 @@ __PACKAGE__->add_columns(
   'ports_in_use' => {
     data_type => 'integer',
   },
-  'ports_shutdown' => {
+  'ports_disabled' => {
     data_type => 'integer',
   },
   'ports_free' => {
