@@ -2,12 +2,10 @@
   // ajax content is loaded
   var path = 'search';
 
-  // fields in the Device Search Options form (Device tab)
-  var form_inputs = $("#device_form .clearfix input").not('[type="checkbox"]')
+  // fields in the Search Options form 
+  var form_inputs = $("#device_form .clearfix input, #ports_form .clearfix input")
+      .not('[type="checkbox"]')
       .add("#device_form .clearfix select");
-  // fields in the Device Search Options form (Port tab)
-  var form_inputs = $("#ports_form .clearfix input").not('[type="checkbox"]')
-      .add("#ports_form .clearfix select");
 
   // this is called by do_search to support local code
   // which might need to act on the newly inserted content
