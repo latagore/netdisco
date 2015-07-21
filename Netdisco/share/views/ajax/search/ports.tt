@@ -111,7 +111,7 @@
             <small><i class="icon-group text-error" title="Agggregate Link Master: Admin Up, Link Down" rel="tooltip" data-animation=""></i></small>
           [% END %]
           <a class="nd_this-port-only" href="[% uri_for('/device',
-              self_options) %]&q=[% params.q | uri %]&f=[% row.slave_of | uri %]&prefer=port">
+              self_options) %]&q=[% row.device.ip | uri %]&f=[% row.slave_of | uri %]&prefer=port">
           [% row.slave_of | html_entity %]</a>
         [% END %]
       </td>
