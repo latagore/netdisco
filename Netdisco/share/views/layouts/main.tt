@@ -154,7 +154,7 @@
             <li><a class="nd_navsearchgo-specific" href="" data-tab="device">Search Devices</a></li>
             <li><a class="nd_navsearchgo-specific" href="" data-tab="node">Search Nodes</a></li>
             <li><a class="nd_navsearchgo-specific" href="" data-tab="vlan">Search VLANs</a></li>
-            <li><a class="nd_navsearchgo-specific" href="" data-tab="port">Search Ports</a></li>
+            <li><a class="nd_navsearchgo-specific" href="" data-tab="ports">Search Ports</a></li>
           </ul>
         </div>
       </form>

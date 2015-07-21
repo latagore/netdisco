@@ -9,6 +9,7 @@ use Dancer::Plugin::Auth::Extensible;
 use Socket6 (); # to ensure dependency is met
 use HTML::Entities (); # to ensure dependency is met
 use URI::QueryParam (); # part of URI, to add helper methods
+use URL::Encode 'url_params_mixed';
 use Path::Class 'dir';
 use Module::Find ();
 use Module::Load ();
@@ -58,6 +59,158 @@ push @{ config->{engines}->{netdisco_template_toolkit}->{INCLUDE_PATH} },
 
 # workaround for https://github.com/PerlDancer/Dancer/issues/935
 hook after_error_render => sub { setting('layout' => 'main') };
+
+# setup params for device ports + search ports view
+hook 'before' => sub {
+  my @default_port_columns_left = (
+    { name => 'c_admin',       label => 'Port Controls',     default => ''   },
+    { name => 'c_port',        label => 'Port',              default => 'on' },
+  );
+
+  my @default_port_columns_right = (
+    { name => 'c_descr',       label => 'Description',       default => ''   },
+    { name => 'c_comment',     label => 'Last Comment',      default => ''   },
+    { name => 'c_type',        label => 'Type',              default => ''   },
+    { name => 'c_duplex',      label => 'Duplex',            default => ''   },
+    { name => 'c_lastchange',  label => 'Last Change',       default => ''   },
+    { name => 'c_name',        label => 'Name',              default => 'on' },
+    { name => 'c_speed',       label => 'Speed',             default => ''   },
+    { name => 'c_mac',         label => 'Port MAC',          default => ''   },
+    { name => 'c_mtu',         label => 'MTU',               default => ''   },
+    { name => 'c_pvid',        label => 'Native VLAN',       default => 'on' },
+    { name => 'c_vmember',     label => 'VLAN Membership',   default => 'on' },
+    { name => 'c_power',       label => 'PoE',               default => ''   },
+    { name => 'c_ssid',        label => 'SSID',              default => ''   },
+    { name => 'c_nodes',       label => 'Connected Nodes',   default => ''   },
+    { name => 'c_neighbors',   label => 'Connected Devices', default => 'on' },
+    { name => 'c_stp',         label => 'Spanning Tree',     default => ''   },
+    { name => 'c_up',          label => 'Status',            default => ''   },
+  );
+
+  # build list of port detail columns
+  my @port_columns = ();
+
+  push @port_columns,
+    grep {$_->{position} eq 'left'} @{ setting('_extra_device_port_cols') };
+  push @port_columns, @default_port_columns_left;
+  push @port_columns,
+    grep {$_->{position} eq 'mid'} @{ setting('_extra_device_port_cols') };
+  push @port_columns, @default_port_columns_right;
+  push @port_columns,
+    grep {$_->{position} eq 'right'} @{ setting('_extra_device_port_cols') };
+
+  var('port_columns' => \@port_columns);
+
+  # view settings for port connected devices
+  var('connected_properties' => [
+    { name => 'n_age',      label => 'Age Stamp',     default => ''   },
+    { name => 'n_ip',       label => 'IP Address',    default => 'on' },
+    { name => 'n_netbios',  label => 'NetBIOS',       default => 'on' },
+    { name => 'n_ssid',     label => 'SSID',          default => 'on' },
+    { name => 'n_vendor',   label => 'Vendor',        default => ''   },
+    { name => 'n_archived', label => 'Archived Data', default => ''   },
+  ]);
+
+  return unless 
+       (request->path eq uri_for('/device')->path
+    or (request->path eq uri_for('/search')->path
+    or index(request->path, uri_for('/ajax/content/device')->path) == 0)
+    or index(request->path, uri_for('/ajax/content/search')->path) == 0);
+
+  # the first time the user navigates to a page, the columns get set to defaults
+  # or cookies
+  my $setparams = 1;
+  $setparams = 0 if param('custom_view') and param('custom_view') eq 'on';
+
+  # override ports form defaults with cookie settings
+  my $cookie = (cookie('nd_ports-form') || '');
+  my $cdata = url_params_mixed($cookie);
+
+  if ($cdata and ref {} eq ref $cdata and not param('reset')) {
+      foreach my $item (@{ var('port_columns') }) {
+          my $key = $item->{name};
+          next unless defined $cdata->{$key}
+            and $cdata->{$key} =~ m/^[[:alnum:]_]+$/;
+          $item->{default} = $cdata->{$key};
+      }
+
+      foreach my $item (@{ var('connected_properties') }) {
+          my $key = $item->{name};
+          next unless defined $cdata->{$key}
+            and $cdata->{$key} =~ m/^[[:alnum:]_]+$/;
+          $item->{default} = $cdata->{$key};
+      }
+
+      foreach my $key (qw/age_num age_unit mac_format/) {
+          params->{$key} ||= $cdata->{$key}
+            if defined $cdata->{$key}
+               and $cdata->{$key} =~ m/^[[:alnum:]_]+$/;
+      }
+  }
+
+  # copy ports form defaults into request query params if this is
+  # a redirect from within the application (tab param is not set)
+  if (param('reset') or not param('tab') or param('tab') ne 'ports' 
+        or $setparams) {
+      foreach my $col (@{ var('port_columns') }) {
+          delete params->{$col->{name}};
+          params->{$col->{name}} = 'checked'
+            if $col->{default} eq 'on';
+      }
+
+      foreach my $col (@{ var('connected_properties') }) {
+          delete params->{$col->{name}};
+          params->{$col->{name}} = 'checked'
+            if $col->{default} eq 'on';
+      }
+
+      # not stored in the cookie
+      params->{'age_num'} ||= setting('ports_free_threshold') || 3 ;
+      params->{'age_unit'} ||= setting('ports_free_threshold_unit') || 'months';
+      params->{'mac_format'} ||= 'IEEE';
+
+      if (param('reset')) {
+          params->{'age_num'} =  setting('ports_free_threshold') || 3;
+          params->{'age_unit'} =  setting('ports_free_threshold_unit') || 'months';
+          params->{'mac_format'} = 'IEEE';
+
+          # nuke the port params cookie
+          cookie('nd_ports-form' => '', expires => '-1 day');
+      }
+    }
+};
+
+# new searches will use these defaults in their sidebars
+hook 'before_template' => sub {
+  my $tokens = shift;
+
+  $tokens->{device_ports} = uri_for('/device', { tab => 'ports' });
+
+  # copy ports form defaults into helper values for building template links
+  foreach my $key (qw/age_num age_unit mac_format/) {
+      $tokens->{device_ports}->query_param($key, params->{$key});
+  }
+
+  $tokens->{mac_format_call} = 'as_'. lc(params->{'mac_format'})
+    if params->{'mac_format'};
+
+  foreach my $col (@{ var('port_columns') }) {
+      next unless $col->{default} eq 'on';
+      $tokens->{device_ports}->query_param($col->{name}, 'checked');
+  }
+
+  foreach my $col (@{ var('connected_properties') }) {
+      next unless $col->{default} eq 'on';
+      $tokens->{device_ports}->query_param($col->{name}, 'checked');
+  }
+
+  # for templates to link to same page with modified query but same options
+  my $self_uri = uri_for(request->path, scalar params);
+  $self_uri->query_param_delete('q');
+  $self_uri->query_param_delete('f');
+  $self_uri->query_param_delete('prefer');
+  $tokens->{self_options} = $self_uri->query_form_hash;
+};
 
 # this hook should be loaded _after_ all plugins
 hook 'before_template' => sub {

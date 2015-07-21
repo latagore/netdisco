@@ -73,7 +73,7 @@ web_plugins:
   - Search::Device
   - Search::Node
   - Search::VLAN
-  - Search::Port
+  - Search::Ports
   - Device::Details
   - Device::Ports
   - Device::Modules
