@@ -21,7 +21,8 @@ $(document).ready(function() {
       queryDict[item.split("=")[0]] = item.split("=")[1]
     });
     // queryDict conveniently taken from http://stackoverflow.com/a/21210643/4961854
-    if (location.pathname.indexOf('/device') === 0 && queryDict.tab === "ports") {
+    if ((location.pathname.indexOf('/device') === 0 || location.pathname.indexOf('/search') === 0) 
+        && queryDict.tab === "ports") {
       var porttable = $('#dp-data-table').DataTable();    
 
       addSavePortInfoButton();
