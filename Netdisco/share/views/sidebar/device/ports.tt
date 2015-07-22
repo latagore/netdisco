@@ -1,5 +1,6 @@
 
             <input name="q" value="[% params.q | html_entity %]" type="hidden"/>
+            <input name="custom-view" value="on" type="hidden" />
             <input id="nd_ports-form-prefer-field" name="prefer" value="[% params.prefer | html_entity %]" type="hidden"/>
             <div class="clearfix">
               <i class="nd_field-clear-icon icon-trash icon-large"

@@ -119,26 +119,29 @@ hook 'before' => sub {
 
   # the first time the user navigates to a page, the columns get set to defaults
   # or cookies
-  my $setparams = 1;
-  $setparams = 0 if param('custom_view') and param('custom_view') eq 'on';
 
-  # override ports form defaults with cookie settings
   my $cookie = (cookie('nd_ports-form') || '');
   my $cdata = url_params_mixed($cookie);
-
-  if ($cdata and ref {} eq ref $cdata and not param('reset')) {
+  
+  my $default = 0 ;
+  $default = 1 if param('reset');
+  unless (param('reset')){
+    if (param('custom-view') and param('custom-view') eq 'on'){
+      # use params, do nothing
+    } elsif ($cdata and ref {} eq ref $cdata) {
+      # use cookie
       foreach my $item (@{ var('port_columns') }) {
           my $key = $item->{name};
+          debug "key = $key". "  cdata{$key} = ". $cdata->{$key};
           next unless defined $cdata->{$key}
             and $cdata->{$key} =~ m/^[[:alnum:]_]+$/;
-          $item->{default} = $cdata->{$key};
+          params->{$key} = $cdata->{$key};
       }
-
       foreach my $item (@{ var('connected_properties') }) {
           my $key = $item->{name};
           next unless defined $cdata->{$key}
             and $cdata->{$key} =~ m/^[[:alnum:]_]+$/;
-          $item->{default} = $cdata->{$key};
+          params->{$key} = $cdata->{$key};
       }
 
       foreach my $key (qw/age_num age_unit mac_format/) {
@@ -146,38 +149,31 @@ hook 'before' => sub {
             if defined $cdata->{$key}
                and $cdata->{$key} =~ m/^[[:alnum:]_]+$/;
       }
+    } else {
+      $default = 1;
+    }
   }
 
-  # copy ports form defaults into request query params if this is
-  # a redirect from within the application (tab param is not set)
-  if (param('reset') or not param('tab') or param('tab') ne 'ports' 
-        or $setparams) {
-      foreach my $col (@{ var('port_columns') }) {
-          delete params->{$col->{name}};
-          params->{$col->{name}} = 'checked'
-            if $col->{default} eq 'on';
-      }
-
-      foreach my $col (@{ var('connected_properties') }) {
-          delete params->{$col->{name}};
-          params->{$col->{name}} = 'checked'
-            if $col->{default} eq 'on';
-      }
-
-      # not stored in the cookie
-      params->{'age_num'} ||= setting('ports_free_threshold') || 3 ;
-      params->{'age_unit'} ||= setting('ports_free_threshold_unit') || 'months';
-      params->{'mac_format'} ||= 'IEEE';
-
-      if (param('reset')) {
-          params->{'age_num'} =  setting('ports_free_threshold') || 3;
-          params->{'age_unit'} =  setting('ports_free_threshold_unit') || 'months';
-          params->{'mac_format'} = 'IEEE';
-
-          # nuke the port params cookie
-          cookie('nd_ports-form' => '', expires => '-1 day');
-      }
+  if ($default){
+    # reset params to defaults
+    foreach my $col (@{ var('port_columns') }) {
+        delete params->{$col->{name}};
+      params->{$col->{name}} = 'checked'
+        if $col->{default} eq 'on';
     }
+    foreach my $col (@{ var('connected_properties') }) {
+      delete params->{$col->{name}};
+      params->{$col->{name}} = 'checked'
+        if $col->{default} eq 'on';
+    }
+    # not stored in the cookie
+    params->{'age_num'} =  setting('ports_free_threshold') || 3;
+    params->{'age_unit'} =  setting('ports_free_threshold_unit') || 'months';
+    params->{'mac_format'} = 'IEEE';
+
+    # nuke the port params cookie
+    cookie('nd_ports-form' => '', expires => '-1 day');
+  }
 };
 
 # new searches will use these defaults in their sidebars
