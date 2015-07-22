@@ -59,7 +59,7 @@ sub _single_body {
   my $job_filter = $self->$filter_method;
 
   unless ($job_filter->($device->ip)) {
-      return job_defer("$job_type deferred: $host is not ${job_type}able");
+      return job_done("$job_type skipped: $host is not ${job_type}able");
   }
 
   my $snmp = snmp_connect($device);
@@ -86,7 +86,7 @@ sub _single_node_body {
   my $job_filter = $self->$filter_method;
 
   unless ($job_filter->($node)) {
-      return job_defer("$job_type deferred: $node is not ${job_type}able");
+      return job_done("$job_type skipped: $node is not ${job_type}able");
   }
 
   $job_action->($node, $now);

@@ -53,7 +53,7 @@ sub discover {
   }
 
   unless (is_discoverable($device->ip)) {
-      return job_defer("discover deferred: $host is not discoverable");
+      return job_done("discover skipped: $host is not discoverable");
   }
 
   my $snmp = snmp_connect($device);

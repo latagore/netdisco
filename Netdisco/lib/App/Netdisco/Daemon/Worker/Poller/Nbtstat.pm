@@ -30,7 +30,7 @@ sub nbtstat  {
   my $host = $device->ip;
 
   unless (is_discoverable($device->ip)) {
-      return job_defer("nbtstat deferred: $host is not discoverable");
+      return job_done("nbtstat skipped: $host is not discoverable");
   }
 
   # get list of nodes on device
