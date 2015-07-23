@@ -20,6 +20,13 @@
     // changes, and only reset when they submit or cancel the change
     var dirty = false;
 
+    // show the reset button if ports tab selected
+    if (tab === 'ports'){
+      $('#nd_sidebar-reset-link').show();
+    } else {
+      $('#nd_sidebar-reset-link').hide();
+    }
+
     // activate modals, tooltips and popovers
     $('.nd_modal').modal({show: false});
     $("[rel=tooltip]").tooltip({live: true});
