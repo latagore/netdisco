@@ -262,10 +262,15 @@ $(document).ready(function() {
   });
   
   $('#nd_location-port-search form').keypress(function(e){
-     /* ENTER PRESSED*/
-     if (e.keyCode == 13) {
-       this.submit();
-     }
+    if ($('#port-building-input').val()){
+      // enter pressed
+      if (e.keyCode == 13) {
+        this.submit();
+      // tab pressed
+      } else if (e.keyCode == 9){
+        $('.nd_location-port-search-additional').slideDown();
+      }
+    }
   });
 
 });
