@@ -183,6 +183,7 @@ $(document).ready(function() {
       });
     }
     ,minLength: 3
+    ,appendTo: "#nq-search"
   });
 
   // activate tooltips
