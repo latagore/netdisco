@@ -26,21 +26,21 @@ $(document).ready(function() {
             warningMsg += "<p>The last successful discover on this device was " + discoverAge
             + (discoverAge === 1 ? " day" : " days")
             + " ago.</p>"
-          } else if (!discoverAge) {
+          } else if (isNaN(discoverAge)) {
             warningMsg += "<p>No discover job has successfully completed on this device.</p>";
           }
           if (macsuckAge >= ageLimit){
             warningMsg += "<p>The last successful macsuck on this device was " + macsuckAge
             + (macsuckAge === 1 ? " day" : " days")
             + " ago.</p>"
-          } else if (!macsuckAge){
+          } else if (isNaN(macsuckAge)){
             warningMsg += "<p>No macsuck job has successfully completed on this device.</p>";
           }
           if (arpnipAge >= ageLimit){
             warningMsg += "<p>The last arpnip on this device was " + arpnipAge
             + (arpnipAge === 1 ? " day" : " days")
             + " ago.</p>"
-          } else if (!arpnipAge){
+          } else if (isNaN(arpnipAge)){
             warningMsg += "<p>No arpnip job has successfully completed on this device.</p>";
           }
 
