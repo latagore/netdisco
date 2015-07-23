@@ -37,3 +37,39 @@
   position: static !important;
 }
 
+
+/* integrate port location search with netdisco */
+#nd_location-port-search {
+  margin-right: 10px;
+}
+#nd_location-port-search form {
+  margin-bottom: 0;
+}
+
+.nd_location-port-search-additional {
+  position:absolute;
+  left: -5px;
+  margin-top: 10px;
+  
+  padding: 5px;
+  border-radius: 5px;
+  background-color: rgba(50, 50, 50, 0.7);
+}
+
+.nd_location-port-search-additional::before {
+  content: "";
+  display: inline-block;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid rgba(50, 50, 50, 0.7);
+  position: absolute;
+  top: -7px;
+  left: 9px;
+}
+.nd_location-port-search-additional input{
+  display: block;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  padding-left: 15px;
+  padding-right: 15px;
+}

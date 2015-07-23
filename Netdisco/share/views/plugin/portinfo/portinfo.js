@@ -1,4 +1,4 @@
-  
+ 
 // create edit icon element just once
 var editicon = $("<i id='nd_portinfo-edit-icon' class='icon-edit nd_portinfo-edit-icon'></i>");
 editicon.hide();
@@ -219,4 +219,53 @@ $(document).ready(function() {
       }
     });
   }
+  
+  // Port search by location functionality
+  $.ajax('/ajax/plugin/buildings', {
+    dataType: "json",
+    success: function(data) {
+      buildingSuggestions = data;
+
+      // add autocomplete functionality when field recieves focus
+      $('#port-building-input').autocomplete({
+        source: function(request, response) {
+          var suggest = [];
+          var size = 0;
+          var max = 5;
+          for (var i = 0, l = buildingSuggestions.length; i < l && size < max; i++) {
+            if (buildingSuggestions[i].toLowerCase()
+              .indexOf(request.term.toLowerCase()) >= 0) {
+              suggest.push(buildingSuggestions[i]);
+              size++;
+            }
+          }
+          response(suggest);
+        },
+        select: function() {
+          if ($('#port-building-input').val()){
+             $('.nd_location-port-search-additional').slideDown();
+          } else {
+             $('.nd_location-port-search-additional').slideUp();
+          }
+        },
+        appendTo: "#nd_location-port-search"
+      });
+    }
+  });
+
+  $('#port-building-input').blur(function(){
+    if ($(this).val()){
+      $('.nd_location-port-search-additional').slideDown();
+    } else {
+      $('.nd_location-port-search-additional').slideUp();
+    }
+  });
+  
+  $('#nd_location-port-search form').keypress(function(e){
+     /* ENTER PRESSED*/
+     if (e.keyCode == 13) {
+       this.submit();
+     }
+  });
+
 });
