@@ -132,7 +132,6 @@ hook 'before' => sub {
       # use cookie
       foreach my $item (@{ var('port_columns') }) {
           my $key = $item->{name};
-          debug "key = $key". "  cdata{$key} = ". $cdata->{$key};
           next unless defined $cdata->{$key}
             and $cdata->{$key} =~ m/^[[:alnum:]_]+$/;
           params->{$key} = $cdata->{$key};
