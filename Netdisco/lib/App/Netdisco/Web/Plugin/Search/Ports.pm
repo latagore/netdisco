@@ -158,6 +158,52 @@ get '/ajax/content/search/ports' => require_login sub {
         $set = $set->search({-or => \@combi});
     }
 
+    # filter by building
+    my $building = param('building');
+    if ($building){
+      $set = $set->search(
+      {
+        "port_info.building" => ["-ilike", sql_match($building)]
+      },
+      {
+        join => "port_info"
+      });
+    }
+    # filter by riser room
+    my $riserroom = param('riserroom');
+    if ($riserroom){
+      $set = $set->search(
+      {
+        "port_info.riser1" => $riserroom
+      },
+      {
+        join => "port_info"
+      });
+    }
+    # filter by horizontal cable
+    my $cable = param('cable');
+    if ($cable){
+      $set = $set->search(
+      {
+        "port_info.jack" => $cable
+      },
+      {
+        join => "port_info"
+      });
+    }
+    # filter by pigtail
+    my $pigtail = param('pigtail');
+    if ($pigtail){
+      $set = $set->search(
+      {
+        "port_info.cable" => $pigtail
+      },
+      {
+        join => "port_info"
+      });
+    }
+
+
     # get aggregate master status
     $set = $set->search({}, {
       'join' => 'agg_master',
