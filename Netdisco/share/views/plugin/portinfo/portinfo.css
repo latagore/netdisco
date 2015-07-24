@@ -73,3 +73,11 @@
   padding-left: 15px;
   padding-right: 15px;
 }
+
+/* format the form close button to the left */
+.location-port-search-close-btn {
+  padding: 3px;
+  position: absolute;
+  left: -25px;
+  top: 5px;
+}

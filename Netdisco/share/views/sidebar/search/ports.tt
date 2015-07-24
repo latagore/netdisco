@@ -25,15 +25,23 @@
                   <span class="nd_port-invert-checkbox uneditable-input">Not</span>
                 </label>
               </div>
+            </div>
+            <div class="clearfix">
               <input id="nd_building-query" class="nd_side-input" placeholder="Building"
                 name="building" value="[% params.building | html_entity %]" type="text"
                 rel="tooltip" data-placement="left" data-offset="5" data-title="Building"/>
+            </div>
+            <div class="clearfix">
               <input id="nd_riserroom-query" class="nd_side-input" placeholder="Riser Room"
                 name="riserroom" value="[% params.riserroom | html_entity %]" type="text"
                 rel="tooltip" data-placement="left" data-offset="5" data-title="Riser Room"/>
+            </div>
+            <div class="clearfix">
               <input id="nd_cable-query" class="nd_side-input" placeholder="Horizontal Cable"
                 name="cable" value="[% params.cable | html_entity %]" type="text"
                 rel="tooltip" data-placement="left" data-offset="5" data-title="Horizontal Cable"/>
+            </div>
+            <div class="clearfix">
               <input id="nd_pigtail-query" class="nd_side-input" placeholder="Pigtail"
                 name="pigtail" value="[% params.pigtail | html_entity %]" type="text"
                 rel="tooltip" data-placement="left" data-offset="5" data-title="Pigtail"/>

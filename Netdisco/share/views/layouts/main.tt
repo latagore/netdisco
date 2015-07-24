@@ -162,11 +162,15 @@
         <li id="nd_location-port-search">
           <form class="form-search navbar-search" action="[% uri_for('/search') %]">
             <input type="hidden" name="tab" value="ports"></input>
-            <input id="port-building-input" class="search-query" type="text" name="building" placeholder="Find Ports by Building"></input>
+            <input id="port-building-input" class="search-query" type="text" title="Building" rel="tooltip" data-placement="left" name="building" placeholder="Find Ports by Building" value="[% params.building %]"></input>
             <div class="nd_location-port-search-additional" hidden="true">
-              <input class="search-query" type="text" name="riserroom" placeholder="...and Riser Room"></input>
-              <input class="search-query" type="text" name="cable" placeholder="...and Cable"></input>
-              <input class="search-query" type="text" name="pigtail" placeholder="...and Pigtail"></input>
+              <input class="search-query" type="text" name="riserroom" title="Riser Room" rel="tooltip" data-placement="left" placeholder="...and Riser Room" value="[% params.riserroom %]"></input>
+              <input class="search-query" type="text" name="cable" title="Horizontal Cable" rel="tooltip" data-placement="left" placeholder="...and Horizontal Cable" value="[% params.cable %]"></input>
+              <input class="search-query" type="text" name="pigtail" title="Pigtail" rel="tooltip" data-placement="left" placeholder="...and Pigtail" value="[% params.pigtail %]"></input>
+              <button type="button" class="btn btn-inverse location-port-search-close-btn" data-placement="left"
+                  title="Hide Additional Fields" rel="tooltip">
+                <i class="icon-remove"></i>
+              </button>
             </div>
           </form>
         </li>

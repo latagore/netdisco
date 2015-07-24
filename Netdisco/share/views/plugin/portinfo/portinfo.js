@@ -253,7 +253,7 @@ $(document).ready(function() {
     }
   });
 
-  $('#port-building-input').blur(function(){
+  $('#port-building-input').on('blur focus', function(){
     if ($(this).val()){
       $('.nd_location-port-search-additional').slideDown();
     } else {
@@ -272,5 +272,7 @@ $(document).ready(function() {
       }
     }
   });
-
+  $('.location-port-search-close-btn').click(function(){
+     $('.nd_location-port-search-additional').slideUp();
+  });
 });
