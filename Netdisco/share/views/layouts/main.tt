@@ -162,7 +162,7 @@
         <li id="nd_location-port-search">
           <form class="form-search navbar-search" action="[% uri_for('/search') %]">
             <input type="hidden" name="tab" value="ports"></input>
-            <input id="port-building-input" class="search-query" type="text" title="Building" rel="tooltip" data-placement="left" name="building" placeholder="Find Ports by Building" value="[% params.building %]"></input>
+            <input id="port-building-input" required="true" class="search-query" type="text" title="Building" rel="tooltip" data-placement="left" name="building" placeholder="Find Ports by Building" value="[% params.building %]"></input>
             <div class="nd_location-port-search-additional" hidden="true">
               <input class="search-query" type="text" name="riserroom" title="Riser Room" rel="tooltip" data-placement="left" placeholder="...and Riser Room" value="[% params.riserroom %]"></input>
               <input class="search-query" type="text" name="cable" title="Horizontal Cable" rel="tooltip" data-placement="left" placeholder="...and Horizontal Cable" value="[% params.cable %]"></input>
