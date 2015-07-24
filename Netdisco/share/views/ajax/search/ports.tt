@@ -435,6 +435,7 @@ $(document).ready(function() {
         "order": [[ 1, 'asc' ]],
         scrollX: true,
         scrollY: windowHeight - 200,
+        deferRender: true,
 [% INCLUDE 'ajax/datatabledefaults.tt' -%]
     } );
     //new $.fn.dataTable.FixedHeader( table );
