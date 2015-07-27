@@ -220,11 +220,12 @@ $(document).ready(function() {
     });
   }
   
+  var navBuildingSuggestions;
   // Port search by location functionality
   $.ajax('/ajax/plugin/buildings', {
     dataType: "json",
     success: function(data) {
-      buildingSuggestions = data;
+      navBuildingSuggestions = data;
 
       // add autocomplete functionality when field recieves focus
       $('#port-building-input').autocomplete({
@@ -232,10 +233,10 @@ $(document).ready(function() {
           var suggest = [];
           var size = 0;
           var max = 5;
-          for (var i = 0, l = buildingSuggestions.length; i < l && size < max; i++) {
-            if (buildingSuggestions[i].toLowerCase()
+          for (var i = 0, l = navBuildingSuggestions.length; i < l && size < max; i++) {
+            if (navBuildingSuggestions[i].toLowerCase()
               .indexOf(request.term.toLowerCase()) >= 0) {
-              suggest.push(buildingSuggestions[i]);
+              suggest.push(navBuildingSuggestions[i]);
               size++;
             }
           }
@@ -260,7 +261,15 @@ $(document).ready(function() {
       $('.nd_location-port-search-additional').slideUp();
     }
   });
-  
+
+  $('#port-building-input').change(function(){
+    for (var i = 0, l = navBuildingSuggestions.length; i < l; i++) {
+      if (navBuildingSuggestions[i].toLowerCase() 
+          ===  $('#port-building-input').val().toLowerCase()){
+        $('.nd_location-port-search-additional').slideDown();
+      }
+    }
+  });
   $('#nd_location-port-search form').keypress(function(e){
     if ($('#port-building-input').val()){
       // enter pressed
