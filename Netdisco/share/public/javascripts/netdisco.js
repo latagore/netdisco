@@ -42,6 +42,7 @@ function do_search (event, tab) {
       if (response == "") {
         $(target).html(
           '<div class="span2 alert alert-info">No matching records.</div>'
+
         );
       }
 
@@ -340,4 +341,21 @@ $(document).ready(function() {
   $(document).on("init.dt", resizeTable);
   $(document).on("ajaxComplete", d);
   $(window).on("resize", d);
+
+  // change sidebar selects to use jQuery Chosen plugin
+  $('.nd_sidebar select').each(function() {
+    var t = $(this);
+    t.chosen({
+      inherit_select_classes: true,
+      placeholder_text_multiple: this.dataset.title,
+      search_contains: true
+    });
+    var c = t.next('.chosen-container');
+    c.prop("rel", this.rel);
+    c.data("title", this.dataset.title);
+    c.data("placement", this.dataset.placement);
+    // activate tooltips
+    $(c).tooltip({live: true});
+
+  });
 });

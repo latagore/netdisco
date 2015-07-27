@@ -630,6 +630,15 @@ form .clearfix.success input {
   margin-left: 22px;
 }
 
+.nd_side-select.chosen-container {
+  margin-bottom: 9px;
+}
+
+.chosen-choices {
+  border-radius: 4px;
+  border-color: #CCC;
+}
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* D3 SVG */
 
