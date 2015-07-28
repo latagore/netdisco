@@ -128,7 +128,7 @@ hook 'before' => sub {
   unless (param('reset')){
     if (param('custom-view') and param('custom-view') eq 'on'){
       # use params, do nothing
-    } elsif ($cdata and ref {} eq ref $cdata) {
+    } elsif ($cdata and scalar %$cdata) {
       # use cookie
       foreach my $item (@{ var('port_columns') }) {
           my $key = $item->{name};
