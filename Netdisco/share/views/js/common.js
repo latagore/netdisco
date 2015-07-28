@@ -79,7 +79,7 @@
       update_csv_download_link('search', '[% tab.tag %]', '[% tab.provides_csv %]');
       do_search(event, '[% tab.tag %]');
 
-      [% IF tab == 'ports' %]
+      [% IF tab.tag == 'ports' %]
       // to be fair I can't remember why we do this in JS and not from the app
       // perhaps because selecting form fields to go in the cookie is easier?
       var cookie = $('#ports_form').find('input,select')
