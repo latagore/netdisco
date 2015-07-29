@@ -234,18 +234,6 @@ $(document).ready(function() {
   };
   $('.add-on :checkbox').each(syncCheckBox).click(syncCheckBox);
 
-  // sidebar toggle - pinning
-  $('.nd_sidebar-pin').click(function() {
-    $('.nd_sidebar').toggleClass('nd_sidebar-pinned');
-    $('.nd_sidebar-pin').toggleClass('nd_sidebar-pin-clicked');
-    // update tooltip note for current state
-    if ($('.nd_sidebar-pin').hasClass('nd_sidebar-pin-clicked')) {
-      $('.nd_sidebar-pin').first().data('tooltip').options.title = 'Unpin Sidebar';
-    }
-    else {
-      $('.nd_sidebar-pin').first().data('tooltip').options.title = 'Pin Sidebar';
-    }
-  });
 
   // sidebar toggle - trigger in/out on image click()
   $('#nd_sidebar-toggle-img-in').click(function() {
@@ -268,9 +256,6 @@ $(document).ready(function() {
       ,useAbsolutePositioning: false
     });
     $('.nd_sidebar').toggle(250);
-    if (! $('.nd_sidebar').hasClass('nd_sidebar-pinned')) {
-        $(window).scrollTop(0);
-    }
     sidebar_hidden = 0;
   });
 
