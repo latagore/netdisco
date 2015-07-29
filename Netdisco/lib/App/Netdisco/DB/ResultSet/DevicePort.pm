@@ -139,16 +139,8 @@ sub with_vlan_count {
     ->search_rs($cond, $attrs)
     ->search({},
       {
-        '+columns' => { vlan_count =>
-          $rs->result_source->schema->resultset('DevicePortVlan')
-            ->search(
-              {
-                'dpv.ip'   => { -ident => 'me.ip' },
-                'dpv.port' => { -ident => 'me.port' },
-              },
-              { alias => 'dpv' }
-            )->count_rs->as_query
-        },
+        prefetch => "vlan_stats",
+        '+columns' => {"me.vlan_count" => "vlan_stats.vlan_count" }
       });
 }
 

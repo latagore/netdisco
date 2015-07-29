@@ -225,6 +225,8 @@ get '/ajax/content/search/ports' => require_login sub {
           if param('c_vmember');
     }
 
+    # die join "\n", $set->{vlan_count};
+
     # what kind of nodes are we interested in?
     my $nodes_name = (param('n_archived') ? 'nodes' : 'active_nodes');
     $nodes_name .= '_with_age' if param('c_nodes') and param('n_age');

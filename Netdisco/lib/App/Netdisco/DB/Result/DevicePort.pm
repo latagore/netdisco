@@ -335,6 +335,20 @@ applying the C<with_vlan_count()> modifier to C<search()>.
 
 sub vlan_count { return (shift)->get_column('vlan_count') }
 
+=head2 vlan_stats
+
+Returns the virtual VLAN stats entry corrsponding to this device port. 
+
+=cut
+
+__PACKAGE__->might_have(
+    vlan_stats => 'App::Netdisco::DB::Result::Virtual::DevicePortStats',
+    {   'foreign.ip'   => 'self.ip',
+        'foreign.port' => 'self.port',
+    }
+);
+
+
 =head2 lastchange_stamp
 
 Formatted version of the C<lastchange> field, accurate to the minute. Enable
