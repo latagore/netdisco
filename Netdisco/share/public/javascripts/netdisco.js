@@ -161,6 +161,29 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+
+// copied from http://stackoverflow.com/a/24004942/4961854
+// the above license applies to the debounce function
+function debounce(func, wait, immediate) {
+  var timeout;           
+  return function() {
+      var context = this, args = arguments;
+      var callNow = immediate && !timeout;
+
+      clearTimeout(timeout);   
+      timeout = setTimeout(function() {
+           timeout = null;
+           if (!immediate) {
+             // Call the original function with apply
+             // apply lets you define the 'this' object as well as the arguments 
+             //    (both captured before setTimeout)
+             func.apply(context, args);
+           }
+      }, wait);
+      if (callNow) func.apply(context, args);  
+   }; 
+};
+
 $(document).ready(function() {
   // sidebar form fields should change colour and have bin/copy icon
   $('.nd_field-copy-icon').hide();
@@ -317,4 +340,16 @@ $(document).ready(function() {
     }
   });
   $('#daterange').trigger('input');
+  
+  // dynamically resize data table size
+  function resizeTable(){
+    var e = $('.tab-content .dataTables_scrollBody');    
+    e.height((window.innerHeight - 200));
+  }
+  resizeTable();
+  $(".dataTable").DataTable().draw();
+  
+  var d = debounce(resizeTable, 250);
+  $(document).on("ajaxComplete", d);
+  $(window).on("resize", d);
 });

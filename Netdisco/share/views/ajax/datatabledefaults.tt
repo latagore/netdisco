@@ -21,4 +21,5 @@
       // disable sorting for custom reports
       data.order = "";
       [% END %]
-    }
+    },"scrollX": true
+    ,"scrollY": "800px"
