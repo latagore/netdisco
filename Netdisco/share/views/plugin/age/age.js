@@ -52,7 +52,7 @@ $(document).ready(function() {
               + warningMsg
               + '<p><small>Some information may not be reliable. Warnings are given after ' 
               + ageLimit  + (ageLimit === 1 ? ' day' : ' days')
-              + '.</small></p>'
+              + '. Click to hide this warning.</small></p>'
               + '</div>');
           }
           
