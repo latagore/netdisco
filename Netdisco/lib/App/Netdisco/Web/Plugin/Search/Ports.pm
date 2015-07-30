@@ -163,7 +163,7 @@ get '/ajax/content/search/ports' => require_login sub {
     if ($building){
       $set = $set->search(
       {
-        "port_info.building" => ["-ilike", sql_match($building)]
+        "port_info.building" => {-ilike => scalar sql_match($building)}
       },
       {
         join => "port_info"
