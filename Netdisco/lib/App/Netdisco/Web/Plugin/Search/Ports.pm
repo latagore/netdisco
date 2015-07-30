@@ -44,6 +44,7 @@ get '/ajax/content/search/ports' => require_login sub {
                   ),
                   { "me.remote_id"   => $likeclause },
                   { "me.remote_type" => $likeclause },
+                  { "device.dns" => $likeclause }
               ]
           },
           {   
