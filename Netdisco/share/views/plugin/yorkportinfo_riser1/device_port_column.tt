@@ -1,1 +1,1 @@
-<div data-column='riser1' data-for-device='[% device.ip %]' data-for-port='[% row.port %]' class='york-port-info' [% IF user_can_port_control AND params.c_admin %] contenteditable='true'[% END %]>[% row.port_info.riser1 %]</div>
+<div data-column='riser1' data-for-device='[% device.ip || row.device.ip %]' data-for-port='[% row.port %]' class='york-port-info' [% IF user_can_port_control AND params.c_admin %] contenteditable='true'[% END %]>[% row.port_info.riser1 %]</div>
