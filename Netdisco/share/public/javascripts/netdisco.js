@@ -335,6 +335,9 @@ $(document).ready(function() {
   $(".dataTable").DataTable().draw();
   
   var d = debounce(resizeTable, 250);
+  // resize on datatables init event because fixed columns 
+  // plugin isn't robust
+  $(document).on("init.dt", resizeTable);
   $(document).on("ajaxComplete", d);
   $(window).on("resize", d);
 });
