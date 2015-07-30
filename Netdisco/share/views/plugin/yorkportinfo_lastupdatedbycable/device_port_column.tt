@@ -1,1 +1,1 @@
-<div data-column='lastupdatedbycable'>[% row.port_info.last_modified_by %]</div>
+<div data-column='lastupdatedbycable' class='york-port-info-last-updated-by'>[% row.port_info.last_modified_by %]</div>

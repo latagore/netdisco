@@ -15,6 +15,17 @@
   content: "\00a0";
 }
 
+#dp-data-table .york-port-info{
+  min-width: 50px;
+}
+
+#dp-data-table .york-port-info-last-updated-by{
+  min-width: 100px;
+}
+#dp-data-table .york-port-info-last-updated{
+  min-width: 100px;
+}
+
 /* style for edit icon that appears on hover */
 .nd_portinfo-edit-icon {
   float: right;
