@@ -1,0 +1,1 @@
+<div data-column='lastupdatedbycable'>[% row.port_info.last_modified_by %]</div>

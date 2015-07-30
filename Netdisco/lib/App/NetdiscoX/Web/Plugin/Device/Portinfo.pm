@@ -60,8 +60,12 @@ register_device_port_column({ name => 'yorkportinfo_phoneext',
 	label => 'Phone Extension',
 	position => 'right',
 	default => 'on' });
-register_device_port_column({ name => 'yorkportinfo_comment', 
-	label => 'Comment',
+register_device_port_column({ name => 'yorkportinfo_lastupdatedcable', 
+	label => 'Last Updated (Cable)',
+	position => 'right',
+	default => 'on' });
+register_device_port_column({ name => 'yorkportinfo_lastupdatedbycable', 
+	label => 'Last Updated By (Cable)',
 	position => 'right',
 	default => 'on' });
 
@@ -75,7 +79,12 @@ ajax '/ajax/portinfocontrol' => require_role port_control => sub {
   my $port = $device->ports->search({port => param('port')})->first()
     or send_error('Bad Port', 400);  
 
-  $port->update_or_create_related("port_info", { "$column" => "$value" }); 
+  $port->update_or_create_related("port_info", 
+    {
+      "$column" => "$value",
+      "last_modified" => \'NOW()',
+      "last_modified_by" => session('logged_in_user')
+    }); 
   
   content_type('text/plain');
   template 'plugin/portinfo/portinfo.tt', {}, {layout => undef};
