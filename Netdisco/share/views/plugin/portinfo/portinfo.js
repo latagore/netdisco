@@ -24,8 +24,9 @@ $(document).ready(function() {
     if ((location.pathname.indexOf('/device') === 0 || location.pathname.indexOf('/search') === 0) 
         && queryDict.tab === "ports") {
       var porttable = $('#dp-data-table').DataTable();    
-
+      
       addSavePortInfoButton();
+      adjustColumnsOnKeypress();
       makePortInfoFieldsInteractive();
       addBuildingSuggestions();
     }
@@ -254,6 +255,17 @@ $(document).ready(function() {
     }
   });
 
+  /* adjust columns on keypress because fixedColumns plugin does not
+  adjust columns on edit */
+  function adjustColumnsOnKeypress() {
+    $('.tab-content').on('keypress', '#dp-data-table',
+      debounce(function(){
+        $('#dp-data-table').DataTable().columns.adjust();
+      }, 250)
+    );
+  };
+
+  /* Search ports by building functionality */
   $('#port-building-input').on('blur focus', function(){
     if ($(this).val()){
       $('.nd_location-port-search-additional').slideDown();
