@@ -32,7 +32,6 @@
   <script type="text/javascript" src="[% uri_base %]/javascripts/he.js"></script>
   <script type="text/javascript" src="[% uri_base %]/javascripts/natural.js"></script>
   <script type="text/javascript" src="[% uri_base %]/javascripts/portsort.js"></script>
-  <script type="text/javascript" src="[% uri_base %]/javascripts/dataTables.fixedColumns.min.js"></script>
   <script type="text/javascript" src="[% uri_base %]/javascripts/chosen.jquery.min.js"></script>
 
   <script type="text/javascript">
@@ -59,7 +58,6 @@
   <link rel="stylesheet" href="[% uri_base %]/css/daterangepicker-bs2.css"/>
   <link rel="stylesheet" href="[% uri_base %]/css/dataTables.bootstrap.css"/>
   <link rel="stylesheet" href="[% uri_base %]/css/nd_print.css" media="print"/>
-  <link rel="stylesheet" href="[% uri_base %]/css/dataTables.fixedColumns.css" />
   <link rel="stylesheet" href="[% uri_base %]/css/chosen.min.css" />
 
   [% FOREACH add_css IN settings._additional_css %]

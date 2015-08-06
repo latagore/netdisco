@@ -430,8 +430,5 @@ $(document).ready(function() {
         deferRender: true,
 [% INCLUDE 'ajax/datatabledefaults.tt' -%]
     } );
-    new $.fn.dataTable.FixedColumns( table, {
-      "leftColumns": 2
-    } );
 } );
 </script>

@@ -255,8 +255,8 @@ $(document).ready(function() {
     }
   });
 
-  /* adjust columns on keypress because fixedColumns plugin does not
-  adjust columns on edit */
+  /* adjust columns on keypress because datatables does not
+  automatically adjust columns on edit */
   function adjustColumnsOnKeypress() {
     $('.tab-content').on('keypress', '#dp-data-table',
       debounce(function(){
