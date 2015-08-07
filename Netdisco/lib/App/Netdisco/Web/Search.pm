@@ -75,7 +75,7 @@ get '/search' => require_login sub {
 
         # pick most likely tab for initial results
         if ($q =~ m/^\d+$/) {
-            params->{'tab'} = 'vlan';
+            params->{'tab'} = 'ports';
         }
         else {
             my $nd = $s->resultset('Device')->search_fuzzy($q);
