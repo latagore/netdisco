@@ -12,30 +12,37 @@ register_search_tab( { tag => 'ports', label => 'Port', provides_csv => 1 } );
 # device ports with a description (er, name) matching
 get '/ajax/content/search/ports' => require_login sub {
     my $q = param('q');
+    send_error( 'Missing query', 400 ) unless
+      (
+        $q or
+        param('building') or
+        param('cable') or
+        param('pigtail') or
+        param('riserroom')
+      );
+
     my $prefer = param('prefer');
     $prefer = ''
       unless defined $prefer and $prefer =~ m/^(?:port|name|vlan)$/;
 
     my $device = schema('netdisco')->resultset('Device');
     
-    my $set;
+    my $set = schema('netdisco')->resultset('DevicePort');
     
     # if searching for q finds a device, use it. otherwise, use it as a filter
     if ($device->search_for_device($q)){
       $device = $device->search_for_device($q);
       $set = $device->ports;
     } elsif ( $q =~ m/^\d+$/ ) {
-      $set= schema('netdisco')->resultset('DevicePort')
-          ->search(
+      $set = $set->search(
           { "port_vlans.vlan" => $q },
           {   
               join       => [qw/ port_vlans /]
           }
           );
-    } else {
+    } elsif ($q) {
       my ( $likeval, $likeclause ) = sql_match($q);
-       $set = schema('netdisco')->resultset('DevicePort')
-          ->search(
+       $set = $set->search(
           {   -or => [
                   { "me.name" => ( param('partial') ? $likeclause : $q ) },
                   (   length $q == 17
