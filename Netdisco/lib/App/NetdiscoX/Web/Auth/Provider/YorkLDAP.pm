@@ -73,9 +73,9 @@ sub authenticate_with_ldap {
         my $results = _ldap_search($ldapuser, [], $netdiscouser, $netdiscopass);
         return undef unless scalar @$results == 1;
         my $entry = $results->[0];
-        my $flags = $entry->get_value('pyAccessFlag', asref => 1);
+        my $flags = $entry->get_value('pyAccessFlag', asref => 1) || [];
         # create a hash of flags for easy lookup
-        my %flaghash = map { $_ => 1 } @$flags  ;
+        my %flaghash = map { $_ => 1 } @$flags;
         return 1 if $flaghash{'NETDISCO_BASIC'};
     }
 
@@ -112,12 +112,13 @@ sub get_user_roles {
         my $results = _ldap_search($ldapuser, [], $netdiscouser, $netdiscopass);
         return undef unless scalar @$results == 1;
         my $entry = $results->[0];
-        my $flags = $entry->get_value('pyAccessFlag', asref => 1);
+        my $flags = $entry->get_value('pyAccessFlag', asref => 1) || [];
+        
         # create a hash of flags for easy lookup
-        my %flaghash = map { $_ => 1 } @$flags  ;
-        my $roles;
+        my %flaghash = map { $_ => 1 } @$flags;
+        my $roles = [];
         # match york ldap flags to roles
-        push @$roles, "port_control" if $flaghash{'NETDISCO_PORT_CONTROL'};
+        push @$roles, "port_control" if $flaghash{'NETDISCO_PORTCONTROL'};
         push @$roles, "admin" if $flaghash{'NETDISCO_ADMIN'};
 
         return $roles if scalar @$roles;
