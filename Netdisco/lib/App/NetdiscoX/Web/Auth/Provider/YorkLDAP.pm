@@ -17,6 +17,7 @@ use Try::Tiny;
 
 sub authenticate_user {
     my ($self, $username, $password) = @_;
+    debug "using York LDAP authentication";
     return unless defined $username;
     return $self->authenticate_with_ldap($password, $username);
 }
@@ -31,7 +32,6 @@ sub get_user_details {
 # to verify the $user has the appropriate role
 sub authenticate_with_ldap {
     my($self, $pass, $user) = @_;
-    debug "authenticating with ldap";
 
     return unless setting('ldap') and ref {} eq ref setting('ldap');
     my $conf = setting('ldap');
@@ -50,15 +50,17 @@ sub authenticate_with_ldap {
     my $ldapuserentry  = $r->[0] if ($r->[0]);
     
     foreach my $server (@{$conf->{servers}}) {
+        debug "using ldap server $server";
         my $opts = $conf->{opts} || {};
         my $ldap = Net::LDAP->new($server, %$opts) or next;
         my $msg  = undef;
         if ($conf->{tls_opts} ) {
           $msg = $ldap->start_tls(%{$conf->{tls_opts}});
         }
-
+        debug "start_tls returned ". $msg->error if $msg ne 'Success';
         # check that the user can authenticate with the given password
         $msg = $ldap->bind($ldapuserentry, password => $pass);
+        debug "ldap server bind returned ".$msg->error;
         $ldap->unbind(); # take down session
         return undef if $msg->code();
         
