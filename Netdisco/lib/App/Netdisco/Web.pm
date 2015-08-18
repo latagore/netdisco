@@ -73,7 +73,7 @@ hook 'before' => sub {
     { name => 'c_type',        label => 'Type',              default => ''   },
     { name => 'c_duplex',      label => 'Duplex',            default => ''   },
     { name => 'c_lastchange',  label => 'Last Change',       default => ''   },
-    { name => 'c_name',        label => 'Name',              default => 'on' },
+    { name => 'c_name',        label => 'Name',              default => '' },
     { name => 'c_speed',       label => 'Speed',             default => ''   },
     { name => 'c_mac',         label => 'Port MAC',          default => ''   },
     { name => 'c_mtu',         label => 'MTU',               default => ''   },
