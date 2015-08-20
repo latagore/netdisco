@@ -181,7 +181,9 @@ $(document).ready(function() {
                 }
               }
               response(suggest);
-            }
+            },
+            delay: 50,
+            minLength: 0
           });
         });
       }
@@ -228,13 +230,13 @@ $(document).ready(function() {
     success: function(data) {
       navBuildingSuggestions = data;
 
-      // add autocomplete functionality when field recieves focus
-      $('#port-building-input').autocomplete({
+
+      var input = $('#port-building-input');
+      input.autocomplete({
         source: function(request, response) {
           var suggest = [];
           var size = 0;
-          var max = 5;
-          for (var i = 0, l = navBuildingSuggestions.length; i < l && size < max; i++) {
+          for (var i = 0, l = navBuildingSuggestions.length; i < l; i++) {
             if (navBuildingSuggestions[i].toLowerCase()
               .indexOf(request.term.toLowerCase()) >= 0) {
               suggest.push(navBuildingSuggestions[i]);
@@ -244,13 +246,15 @@ $(document).ready(function() {
           response(suggest);
         },
         select: function() {
-          if ($('#port-building-input').val()){
-             $('.nd_location-port-search-additional').slideDown();
-          } else {
-             $('.nd_location-port-search-additional').slideUp();
-          }
+          $('.nd_location-port-search-additional').slideDown();
         },
-        appendTo: "#nd_location-port-search"
+        appendTo: "#nd_location-port-search",
+        minLength: 0,
+        delay: 50
+      });
+      input.focus(function(){
+        // avoid undefined values
+        input.autocomplete("search", input.val() ? input.val() : "");
       });
     }
   });
