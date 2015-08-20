@@ -64,7 +64,7 @@
   
   padding: 5px;
   border-radius: 5px;
-  background-color: rgba(50, 50, 50, 0.7);
+  background-color: rgba(50, 50, 150, 0.7);
 }
 
 .nd_location-port-search-additional::before {
@@ -79,8 +79,8 @@
 }
 .nd_location-port-search-additional input{
   display: block;
-  margin-top: 3px;
-  margin-bottom: 3px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   padding-left: 15px;
   padding-right: 15px;
 }
