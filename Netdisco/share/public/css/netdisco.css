@@ -509,11 +509,6 @@ td > form.nd_inline-form {
   width: 165px;
 }
 
-/* nudge the port name/vlan filter over a little (as compared to nd_side-select) */
-#nd_port-query {
-  margin-left: 5px !important;
-  width: 152px;
-}
 .nd_sidebar-topinput {
   margin-left: 5px !important;
   width: 152px;

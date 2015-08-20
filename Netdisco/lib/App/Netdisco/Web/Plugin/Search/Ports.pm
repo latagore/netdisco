@@ -66,69 +66,95 @@ get '/ajax/content/search/ports' => require_login sub {
         prefetch => "port_vlans"
       });
     
-    # add information about the devices for the ports
-    $set = $set->search(undef, 
-    {
-      '+columns' => ["device.ip", "device.dns"],
-      join => "device"
-    });
-     
-    # refine by ports if requested
-    my $f = param('f');
-    if ($f) {
-        if (($prefer eq 'vlan') or not $prefer and $f =~ m/^\d+$/) {
-            if (param('invert')) {
-                $set = $set->search({
-                  'me.vlan' => { '!=' => $f },
-                  'port_vlans.vlan' => [
-                    '-or' => { '!=' => $f }, { '=' => undef }
-                  ],
-                }, { join => 'port_vlans' });
-            }
-            else {
-                $set = $set->search({
-                  -or => {
-                    'me.vlan' => $f,
-                    'port_vlans.vlan' => $f,
-                  },
-                }, { join => 'port_vlans' });
-            }
-
-            return unless $set->count;
-        }
-        else {
-            if (param('partial')) {
-                # change wildcard chars to SQL
-                $f =~ s/\*/%/g;
-                $f =~ s/\?/_/g;
-                # set wilcards at param boundaries
-                if ($f !~ m/[%_]/) {
-                    $f =~ s/^\%*/%/;
-                    $f =~ s/\%*$/%/;
-                }
-                # enable ILIKE op
-                $f = { (param('invert') ? '-not_ilike' : '-ilike') => $f };
-            }
-            elsif (param('invert')) {
-                $f = { '!=' => $f };
-            }
-
-            if (($prefer eq 'port') or not $prefer and
-                $set->search({'me.port' => $f})->count) {
-
-                $set = $set->search({
-                  -or => [
-                    'me.port' => $f,
-                    'me.slave_of' => $f,
-                  ],
-                });
-            }
-            else {
-                $set = $set->search({'me.name' => $f});
-                return unless $set->count;
-            }
-        }
+    # refine by vlan if requested
+    my $fvlan = param('vlan');
+    if ($fvlan) {
+      $set = $set->search({
+        -or => {
+          'me.vlan' => $fvlan,
+          'port_vlans.vlan' => $fvlan,
+          },
+        }, { join => 'port_vlans' });
+      return unless $set->count;
     }
+
+    # refine by port if requested
+    my $fport = param('port');
+    if ($fport){
+      # change wildcard chars to SQL
+      $fport =~ s/\*/%/g;
+      $fport =~ s/\?/_/g;
+      # set wilcards at param boundaries
+      if ($fport !~ m/[%_]/) {
+        $fport =~ s/^\%*/%/;
+        $fport =~ s/\%*$/%/;
+      }
+      # enable ILIKE op
+      $fport = { (param('invert') ? '-not_ilike' : '-ilike') => $fport };
+
+      $set = $set->search({
+        -or => [
+          'me.port' => $fport,
+          'me.slave_of' => $fport,
+        ],
+      });
+    }
+    # filter by building
+    my $building = param('building');
+    if ($building){
+      $set = $set->search(
+      {
+        "port_info.building" => {-ilike => scalar sql_match($building)}
+      },
+      {
+        join => "port_info"
+      });
+    }
+    # filter by riser room
+    my $riserroom = param('riserroom');
+    if ($riserroom){
+      $set = $set->search(
+      {
+        "port_info.riser1" => $riserroom
+      },
+      {
+        join => "port_info"
+      });
+    }
+    # filter by destination room
+    my $room = param('room');
+    if ($room){
+      $set = $set->search(
+      {
+        "port_info.room" => $room
+      },
+      {
+        join => "port_info"
+      });
+    }
+    # filter by horizontal cable
+    my $cable = param('cable');
+    if ($cable){
+      $set = $set->search(
+      {
+        "port_info.jack" => $cable
+      },
+      {
+        join => "port_info"
+      });
+    }
+    # filter by pigtail
+    my $pigtail = param('pigtail');
+    if ($pigtail){
+      $set = $set->search(
+      {
+        "port_info.cable" => $pigtail
+      },
+      {
+        join => "port_info"
+      });
+    }
+
 
     # filter for port status if asked
     my %port_state = map {$_ => 1}
@@ -166,51 +192,12 @@ get '/ajax/content/search/ports' => require_login sub {
         $set = $set->search({-or => \@combi});
     }
 
-    # filter by building
-    my $building = param('building');
-    if ($building){
-      $set = $set->search(
-      {
-        "port_info.building" => {-ilike => scalar sql_match($building)}
-      },
-      {
-        join => "port_info"
-      });
-    }
-    # filter by riser room
-    my $riserroom = param('riserroom');
-    if ($riserroom){
-      $set = $set->search(
-      {
-        "port_info.riser1" => $riserroom
-      },
-      {
-        join => "port_info"
-      });
-    }
-    # filter by horizontal cable
-    my $cable = param('cable');
-    if ($cable){
-      $set = $set->search(
-      {
-        "port_info.jack" => $cable
-      },
-      {
-        join => "port_info"
-      });
-    }
-    # filter by pigtail
-    my $pigtail = param('pigtail');
-    if ($pigtail){
-      $set = $set->search(
-      {
-        "port_info.cable" => $pigtail
-      },
-      {
-        join => "port_info"
-      });
-    }
-
+    # add information about the devices for the ports
+    $set = $set->search(undef, 
+    {
+      '+columns' => ["device.ip", "device.dns"],
+      join => "device"
+    });
 
     # get aggregate master status
     $set = $set->search({}, {

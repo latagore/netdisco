@@ -4,47 +4,52 @@
             <input id="nd_ports-form-prefer-field" name="prefer" value="[% params.prefer | html_entity %]" type="hidden"/>
             <div class="clearfix">
               <i class="nd_field-clear-icon icon-trash icon-large"
-                 rel="tooltip" data-placement="bottom" data-offset="3" data-title="Show all Ports"
-                 id="f_clear_btn" data-btn-for="port"></i>
-              <input id="nd_port-query" class="nd_side-input" placeholder="Port, Name or VLAN"
-                name="f" value="[% params.f | html_entity %]" type="text"
-                rel="tooltip" data-placement="left" data-offset="5" data-title="Filter by Port, Name or VLAN"/>
-              <div class="clearfix input-prepend nd_port-partial">
-                <label class="add-on nd_port-partial-label">
-                  <input type="checkbox" id="partial"
-                    name="partial"[% ' checked="checked"' IF params.partial %]/>
-                </label>
-                <label class="nd_checkboxlabel" for="partial">
-                  <span class="nd_port-partial-checkbox uneditable-input">Partial Match</span>
-                </label>
-                <label class="add-on nd_port-invert-label">
-                  <input type="checkbox" id="invert"
-                    name="invert"[% ' checked="checked"' IF params.invert %]/>
-                </label>
-                <label class="nd_checkboxlabel" for="invert">
-                  <span class="nd_port-invert-checkbox uneditable-input">Not</span>
-                </label>
-              </div>
-            </div>
-            <div class="clearfix">
+                 id="building_clear_btn" data-btn-for="building"></i>
               <input id="nd_building-query" class="nd_side-input" placeholder="Building"
                 name="building" value="[% params.building | html_entity %]" type="text"
                 rel="tooltip" data-placement="left" data-offset="5" data-title="Building"/>
             </div>
             <div class="clearfix">
-              <input id="nd_riserroom-query" class="nd_side-input" placeholder="Riser Room"
-                name="riserroom" value="[% params.riserroom | html_entity %]" type="text"
-                rel="tooltip" data-placement="left" data-offset="5" data-title="Riser Room"/>
-            </div>
-            <div class="clearfix">
+              <i class="nd_field-clear-icon icon-trash icon-large"
+                 id="cable_clear_btn" data-btn-for="cable"></i>
               <input id="nd_cable-query" class="nd_side-input" placeholder="Horizontal Cable"
                 name="cable" value="[% params.cable | html_entity %]" type="text"
                 rel="tooltip" data-placement="left" data-offset="5" data-title="Horizontal Cable"/>
             </div>
             <div class="clearfix">
+              <i class="nd_field-clear-icon icon-trash icon-large"
+                 id="pigtail_clear_btn" data-btn-for="pigtail"></i>
               <input id="nd_pigtail-query" class="nd_side-input" placeholder="Pigtail"
                 name="pigtail" value="[% params.pigtail | html_entity %]" type="text"
                 rel="tooltip" data-placement="left" data-offset="5" data-title="Pigtail"/>
+            </div>
+            <div class="clearfix">
+              <i class="nd_field-clear-icon icon-trash icon-large"
+                 id="riserroom_clear_btn" data-btn-for="riserroom"></i>
+              <input id="nd_riserroom-query" class="nd_side-input" placeholder="Riser Room"
+                name="riserroom" value="[% params.riserroom | html_entity %]" type="text"
+                rel="tooltip" data-placement="left" data-offset="5" data-title="Riser Room"/>
+            </div>
+            <div class="clearfix">
+              <i class="nd_field-clear-icon icon-trash icon-large"
+                 id="room_clear_btn" data-btn-for="room"></i>
+              <input id="nd_riserroom-query" class="nd_side-input" placeholder="Destination Room"
+                name="room" value="[% params.room | html_entity %]" type="text"
+                rel="tooltip" data-placement="left" data-offset="5" data-title="Destination Room"/>
+            </div>
+            <div class="clearfix">
+              <i class="nd_field-clear-icon icon-trash icon-large"
+                 id="port_clear_btn" data-btn-for="port"></i>
+              <input id="nd_port-query" class="nd_side-input" placeholder="Port"
+                name="port" value="[% params.port | html_entity %]" type="text"
+                rel="tooltip" data-placement="left" data-offset="5" data-title="Filter by Port"/>
+            </div>
+            <div class="clearfix">
+              <i class="nd_field-clear-icon icon-trash icon-large"
+                 id="vlan_clear_btn" data-btn-for="vlan"></i>
+              <input id="nd_vlan-query" class="nd_side-input" placeholder="VLAN"
+                name="vlan" value="[% params.vlan | html_entity %]" type="text"
+                rel="tooltip" data-placement="left" data-offset="5" data-title="Filter by VLAN"/>
             </div>
             <div class="clearfix">
               <span data-toggle="collapse" data-target="#nd_legend">

@@ -70,7 +70,7 @@
     // handler for bin icon in search option
     $('.nd_field-clear-icon').click(function() {
       var name = $(this).data('btn-for');
-      var input = $('#device_form [name=' + name + ']');
+      var input = $('.nd_sidebar [name=' + name + ']');
       input.val('');
       device_form_state(input); // will hide copy icons
     });
