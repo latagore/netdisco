@@ -21,7 +21,7 @@
 
     // activate modals, tooltips and popovers
     $('.nd_modal').modal({show: false});
-    //$("[rel=tooltip]").tooltip({live: true});
+    $("[rel=tooltip]").tooltip({live: true});
     $("[rel=popover]").popover({live: true});
   }
 
