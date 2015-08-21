@@ -253,8 +253,10 @@ $(document).ready(function() {
         delay: 50
       });
       input.focus(function(){
-        // avoid undefined values
-        input.autocomplete("search", input.val() ? input.val() : "");
+        // bring up the list of suggestions if clicking building field for the first time
+        if (!input.val()){
+          input.autocomplete("search", "");
+        }
       });
     }
   });
