@@ -9,6 +9,11 @@ use App::Netdisco::Util::Web 'sql_match';
 use Data::Dumper;
 register_search_tab( { tag => 'ports', label => 'Port', provides_csv => 1 } );
 
+sub sql_match_leading_zeros {
+  my ($term) = @_;
+  return { '~' => '(\D|\m)0*'.$term.'(\D|\M)'}
+}
+
 # device ports with a description (er, name) matching
 get '/ajax/content/search/ports' => require_login sub {
     my $q = param('q');
@@ -115,7 +120,7 @@ get '/ajax/content/search/ports' => require_login sub {
     if ($riserroom){
       $set = $set->search(
       {
-        "port_info.riser1" => $riserroom
+        "port_info.riser1" => sql_match_leading_zeros($riserroom)
       },
       {
         join => "port_info"
@@ -126,7 +131,7 @@ get '/ajax/content/search/ports' => require_login sub {
     if ($room){
       $set = $set->search(
       {
-        "port_info.room" => $room
+        "port_info.room" => sql_match_leading_zeros($room)
       },
       {
         join => "port_info"
@@ -137,7 +142,7 @@ get '/ajax/content/search/ports' => require_login sub {
     if ($cable){
       $set = $set->search(
       {
-        "port_info.jack" => $cable
+        "port_info.jack" => sql_match_leading_zeros($cable)
       },
       {
         join => "port_info"
@@ -148,7 +153,7 @@ get '/ajax/content/search/ports' => require_login sub {
     if ($pigtail){
       $set = $set->search(
       {
-        "port_info.cable" => $pigtail
+        "port_info.cable" => sql_match_leading_zeros($pigtail)
       },
       {
         join => "port_info"
