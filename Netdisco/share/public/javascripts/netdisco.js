@@ -208,9 +208,6 @@ $(document).ready(function() {
     }
     ,minLength: 3
     ,appendTo: "#nq-search"
-    ,select: function() {
-      $(this).closest('form').submit();
-    }
   });
 
   // activate tooltips
