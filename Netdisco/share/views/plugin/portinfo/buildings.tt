@@ -1,8 +1,8 @@
 [
 [% FOREACH row IN results %]
   {
-    campus: [% row.campus %],
-    num: [% row.num %]
+    campus: "[% row.campus.dquote() %]",
+    num: "[% row.num.dquote() %]"
     [% IF row.official_name %]
     ,official: "[% row.official_name.name.dquote() %]"
     [% END %]
