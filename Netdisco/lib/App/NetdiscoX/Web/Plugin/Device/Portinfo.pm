@@ -90,18 +90,15 @@ ajax '/ajax/portinfocontrol' => require_role port_control => sub {
   template 'plugin/portinfo/portinfo.tt', {}, {layout => undef};
 };
 
-ajax '/ajax/plugin/buildings' => require_login sub {
-  my @results = schema('netdisco')->resultset('Portinfo')->search(undef,
-    { columns => "building", order_by => "building", distinct => 1 })
-    ->all;
-  my @buildings;
-  foreach my $result (@results) {
-    push @buildings, $result->building if $result->building;
-  }
+use Data::Dumper;
+
+get '/ajax/plugin/buildings' => require_login sub {
+  my @results = schema('netdisco')->resultset('Building')->search(undef)->all;
   
+  print Dumper(\@results);  
   content_type('text/json');
   template 'plugin/portinfo/buildings.tt', 
-    { json => to_json(\@buildings) },
+    { results => \@results },
     { layout => undef };
 };
 
