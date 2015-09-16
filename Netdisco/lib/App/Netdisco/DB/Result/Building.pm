@@ -99,12 +99,15 @@ Returns the official name for this Building, if any.
 
 __PACKAGE__->might_have(
     official_name => 'App::Netdisco::DB::Result::BuildingName',
-        {
-          'foreign.campus' => 'self.campus',
-          'foreign.num' => 'self.num',
-        }, {
-          where => { name_type => 'OFFICIAL' }
-        }
+    sub {
+      my $args = shift;
+
+      return {
+        "$args->{foreign_alias}.campus" => { -ident => "$args->{self_alias}.campus" },
+        "$args->{foreign_alias}.num" => { -ident => "$args->{self_alias}.num" },
+        "$args->{foreign_alias}.name_type"   => { '=', "OFFICIAL" },
+      };
+    }
 );
 
 =head2 short_name
@@ -115,12 +118,15 @@ Returns the short name for this Building, if any.
 
 __PACKAGE__->might_have(
     short_name => 'App::Netdisco::DB::Result::BuildingName',
-        {
-          'foreign.campus' => 'self.campus',
-          'foreign.num' => 'self.num',
-        }, {
-          where => { name_type => 'SHORT' }
-        }
+    sub {
+      my $args = shift;
+
+      return {
+        "$args->{foreign_alias}.campus" => { -ident => "$args->{self_alias}.campus" },
+        "$args->{foreign_alias}.num" => { -ident => "$args->{self_alias}.num" },
+        "$args->{foreign_alias}.name_type"   => { '=', "SHORT" },
+      };
+    }
 );
 
 =head2 uit_name
@@ -130,13 +136,16 @@ Returns the short name for this Building, if any.
 =cut
 
 __PACKAGE__->might_have(
-    short_name => 'App::Netdisco::DB::Result::BuildingName',
-        {
-          'foreign.campus' => 'self.campus',
-          'foreign.num' => 'self.num',
-        }, {
-          where => { name_type => 'SHORT' }
-        }
+    uit_name => 'App::Netdisco::DB::Result::BuildingName',
+    sub {
+      my $args = shift;
+
+      return {
+        "$args->{foreign_alias}.campus" => { -ident => "$args->{self_alias}.campus" },
+        "$args->{foreign_alias}.num" => { -ident => "$args->{self_alias}.num" },
+        "$args->{foreign_alias}.name_type"   => { '=', "UIT" },
+      };
+    }
 );
 
 =head2 other_names
@@ -147,12 +156,15 @@ Returns the other names for this Building, if any.
 
 __PACKAGE__->has_many(
     other_names => 'App::Netdisco::DB::Result::BuildingName',
-        {
-          'foreign.campus' => 'self.campus',
-          'foreign.num' => 'self.num',
-        }, {
-          where => { name_type => 'OTHER' }
-        }
+    sub {
+      my $args = shift;
+
+      return {
+        "$args->{foreign_alias}.campus" => { -ident => "$args->{self_alias}.campus" },
+        "$args->{foreign_alias}.num" => { -ident => "$args->{self_alias}.num" },
+        "$args->{foreign_alias}.name_type"   => { '=', "OTHER" },
+      };
+    }
 );
         
 1;

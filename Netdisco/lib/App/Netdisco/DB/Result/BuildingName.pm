@@ -58,6 +58,11 @@ __PACKAGE__->add_columns(
   { data_type => "text", is_nullable => 0 },
 );
 
+__PACKAGE__->add_unique_constraint(
+  "building_name_unique",
+    ["campus", "num", "name", "name_type"],
+    );
+
 =head1 RELATIONS
 
 =head2 building

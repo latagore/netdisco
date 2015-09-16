@@ -90,12 +90,13 @@ ajax '/ajax/portinfocontrol' => require_role port_control => sub {
   template 'plugin/portinfo/portinfo.tt', {}, {layout => undef};
 };
 
-use Data::Dumper;
-
 get '/ajax/plugin/buildings' => require_login sub {
-  my @results = schema('netdisco')->resultset('Building')->search(undef)->all;
-  
-  print Dumper(\@results);  
+  my @results = schema('netdisco')->resultset('Building')->
+    search(undef,
+      {
+        prefetch => [qw/official_name short_name uit_name other_names/]
+      })->all;
+
   content_type('text/json');
   template 'plugin/portinfo/buildings.tt', 
     { results => \@results },
