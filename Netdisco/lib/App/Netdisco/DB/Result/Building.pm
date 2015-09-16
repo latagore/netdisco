@@ -123,6 +123,22 @@ __PACKAGE__->might_have(
         }
 );
 
+=head2 uit_name
+
+Returns the short name for this Building, if any.
+
+=cut
+
+__PACKAGE__->might_have(
+    short_name => 'App::Netdisco::DB::Result::BuildingName',
+        {
+          'foreign.campus' => 'self.campus',
+          'foreign.num' => 'self.num',
+        }, {
+          where => { name_type => 'SHORT' }
+        }
+);
+
 =head2 other_names
 
 Returns the other names for this Building, if any.

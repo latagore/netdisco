@@ -9,6 +9,9 @@
     [% IF row.short_name %]
     ,short: "[% row.short_name.name.dquote() %]"
     [% END %]
+    [% IF row.uit_name %]
+    ,uit: "[% row.uit_name.name.dquote() %]"
+    [% END %]
     [% IF row.other_names %]
     ,other: 
     [
