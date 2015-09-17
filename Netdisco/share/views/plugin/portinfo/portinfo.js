@@ -1,4 +1,4 @@
- 
+
 // create edit icon element just once
 var editicon = $("<i id='nd_portinfo-edit-icon' class='icon-edit nd_portinfo-edit-icon'></i>");
 editicon.hide();
@@ -21,10 +21,10 @@ $(document).ready(function() {
       queryDict[item.split("=")[0]] = item.split("=")[1]
     });
     // queryDict conveniently taken from http://stackoverflow.com/a/21210643/4961854
-    if ((location.pathname.indexOf('/device') === 0 || location.pathname.indexOf('/search') === 0) 
+    if ((location.pathname.indexOf('/device') === 0 || location.pathname.indexOf('/search') === 0)
         && queryDict.tab === "ports") {
-      var porttable = $('#dp-data-table').DataTable();    
-      
+      var porttable = $('#dp-data-table').DataTable();
+
       addSavePortInfoButton();
       adjustColumnsOnKeypress();
       makePortInfoFieldsInteractive();
@@ -39,12 +39,12 @@ $(document).ready(function() {
         if (mutation.addedNodes.length > 0 ) forEach.call (mutation.addedNodes, function(node) {
           if (node.id === "dp-data-table") {
             observer.disconnect();
-            
+
             if (!$('#dp-data-table_submit-port-info').length){
               $('#dp-data-table_filter').after("<button class='btn btn-info' id='dp-data-table_submit-port-info'><i class='icon-save'/> Save Port Info</button>");
               var submitportinfobtn = $('#dp-data-table_submit-port-info');
               submitportinfobtn.prop("disabled", true);
-            
+
               submitportinfobtn.click(function() {
                 $('td.nd_portinfo-data-dirty .york-port-info')
                   .get().forEach(function(div) {
@@ -57,7 +57,7 @@ $(document).ready(function() {
         })
       })
     });
-      
+
     observer.observe(document.body, {
       childList: true
       , subtree: true
@@ -69,7 +69,7 @@ $(document).ready(function() {
   // needed to make port info fields like vanilla netdisco editable fields
   function makePortInfoFieldsInteractive (){
     //var editicon = $('#nd_portinfo-edit-icon');
-    
+
     $('.tab-content').on('mouseover', 'td',
       function(event) {
         if ($(this).children('.york-port-info[contenteditable]').length === 1) {
@@ -111,7 +111,7 @@ $(document).ready(function() {
         $('#dp-data-table').DataTable().cell(td).data(this.outerHTML);
       }
     );
-    
+
     // activity for contenteditable control
     $('.tab-content').on('keydown', '.york-port-info[contenteditable=true]', function(event) {
       var div = this,
@@ -136,7 +136,7 @@ $(document).ready(function() {
           // save attr to td to proper css appearance
           td[0].title = "This change has not been saved.";
           td.addClass("nd_portinfo-data-dirty");
-          
+
           $('#dp-data-table_submit-port-info').prop("disabled", false);
         }
       }
@@ -150,11 +150,11 @@ $(document).ready(function() {
         var t = $(event.target);
         var building = t.text().trim();
         if (building != "") {
-          var index = buildingSuggestions.indexOf(building);
+          var index = buildings.indexOf(building);
           if (index >= 0) {
-            buildingSuggestions.splice(index, 1);
+            buildings.splice(index, 1);
           }
-          buildingSuggestions.unshift(building);
+          buildings.unshift(building);
         }
       });
 
@@ -189,7 +189,7 @@ $(document).ready(function() {
       }
     });
   }
-  
+
   // make a call to change the port info for a port
   function changeportinfo(e) {
     var div = $(e);
@@ -222,28 +222,80 @@ $(document).ready(function() {
       }
     });
   }
-  
-  var navBuildingSuggestions;
+
+  function getBuildingLabel(b){
+    return b.official ? b.official :
+             (b.short ? b.short :
+               (b.uit ? b.uit :
+                 (b.campus.charAt(0).toLowerCase() + b.num)
+               )
+             );
+  }
+
+  var navBuildings;
   // Port search by location functionality
   $.ajax('/ajax/plugin/buildings', {
     dataType: "json",
     success: function(data) {
-      navBuildingSuggestions = data;
-
+      navBuildings = data.results;
+      navBuildings.sort(function(a,b){
+        var aLabel = getBuildingLabel(a);
+        var bLabel = getBuildingLabel(b);
+        return aLabel < bLabel ? -1 : aLabel > bLabel;
+      });
 
       var input = $('#port-building-input');
       input.autocomplete({
         source: function(request, response) {
-          var suggest = [];
-          var size = 0;
-          for (var i = 0, l = navBuildingSuggestions.length; i < l; i++) {
-            if (navBuildingSuggestions[i].toLowerCase()
-              .indexOf(request.term.toLowerCase()) >= 0) {
-              suggest.push(navBuildingSuggestions[i]);
-              size++;
+          var t = request.term.toLowerCase();
+          var suggests = [];
+          for (var i = 0, l = navBuildings.length; i < l; i++) {
+            var b = navBuildings[i];
+            var buildingKey = b.campus.charAt(0).toLowerCase() + b.num;
+            var suggest = {
+              //value: b.campus + ";" + b.num,
+              label: getBuildingLabel(b),
+              // identify where the label comes from
+              labelType: b.short ? "OFFICIAL" :
+                           (b.official ? "SHORT" :
+                             (b.uit ? "UIT" :
+                               ("BUILDING_KEY")
+                             )
+                           )
+            };
+
+            if ("official" in b
+                && b.official.toLowerCase().indexOf(t) >= 0) {
+              suggest.matchingName = b.official;
+              suggest.matchingNameType = "OFFICIAL";
+              suggests.push(suggest);
+            } else if ("short" in b
+                && b.short.toLowerCase().indexOf(t) >= 0) {
+              suggest.matchingName = b.short;
+              suggest.matchingNameType = "SHORT";
+              suggests.push(suggest);
+            } else if ("uit" in b
+                && b.uit.toLowerCase().indexOf(t) >= 0) {
+              suggest.matchingName = b.uit;
+              suggest.matchingNameType = "UIT";
+              suggests.push(suggest);
+            } else if ("other" in b) {
+              for (var other in b.other){
+                if (other.toLowerCase().indexOf(t) >= 0) {
+                  suggest.matchingName = other;
+                  suggest.matchingNameType = "OTHER";
+                  suggests.push(suggest);
+                  break;
+                }
+              }
+            } else if (buildingKey
+                .indexOf(t) >= 0) {
+              suggest.matchingName = buildingKey;
+              suggest.matchingNameType = "BUILDING_KEY";
+              suggests.push(suggest);
             }
           }
-          response(suggest);
+          response(suggests);
         },
         select: function() {
           $('.nd_location-port-search-additional').slideDown();
@@ -280,14 +332,6 @@ $(document).ready(function() {
     }
   });
 
-  $('#port-building-input').change(function(){
-    for (var i = 0, l = navBuildingSuggestions.length; i < l; i++) {
-      if (navBuildingSuggestions[i].toLowerCase() 
-          ===  $('#port-building-input').val().toLowerCase()){
-        $('.nd_location-port-search-additional').slideDown();
-      }
-    }
-  });
   $('#nd_location-port-search form').keypress(function(e){
     if ($('#port-building-input').val()){
       // enter pressed

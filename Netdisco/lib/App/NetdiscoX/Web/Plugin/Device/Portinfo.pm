@@ -94,7 +94,8 @@ get '/ajax/plugin/buildings' => require_login sub {
   my @results = schema('netdisco')->resultset('Building')->
     search(undef,
       {
-        prefetch => [qw/official_name short_name uit_name other_names/]
+        prefetch => [qw/official_name short_name uit_name other_names/],
+        order_by => "official_name.name"
       })->all;
 
   content_type('text/json');
