@@ -92,3 +92,14 @@
   left: -25px;
   top: 5px;
 }
+
+/* auto suggest styling */
+.nd_suggest-item {
+  border: 1px solid #EEEEEE;
+  border-radius: 5px;
+}
+
+.nd_suggest-match {
+  color: #444444;
+  font-size: 75%;
+}

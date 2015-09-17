@@ -223,13 +223,19 @@ $(document).ready(function() {
     });
   }
 
-  function getBuildingLabel(b){
-    return b.official ? b.official :
-             (b.short ? b.short :
-               (b.uit ? b.uit :
-                 (b.campus.charAt(0).toLowerCase() + b.num)
-               )
-             );
+  function setBuildingLabel(b){
+    b.label = b.official ? b.official :
+               (b.short ? b.short :
+                 (b.uit ? b.uit :
+                   (b.campus.charAt(0).toLowerCase() + b.num)
+                 )
+               );
+    b.labelType = b.official ? "OFFICIAL" :
+                    (b.short ? "SHORT" :
+                      (b.uit ? "UIT" :
+                        ("BUILDING_CODE")
+                      )
+                    );
   }
 
   var navBuildings;
@@ -238,10 +244,36 @@ $(document).ready(function() {
     dataType: "json",
     success: function(data) {
       navBuildings = data.results;
+      navBuildings.forEach(function(b){
+        setBuildingLabel(b);
+      });
+      
       navBuildings.sort(function(a,b){
-        var aLabel = getBuildingLabel(a);
-        var bLabel = getBuildingLabel(b);
-        return aLabel < bLabel ? -1 : aLabel > bLabel;
+        return a.label < b.label ? -1 : a.label > b.label;
+      });
+      
+      // custom autocomplete appearance
+      $.widget( "portinfo.autocomplete", $.ui.autocomplete, {
+        _renderItem: function(ul, item){
+          var li = "<li class='nd_suggest-item'><a><div class='nd_suggest-label'>" 
+            + item.label + "</div>";
+          if (item.matchingNameType !== item.labelType) {
+            console.log(item.matchingNameType);
+            li += "<div class='nd_suggest-match'>"
+                  + (item.matchingNameType === "OFFICIAL" ? "Official name: " :
+                      (item.matchingNameType === "SHORT" ? "Short name: " :
+                        (item.matchingNameType === "UIT" ? "UIT name: " :
+                          (item.matchingNameType === "OTHER" ? "Alternative name: " :
+                            "?"
+                          )
+                        )
+                      )
+                    )
+                  + item.matchingName + "</div>";
+          }
+          li += "</a></li>";
+          return $(li).appendTo(ul);
+        }
       });
 
       var input = $('#port-building-input');
@@ -253,15 +285,8 @@ $(document).ready(function() {
             var b = navBuildings[i];
             var buildingKey = b.campus.charAt(0).toLowerCase() + b.num;
             var suggest = {
-              //value: b.campus + ";" + b.num,
-              label: getBuildingLabel(b),
-              // identify where the label comes from
-              labelType: b.short ? "OFFICIAL" :
-                           (b.official ? "SHORT" :
-                             (b.uit ? "UIT" :
-                               ("BUILDING_KEY")
-                             )
-                           )
+              label: b.label,
+              labelType: b.labelType
             };
 
             if ("official" in b
@@ -291,7 +316,7 @@ $(document).ready(function() {
             } else if (buildingKey
                 .indexOf(t) >= 0) {
               suggest.matchingName = buildingKey;
-              suggest.matchingNameType = "BUILDING_KEY";
+              suggest.matchingNameType = "BUILDING_CODE";
               suggests.push(suggest);
             }
           }
