@@ -11,7 +11,7 @@ register_search_tab( { tag => 'ports', label => 'Port', provides_csv => 1 } );
 
 sub sql_match_leading_zeros {
   my ($term) = @_;
-  return { '~' => '(\D|\m)0*'.$term.'(\D|\M)'}
+  return { '~*' => '(\D|\m)0*'.$term.'(\D|\M)'}
 }
 
 # device ports with a description (er, name) matching
