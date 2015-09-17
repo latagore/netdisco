@@ -92,3 +92,12 @@
   left: -25px;
   top: 5px;
 }
+
+.port-building-form-reset {
+  color: #AAC;
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  font-size: 80%;
+  padding-left: 15px;
+}
