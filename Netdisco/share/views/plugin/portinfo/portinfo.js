@@ -224,16 +224,17 @@ $(document).ready(function() {
   }
 
   function setBuildingLabel(b){
+    b.buildingNumber = b.campus.charAt(0).toLowerCase() + b.num;
     b.label = b.official ? b.official :
                (b.short ? b.short :
                  (b.uit ? b.uit :
-                   (b.campus.charAt(0).toLowerCase() + b.num)
+                   (b.buildingNumber)
                  )
                );
     b.labelType = b.official ? "OFFICIAL" :
                     (b.short ? "SHORT" :
                       (b.uit ? "UIT" :
-                        ("BUILDING_CODE")
+                        ("BUILDING_NUMBER")
                       )
                     );
   }
@@ -255,16 +256,18 @@ $(document).ready(function() {
       // custom autocomplete appearance
       $.widget( "portinfo.autocomplete", $.ui.autocomplete, {
         _renderItem: function(ul, item){
-          var li = "<li class='nd_suggest-item'><a><div class='nd_suggest-label'>" 
-            + item.label + "</div>";
+          var li = "<li class='nd_suggest-item'><a><div><span class='nd_suggest-label'>"
+            + item.label + "</span>"
+            + " <span class='nd_suggest-building-number'>("  + item.buildingNumber + ")</span></div>";
           if (item.matchingNameType !== item.labelType) {
-            console.log(item.matchingNameType);
             li += "<div class='nd_suggest-match'>"
                   + (item.matchingNameType === "OFFICIAL" ? "Official name: " :
                       (item.matchingNameType === "SHORT" ? "Short name: " :
                         (item.matchingNameType === "UIT" ? "UIT name: " :
                           (item.matchingNameType === "OTHER" ? "Alternative name: " :
-                            "?"
+                            (item.matchingNameType === "BUILDING_NUMBER" ? "Building number: " :
+                              "?"
+                            )
                           )
                         )
                       )
@@ -286,7 +289,8 @@ $(document).ready(function() {
             var buildingKey = b.campus.charAt(0).toLowerCase() + b.num;
             var suggest = {
               label: b.label,
-              labelType: b.labelType
+              labelType: b.labelType,
+              buildingNumber: b.buildingNumber
             };
 
             if ("official" in b
@@ -316,7 +320,7 @@ $(document).ready(function() {
             } else if (buildingKey
                 .indexOf(t) >= 0) {
               suggest.matchingName = buildingKey;
-              suggest.matchingNameType = "BUILDING_CODE";
+              suggest.matchingNameType = "BUILDING_NUMBER";
               suggests.push(suggest);
             }
           }
