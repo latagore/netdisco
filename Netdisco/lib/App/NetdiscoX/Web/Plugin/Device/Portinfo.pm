@@ -79,12 +79,30 @@ ajax '/ajax/portinfocontrol' => require_role port_control => sub {
   my $port = $device->ports->search({port => param('port')})->first()
     or send_error('Bad Port', 400);  
 
-  $port->update_or_create_related("port_info", 
-    {
-      "$column" => "$value",
-      "last_modified" => \'NOW()',
-      "last_modified_by" => session('logged_in_user')
-    }); 
+  if ($column eq 'building'){
+    my $buildings = schema('netdisco')->resultset('Building')
+      ->search(
+        { "building_names.name" => $value },
+        { prefetch => "building_names" }
+      );
+    send_error('Bad building', 400) unless ($buildings->count == 1);
+    my $building = $buildings->first;
+    $port->update_or_create_related("port_info",
+      {
+        "building_campus" => $building->campus,
+        "building_num"    => $building->num,
+        "last_modified" => \'NOW()',
+        "last_modified_by" => session('logged_in_user')
+      });
+  } else {
+
+    $port->update_or_create_related("port_info", 
+      {
+        "$column" => "$value",
+        "last_modified" => \'NOW()',
+        "last_modified_by" => session('logged_in_user')
+      }); 
+  }
   
   content_type('text/plain');
   template 'plugin/portinfo/portinfo.tt', {}, {layout => undef};
