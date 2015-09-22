@@ -58,10 +58,28 @@ __PACKAGE__->add_columns(
   { data_type => "text", is_nullable => 0 },
 );
 
+=head1 UNIQUE CONSTRAINTS
+
+=head2 C<building_name_unique>
+
+=over 4
+
+=item * L</campus>
+
+=item * L</num>
+
+=item * L</name>
+
+=item * L</name_type>
+
+=back
+
+=cut
+
 __PACKAGE__->add_unique_constraint(
   "building_name_unique",
-    ["campus", "num", "name", "name_type"],
-    );
+  ["campus", "num", "name", "name_type"],
+);
 
 =head1 RELATIONS
 
@@ -81,8 +99,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-09-14 12:21:56
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:qnHwhwkNmIMvPtTXUVYIAQ
+# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-09-22 12:33:54
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:dWJCGAE2eJsim1HaH0L+5Q
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

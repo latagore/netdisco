@@ -87,9 +87,28 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 portinfos
 
-# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-09-14 12:21:56
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ZAmprWYlmgQZmdpQ3pUbZg
+Type: has_many
+
+Related object: L<App::Netdisco::DB::Result::Portinfo>
+
+=cut
+
+__PACKAGE__->has_many(
+  "portinfos",
+  "App::Netdisco::DB::Result::Portinfo",
+  {
+    "foreign.building_campus" => "self.campus",
+    "foreign.building_num"    => "self.num",
+  },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-09-22 12:13:34
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:YYBNK1oI/zAv313i3m7YqQ
+
 
 =head2 official_name
 
@@ -166,5 +185,5 @@ __PACKAGE__->has_many(
       };
     }
 );
-        
+
 1;
