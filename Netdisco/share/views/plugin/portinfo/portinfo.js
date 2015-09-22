@@ -1,7 +1,37 @@
-
 // create edit icon element just once
 var editicon = $("<i id='nd_portinfo-edit-icon' class='icon-edit nd_portinfo-edit-icon'></i>");
 editicon.hide();
+
+// custom autocomplete appearance
+$.widget( "building.autocomplete", $.ui.autocomplete, {
+  options: {
+    showBuildingCode: false
+  },
+  _renderItem: function(ul, item){
+    var li = "<li class='nd_suggest-item'><a><div><span class='nd_suggest-label'>" + item.label + "</span>";
+    if (this.options.showBuildingCode){
+        li += " <span class='nd_suggest-building-number'>("  + item.buildingNumber + ")</span>";
+    }
+    li += "</div>";
+    if (item.matchingNameType !== item.labelType) {
+      li += "<div class='nd_suggest-match'>"
+            + (item.matchingNameType === "OFFICIAL" ? "Official name: " :
+                (item.matchingNameType === "SHORT" ? "Short name: " :
+                  (item.matchingNameType === "UIT" ? "UIT name: " :
+                    (item.matchingNameType === "OTHER" ? "Alternative name: " :
+                      (item.matchingNameType === "BUILDING_NUMBER" ? "Building number: " :
+                        "?"
+                      )
+                    )
+                  )
+                )
+              )
+            + item.matchingName + "</div>";
+    }
+    li += "</a></li>";
+    return $(li).appendTo(ul);
+  }
+});
 
 $(document).ready(function() {
   // need to add all the listeners only once, since they don't go away
@@ -28,7 +58,7 @@ $(document).ready(function() {
       addSavePortInfoButton();
       adjustColumnsOnKeypress();
       makePortInfoFieldsInteractive();
-      addBuildingSuggestions();
+      addBuildingSuggestionsToPortTable();
     }
   }
   function addSavePortInfoButton(){
@@ -143,48 +173,75 @@ $(document).ready(function() {
     });
   }
 
-  function addBuildingSuggestions() {
-    // Modify building suggestions on blur
-    $('.tab-content').on('blur', 'div.york-port-info[contenteditable=true][data-column=building]',
-      function(event) {
-        var t = $(event.target);
-        var building = t.text().trim();
-        if (building != "") {
-          var index = buildings.indexOf(building);
-          if (index >= 0) {
-            buildings.splice(index, 1);
-          }
-          buildings.unshift(building);
-        }
-      });
-
+  function addBuildingSuggestionsToPortTable() {
+    var buildings;
     // Add a building dropdown
     // Suggestions initially ordered alphabetically and
     // re-ordered with the most recent item at the top when an item is selected
     $.ajax('/ajax/plugin/buildings', {
       dataType: "json",
       success: function(data) {
-        buildingSuggestions = data;
+        buildings = data.results;
+        buildings.forEach(function(b){
+          setBuildingLabel(b);
+        });
 
-        // add autocomplete functionality when field recieves focus
+        buildings.sort(function(a,b){
+          return a.label < b.label ? -1 : a.label > b.label;
+        });
+
         $('.tab-content').on('focus', '[data-column=building]', function() {
-          $(this).autocomplete({
-            source: function(request, response) {
-              var suggest = [];
-              var size = 0;
-              var max = 5;
-              for (var i = 0, l = buildingSuggestions.length; i < l && size < max; i++) {
-                if (buildingSuggestions[i].toLowerCase()
-                  .indexOf(request.term.toLowerCase()) >= 0) {
-                  suggest.push(buildingSuggestions[i]);
-                  size++;
+          if (!$(this).data('buildingAutocomplete')) {
+            $(this).autocomplete({
+              source: function(request, response) {
+                var r = new RegExp(request.term, 'i'); // use regexs for fast testing
+                var suggests = [];
+                for (var i = 0, l = buildings.length; i < l; i++) {
+                  var b = buildings[i];
+                  var suggest = {
+                    label: b.label,
+                    labelType: b.labelType,
+                    buildingNumber: b.buildingNumber
+                  };
+
+                  if (r.test(b.official)) {
+                    suggest.matchingName = b.official;
+                    suggest.matchingNameType = "OFFICIAL";
+                    suggests.push(suggest);
+                  } else if (r.test(b.short)) {
+                    suggest.matchingName = b.short;
+                    suggest.matchingNameType = "SHORT";
+                    suggests.push(suggest);
+                  } else if (r.test(b.uit)) {
+                    suggest.matchingName = b.uit;
+                    suggest.matchingNameType = "UIT";
+                    suggests.push(suggest);
+                  } else if (b.other) {
+                    for (var j = 0, ol = b.other.length; j < ol; j++){
+                      var other = b.other[j];
+                      if (r.test(other)) {
+                        suggest.matchingName = other;
+                        suggest.matchingNameType = "OTHER";
+                        suggests.push(suggest);
+                        break;
+                      }
+                    }
+                  } else if (r.test(b.buildingNumber)) {
+                    suggest.matchingName = b.buildingNumber;
+                    suggest.matchingNameType = "BUILDING_NUMBER";
+                    suggests.push(suggest);
+                  }
                 }
-              }
-              response(suggest);
-            },
-            delay: 50,
-            minLength: 0
-          });
+                response(suggests);
+              },
+              select: function() {
+                $('.nd_location-port-search-additional').slideDown();
+              },
+              appendTo: "#nd_location-port-search",
+              minLength: 0,
+              delay: 200
+            });
+          }  
         });
       }
     });
@@ -248,35 +305,9 @@ $(document).ready(function() {
       navBuildings.forEach(function(b){
         setBuildingLabel(b);
       });
-      
+
       navBuildings.sort(function(a,b){
         return a.label < b.label ? -1 : a.label > b.label;
-      });
-      
-      // custom autocomplete appearance
-      $.widget( "portinfo.autocomplete", $.ui.autocomplete, {
-        _renderItem: function(ul, item){
-          var li = "<li class='nd_suggest-item'><a><div><span class='nd_suggest-label'>"
-            + item.label + "</span>"
-            + " <span class='nd_suggest-building-number'>("  + item.buildingNumber + ")</span></div>";
-          if (item.matchingNameType !== item.labelType) {
-            li += "<div class='nd_suggest-match'>"
-                  + (item.matchingNameType === "OFFICIAL" ? "Official name: " :
-                      (item.matchingNameType === "SHORT" ? "Short name: " :
-                        (item.matchingNameType === "UIT" ? "UIT name: " :
-                          (item.matchingNameType === "OTHER" ? "Alternative name: " :
-                            (item.matchingNameType === "BUILDING_NUMBER" ? "Building number: " :
-                              "?"
-                            )
-                          )
-                        )
-                      )
-                    )
-                  + item.matchingName + "</div>";
-          }
-          li += "</a></li>";
-          return $(li).appendTo(ul);
-        }
       });
 
       var input = $('#port-building-input');
@@ -286,7 +317,6 @@ $(document).ready(function() {
           var suggests = [];
           for (var i = 0, l = navBuildings.length; i < l; i++) {
             var b = navBuildings[i];
-            var buildingKey = b.campus.charAt(0).toLowerCase() + b.num;
             var suggest = {
               label: b.label,
               labelType: b.labelType,
@@ -317,9 +347,9 @@ $(document).ready(function() {
                   break;
                 }
               }
-            } else if (buildingKey
+            } else if (b.buildingNumber
                 .indexOf(t) >= 0) {
-              suggest.matchingName = buildingKey;
+              suggest.matchingName = b.buildingNumber;
               suggest.matchingNameType = "BUILDING_NUMBER";
               suggests.push(suggest);
             }
@@ -331,8 +361,10 @@ $(document).ready(function() {
         },
         appendTo: "#nd_location-port-search",
         minLength: 0,
-        delay: 50
+        delay: 200
       });
+      input.data('buildingAutocomplete').option('showBuildingCode', true);
+      
       input.focus(function(){
         // bring up the list of suggestions if clicking building field for the first time
         if (!input.val()){
