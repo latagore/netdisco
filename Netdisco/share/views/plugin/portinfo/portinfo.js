@@ -5,16 +5,35 @@ editicon.hide();
 // custom autocomplete appearance
 $.widget( "building.autocomplete", $.ui.autocomplete, {
   options: {
-    showBuildingNumber: false
+    showBuildingNumber: false,
+    highlightClass: 'nd_suggest-match-highlight'
   },
   _renderItem: function(ul, item){
-    var a = document.createElement('a');
-    a.appendChild(document.createTextNode(item.label));
+    var a = document.createElement('a'),
+        // regular expression for highlighting the term in the item
+        re = new RegExp( "(" + this.term + ")", "i" ),
+        cls = this.options.highlightClass
+        template = "<span class='"+cls+"'>$1</span>";
     
+    // show label
+    if (item.matchingNameType === item.labelType){
+      var label = document.createElement('span');
+      label.innerHTML = item.label.replace(re, template);
+      a.appendChild(label);
+    } else {
+      a.appendChild(document.createTextNode(item.label));
+    }
+    
+    // show building number
     if (this.options.showBuildingNumber){
       var num = document.createElement('span');
-      num.appendChild(document.createTextNode(' (' + item.buildingNumber + ')'));
       num.setAttribute('class', 'nd_suggest-building-number');
+      if (item.matchingNameType === "BUILDING_NUMBER"){
+        num.innerHTML = ' (' + item.buildingNumber.replace(re, template) + ')';
+        a.appendChild(num);
+      } else {
+        num.appendChild(document.createTextNode(' (' + item.buildingNumber + ')'));
+      }
       a.appendChild(num);
     }
     
@@ -23,23 +42,19 @@ $.widget( "building.autocomplete", $.ui.autocomplete, {
         && !(item.matchingNameType === "BUILDING_NUMBER" && this.options.showBuildingNumber))
     {
       var hint = document.createElement('div');
-      hint.appendChild(
-          document.createTextNode(
-            (item.matchingNameType === "OFFICIAL" ? "Official name: " :
-                (item.matchingNameType === "SHORT" ? "Short name: " :
-                  (item.matchingNameType === "UIT" ? "UIT name: " :
-                    (item.matchingNameType === "OTHER" ? "Alternative name: " :
-                      (item.matchingNameType === "BUILDING_NUMBER" ? "Building number: " :
-                        "?"
-                      )
-                    )
-                  )
-                )
-              )
-            + item.matchingName
-          )
-      );
       hint.setAttribute('class', 'nd_suggest-match');
+      hint.innerHTML =  (item.matchingNameType === "OFFICIAL" ? "Official name: " :
+                          (item.matchingNameType === "SHORT" ? "Short name: " :
+                            (item.matchingNameType === "UIT" ? "UIT name: " :
+                              (item.matchingNameType === "OTHER" ? "Alternative name: " :
+                                (item.matchingNameType === "BUILDING_NUMBER" ? "Building number: " :
+                                  "?"
+                                )
+                              )
+                            )
+                          )
+                        )
+                        + item.matchingName.replace(re, template);
       a.appendChild(hint);
     }
     

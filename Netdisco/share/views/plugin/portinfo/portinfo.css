@@ -106,3 +106,8 @@
 .nd_suggest-building-number {
   color: #777;
 }
+
+.nd_suggest-match-highlight {
+  font-weight: bold;
+  color: black;
+}
