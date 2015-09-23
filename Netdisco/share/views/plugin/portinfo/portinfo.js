@@ -8,14 +8,24 @@ $.widget( "building.autocomplete", $.ui.autocomplete, {
     showBuildingCode: false
   },
   _renderItem: function(ul, item){
-    var li = "<li class='nd_suggest-item'><a><div><span class='nd_suggest-label'>" + item.label + "</span>";
+    var a = document.createElement('a');
+    a.appendChild(document.createTextNode(item.label));
+    
     if (this.options.showBuildingCode){
-        li += " <span class='nd_suggest-building-number'>("  + item.buildingNumber + ")</span>";
+      var num = document.createElement('span');
+      num.appendChild(document.createTextNode(' (' + item.buildingNumber + ')'));
+      num.setAttribute('class', 'nd_suggest-building-number');
+      a.appendChild(num);
     }
-    li += "</div>";
-    if (item.matchingNameType !== item.labelType) {
-      li += "<div class='nd_suggest-match'>"
-            + (item.matchingNameType === "OFFICIAL" ? "Official name: " :
+    
+    // show hint that indicates the kind of match if it meets the condition
+    if (item.matchingNameType !== item.labelType 
+        && !(item.matchingNameType === "BUILDING_NUMBER" && this.options.showBuildingCode))
+    {
+      var hint = document.createElement('div');
+      hint.appendChild(
+          document.createTextNode(
+            (item.matchingNameType === "OFFICIAL" ? "Official name: " :
                 (item.matchingNameType === "SHORT" ? "Short name: " :
                   (item.matchingNameType === "UIT" ? "UIT name: " :
                     (item.matchingNameType === "OTHER" ? "Alternative name: " :
@@ -26,10 +36,19 @@ $.widget( "building.autocomplete", $.ui.autocomplete, {
                   )
                 )
               )
-            + item.matchingName + "</div>";
+            + item.matchingName
+          )
+      );
+      hint.setAttribute('class', 'nd_suggest-match');
+      a.appendChild(hint);
     }
-    li += "</a></li>";
-    return $(li).appendTo(ul);
+    
+    var li = document.createElement('li');
+    li.appendChild(a);
+    li.setAttribute('class', 'nd_suggest-item');
+    // ul is jquery object, append elements differently
+    ul.append(li);
+    return ul;
   }
 });
 
@@ -241,7 +260,7 @@ $(document).ready(function() {
               minLength: 0,
               delay: 200
             });
-          }  
+          }
         });
       }
     });
@@ -364,7 +383,7 @@ $(document).ready(function() {
         delay: 200
       });
       input.data('buildingAutocomplete').option('showBuildingCode', true);
-      
+
       input.focus(function(){
         // bring up the list of suggestions if clicking building field for the first time
         if (!input.val()){
