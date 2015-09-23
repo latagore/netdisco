@@ -5,13 +5,13 @@ editicon.hide();
 // custom autocomplete appearance
 $.widget( "building.autocomplete", $.ui.autocomplete, {
   options: {
-    showBuildingCode: false
+    showBuildingNumber: false
   },
   _renderItem: function(ul, item){
     var a = document.createElement('a');
     a.appendChild(document.createTextNode(item.label));
     
-    if (this.options.showBuildingCode){
+    if (this.options.showBuildingNumber){
       var num = document.createElement('span');
       num.appendChild(document.createTextNode(' (' + item.buildingNumber + ')'));
       num.setAttribute('class', 'nd_suggest-building-number');
@@ -20,7 +20,7 @@ $.widget( "building.autocomplete", $.ui.autocomplete, {
     
     // show hint that indicates the kind of match if it meets the condition
     if (item.matchingNameType !== item.labelType 
-        && !(item.matchingNameType === "BUILDING_NUMBER" && this.options.showBuildingCode))
+        && !(item.matchingNameType === "BUILDING_NUMBER" && this.options.showBuildingNumber))
     {
       var hint = document.createElement('div');
       hint.appendChild(
@@ -382,7 +382,7 @@ $(document).ready(function() {
         minLength: 0,
         delay: 200
       });
-      input.data('buildingAutocomplete').option('showBuildingCode', true);
+      input.data('buildingAutocomplete').option('showBuildingNumber', true);
 
       input.focus(function(){
         // bring up the list of suggestions if clicking building field for the first time
