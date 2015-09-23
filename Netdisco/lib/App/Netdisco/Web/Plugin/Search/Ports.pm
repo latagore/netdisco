@@ -112,7 +112,7 @@ get '/ajax/content/search/ports' => require_login sub {
         "official_name.name" => {-ilike => scalar sql_match($building)}
       },
       {
-        join => { "port_info" => { building =>  "official_name" } }
+        prefetch => { "port_info" => { building =>  "official_name" } }
       });
     }
     # filter by riser room
