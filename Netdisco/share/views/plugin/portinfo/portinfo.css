@@ -30,9 +30,9 @@
 #dp-data-table td:hover .york-port-info[data-column=building],
 #dp-data-table .york-port-info[data-column=building]:focus
 {
-  max-width: none;
   overflow: visible;
   margin-right: 25px;
+  white-space: normal;
 }
 
 #dp-data-table .york-port-info-last-updated-by{
