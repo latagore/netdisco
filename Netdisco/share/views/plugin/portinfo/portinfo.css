@@ -19,6 +19,22 @@
   min-width: 50px;
 }
 
+#dp-data-table .york-port-info[data-column=building]{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  margin-right: 0;
+}
+
+#dp-data-table td:hover .york-port-info[data-column=building],
+#dp-data-table .york-port-info[data-column=building]:focus
+{
+  max-width: none;
+  overflow: visible;
+  margin-right: 25px;
+}
+
 #dp-data-table .york-port-info-last-updated-by{
   min-width: 100px;
 }

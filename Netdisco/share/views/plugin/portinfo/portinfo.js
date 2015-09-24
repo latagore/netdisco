@@ -62,15 +62,24 @@ function makePortInfoFieldsInteractive (){
       }
     }
   );
-
+   
   $('.tab-content').on('focus', '.york-port-info',
     function(event) {
+      // adjust columns on focusing building cell
+      if (this.dataset.column === 'building'){
+        $('#dp-data-table').DataTable().columns.adjust();
+      }
       editicon.hide();
       $(this).closest("td")[0].style.backgroundColor = "#FFFFD3";
     }
   );
   $('.tab-content').on('blur', '.york-port-info',
     function(event) {
+      // adjust columns on focusing building cell
+      if (this.dataset.column === 'building'){
+        $('#dp-data-table').DataTable().columns.adjust();
+      }
+      
       var td = $(this).closest("td");
       td[0].style.backgroundColor = "";
       // more hacks... autosuggest has hidden text for accessibility
