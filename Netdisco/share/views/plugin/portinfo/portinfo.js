@@ -58,8 +58,12 @@ $.widget( "building.autocomplete", $.ui.autocomplete, {
     }
     
     var li = document.createElement('li');
-    li.appendChild(a);
     li.setAttribute('class', 'nd_suggest-item');
+    li.appendChild(a);
+    // apparently you need to store the item object in the li element
+    // even though it's not in the documentation..
+    li = $(li).data('ui-autocomplete-item', item);
+
     // ul is jquery object, append elements differently
     ul.append(li);
     return ul;
