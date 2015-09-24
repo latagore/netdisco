@@ -110,6 +110,14 @@ function makePortInfoFieldsInteractive (){
       }
     }
   });
+  
+  /* adjust columns on keypress because datatables does not
+  automatically adjust columns on edit */
+  $('.tab-content').on('keypress', '#dp-data-table',
+    debounce(function(){
+      $('#dp-data-table').DataTable().columns.adjust();
+    }, 250)
+  );
 }
 function addBuildingSuggestionsToPortTable() {
   var buildings;
@@ -127,15 +135,6 @@ function addBuildingSuggestionsToPortTable() {
     }
   });
 }
-/* adjust columns on keypress because datatables does not
-automatically adjust columns on edit */
-function adjustColumnsOnKeypress() {
-  $('.tab-content').on('keypress', '#dp-data-table',
-    debounce(function(){
-      $('#dp-data-table').DataTable().columns.adjust();
-    }, 250)
-  );
-};
 
 // utility functions
 // make a call to change the port info for a port
@@ -290,7 +289,6 @@ function addPortInfoFunctionality(){
     var porttable = $('#dp-data-table').DataTable();
 
     addSavePortInfoButton();
-    adjustColumnsOnKeypress();
     makePortInfoFieldsInteractive();
     addBuildingSuggestionsToPortTable();
   }
