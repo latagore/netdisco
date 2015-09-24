@@ -243,9 +243,14 @@ function buildingAutocompleteSource (request, response) {
   }
 
 // add the various features to the page
-function addBuildingSuggestionsToAdvancedSearch(){
-  // auto complete functionality for advanced ports search
+function addNavBarFunctionality(){
   var input = $('#port-building-input');
+  $('#advanced-port-search-btn').click(function(){
+    input.focus();
+    $(this).fadeOut('fast');
+  });
+  
+  // auto complete functionality for advanced ports search 
   input.autocomplete({
     source: buildingAutocompleteSource,
     select: function() {
@@ -399,5 +404,5 @@ $.widget( "building.autocomplete", $.ui.autocomplete, {
 
 $(document).ready(function() {
   addPortInfoFunctionality();
-  addBuildingSuggestionsToAdvancedSearch();
+  addNavBarFunctionality();
 });

@@ -85,6 +85,27 @@
   padding-right: 15px;
 }
 
+#advanced-port-search-btn {
+  /* copy appearance of port input */
+  position: absolute;
+  padding: 4px 14px;
+  width: 206px;
+  height: 18px;
+  border-radius: 15px;
+  
+  /* copy search button appearance */
+  background-image: linear-gradient(to bottom, #444, #222);
+  background-repeat: repeat-x;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  color: #999;
+
+  user-select: none;
+  text-align: center;
+  cursor: default;
+}
+
 /* format the form close button to the left */
 .location-port-search-close-btn {
   padding: 3px;
@@ -111,3 +132,4 @@
   font-weight: bold;
   color: black;
 }
+
