@@ -1,6 +1,37 @@
+function setBuildingLabel(b){
+  b.buildingNumber = b.campus.charAt(0).toLowerCase() + b.num;
+  b.label = b.official ? b.official :
+             (b.short ? b.short :
+               (b.uit ? b.uit :
+                 (b.buildingNumber)
+               )
+             );
+  b.labelType = b.official ? "OFFICIAL" :
+                  (b.short ? "SHORT" :
+                    (b.uit ? "UIT" :
+                      ("BUILDING_NUMBER")
+                    )
+                  );
+}
+
 // create edit icon element just once
 var editicon = $("<i id='nd_portinfo-edit-icon' class='icon-edit nd_portinfo-edit-icon'></i>");
 editicon.hide();
+
+var buildings;
+$.ajax('/ajax/plugin/buildings', {
+  dataType: "json",
+  success: function(data) {
+    buildings = data.results;
+    buildings.forEach(function(b){
+      setBuildingLabel(b);
+    });
+
+    buildings.sort(function(a,b){
+      return a.label < b.label ? -1 : a.label > b.label;
+    });
+  }
+});
 
 // custom autocomplete appearance
 $.widget( "building.autocomplete", $.ui.autocomplete, {
@@ -215,70 +246,13 @@ $(document).ready(function() {
     // Add a building dropdown
     // Suggestions initially ordered alphabetically and
     // re-ordered with the most recent item at the top when an item is selected
-    $.ajax('/ajax/plugin/buildings', {
-      dataType: "json",
-      success: function(data) {
-        buildings = data.results;
-        buildings.forEach(function(b){
-          setBuildingLabel(b);
-        });
 
-        buildings.sort(function(a,b){
-          return a.label < b.label ? -1 : a.label > b.label;
-        });
-
-        $('.tab-content').on('focus', '[data-column=building]', function() {
-          if (!$(this).data('buildingAutocomplete')) {
-            $(this).autocomplete({
-              source: function(request, response) {
-                var r = new RegExp(request.term, 'i'); // use regexs for fast testing
-                var suggests = [];
-                for (var i = 0, l = buildings.length; i < l; i++) {
-                  var b = buildings[i];
-                  var suggest = {
-                    label: b.label,
-                    labelType: b.labelType,
-                    buildingNumber: b.buildingNumber
-                  };
-
-                  if (r.test(b.official)) {
-                    suggest.matchingName = b.official;
-                    suggest.matchingNameType = "OFFICIAL";
-                    suggests.push(suggest);
-                  } else if (r.test(b.short)) {
-                    suggest.matchingName = b.short;
-                    suggest.matchingNameType = "SHORT";
-                    suggests.push(suggest);
-                  } else if (r.test(b.uit)) {
-                    suggest.matchingName = b.uit;
-                    suggest.matchingNameType = "UIT";
-                    suggests.push(suggest);
-                  } else if (b.other) {
-                    for (var j = 0, ol = b.other.length; j < ol; j++){
-                      var other = b.other[j];
-                      if (r.test(other)) {
-                        suggest.matchingName = other;
-                        suggest.matchingNameType = "OTHER";
-                        suggests.push(suggest);
-                        break;
-                      }
-                    }
-                  } else if (r.test(b.buildingNumber)) {
-                    suggest.matchingName = b.buildingNumber;
-                    suggest.matchingNameType = "BUILDING_NUMBER";
-                    suggests.push(suggest);
-                  }
-                }
-                response(suggests);
-              },
-              select: function() {
-                $('.nd_location-port-search-additional').slideDown();
-              },
-              appendTo: "#nd_location-port-search",
-              minLength: 0,
-              delay: 200
-            });
-          }
+    $('.tab-content').on('focus', '[data-column=building]', function() {
+      if (!$(this).data('buildingAutocomplete')) {
+        $(this).autocomplete({
+          source: buildingAutocompleteSource,
+          minLength: 0,
+          delay: 200
         });
       }
     });
@@ -316,98 +290,67 @@ $(document).ready(function() {
       }
     });
   }
+ 
+  // provides the suggestion data for autocomplete plugin
+  function buildingAutocompleteSource (request, response) {
+    var r = new RegExp(request.term, 'i'); // use regexs for fast testing
+    var suggests = [];
+    for (var i = 0, l = buildings.length; i < l; i++) {
+      var b = buildings[i];
+      var suggest = {
+        label: b.label,
+        labelType: b.labelType,
+        buildingNumber: b.buildingNumber
+      };
 
-  function setBuildingLabel(b){
-    b.buildingNumber = b.campus.charAt(0).toLowerCase() + b.num;
-    b.label = b.official ? b.official :
-               (b.short ? b.short :
-                 (b.uit ? b.uit :
-                   (b.buildingNumber)
-                 )
-               );
-    b.labelType = b.official ? "OFFICIAL" :
-                    (b.short ? "SHORT" :
-                      (b.uit ? "UIT" :
-                        ("BUILDING_NUMBER")
-                      )
-                    );
-  }
-
-  var navBuildings;
-  // Port search by location functionality
-  $.ajax('/ajax/plugin/buildings', {
-    dataType: "json",
-    success: function(data) {
-      navBuildings = data.results;
-      navBuildings.forEach(function(b){
-        setBuildingLabel(b);
-      });
-
-      navBuildings.sort(function(a,b){
-        return a.label < b.label ? -1 : a.label > b.label;
-      });
-
-      var input = $('#port-building-input');
-      input.autocomplete({
-        source: function(request, response) {
-          var t = request.term.toLowerCase();
-          var suggests = [];
-          for (var i = 0, l = navBuildings.length; i < l; i++) {
-            var b = navBuildings[i];
-            var suggest = {
-              label: b.label,
-              labelType: b.labelType,
-              buildingNumber: b.buildingNumber
-            };
-
-            if ("official" in b
-                && b.official.toLowerCase().indexOf(t) >= 0) {
-              suggest.matchingName = b.official;
-              suggest.matchingNameType = "OFFICIAL";
-              suggests.push(suggest);
-            } else if ("short" in b
-                && b.short.toLowerCase().indexOf(t) >= 0) {
-              suggest.matchingName = b.short;
-              suggest.matchingNameType = "SHORT";
-              suggests.push(suggest);
-            } else if ("uit" in b
-                && b.uit.toLowerCase().indexOf(t) >= 0) {
-              suggest.matchingName = b.uit;
-              suggest.matchingNameType = "UIT";
-              suggests.push(suggest);
-            } else if ("other" in b) {
-              for (var other in b.other){
-                if (other.toLowerCase().indexOf(t) >= 0) {
-                  suggest.matchingName = other;
-                  suggest.matchingNameType = "OTHER";
-                  suggests.push(suggest);
-                  break;
-                }
-              }
-            } else if (b.buildingNumber
-                .indexOf(t) >= 0) {
-              suggest.matchingName = b.buildingNumber;
-              suggest.matchingNameType = "BUILDING_NUMBER";
-              suggests.push(suggest);
-            }
+      if (r.test(b.official)) {
+        suggest.matchingName = b.official;
+        suggest.matchingNameType = "OFFICIAL";
+        suggests.push(suggest);
+      } else if (r.test(b.short)) {
+        suggest.matchingName = b.short;
+        suggest.matchingNameType = "SHORT";
+        suggests.push(suggest);
+      } else if (r.test(b.uit)) {
+        suggest.matchingName = b.uit;
+        suggest.matchingNameType = "UIT";
+        suggests.push(suggest);
+      } else if (b.other) {
+        for (var j = 0, ol = b.other.length; j < ol; j++){
+          var other = b.other[j];
+          if (r.test(other)) {
+            suggest.matchingName = other;
+            suggest.matchingNameType = "OTHER";
+            suggests.push(suggest);
+            break;
           }
-          response(suggests);
-        },
-        select: function() {
-          $('.nd_location-port-search-additional').slideDown();
-        },
-        appendTo: "#nd_location-port-search",
-        minLength: 0,
-        delay: 200
-      });
-      input.data('buildingAutocomplete').option('showBuildingNumber', true);
-
-      input.focus(function(){
-        // bring up the list of suggestions if clicking building field for the first time
-        if (!input.val()){
-          input.autocomplete("search", "");
         }
-      });
+      } else if (r.test(b.buildingNumber)) {
+        suggest.matchingName = b.buildingNumber;
+        suggest.matchingNameType = "BUILDING_NUMBER";
+        suggests.push(suggest);
+      }
+    }
+    response(suggests);
+  }
+  
+  // auto complete functionality for advanced ports search
+  var input = $('#port-building-input');
+  input.autocomplete({
+    source: buildingAutocompleteSource,
+    select: function() {
+      $('.nd_location-port-search-additional').slideDown();
+    },
+    appendTo: "#nd_location-port-search",
+    minLength: 0,
+    delay: 200
+  });
+  input.data('buildingAutocomplete').option('showBuildingNumber', true);
+
+  // bring up the list of suggestions if clicking building field for the first time
+  input.focus(function(){
+    if (!input.val()){
+      input.autocomplete("search", "");
     }
   });
 
