@@ -40,6 +40,15 @@
 }
 #dp-data-table .york-port-info-last-updated{
   min-width: 100px;
+  overflow: hidden;
+  line-height: 1em;
+  height: 1em;
+  max-width: 100px;
+  text-overflow: ellipsis;
+}
+#dp-data-table .york-port-info-last-updated:hover{
+  line-height: inherit;
+  height: auto;
 }
 
 /* style for edit icon that appears on hover */
