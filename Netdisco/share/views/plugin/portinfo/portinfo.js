@@ -118,6 +118,12 @@ function makePortInfoFieldsInteractive (){
       $('#dp-data-table').DataTable().columns.adjust();
     }, 250)
   );
+  
+  /* take to the top when hitting "Update View" */
+  $('#ports_submit').click(function(){
+    $("html, body").animate({ scrollTop: 0 }, 2000, 'easeInOutQuart' );
+  });
+  
 }
 function addBuildingSuggestionsToPortTable() {
   var buildings;
