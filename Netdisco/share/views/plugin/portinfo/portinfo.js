@@ -30,7 +30,6 @@ $.widget( "building.autocomplete", $.ui.autocomplete, {
       num.setAttribute('class', 'nd_suggest-building-number');
       if (item.matchingNameType === "BUILDING_NUMBER"){
         num.innerHTML = ' (' + item.buildingNumber.replace(re, template) + ')';
-        a.appendChild(num);
       } else {
         num.appendChild(document.createTextNode(' (' + item.buildingNumber + ')'));
       }
