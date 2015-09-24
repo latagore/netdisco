@@ -1,1 +1,1 @@
-[% myport.push(row.port_info.building) %]
+[% myport.push(row.port_info.building.official_name.name) %]

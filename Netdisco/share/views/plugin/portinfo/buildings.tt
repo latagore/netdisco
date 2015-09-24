@@ -1,1 +1,32 @@
-[% json %]
+{
+  "results": [
+  [% first_entry = "true" %]
+  [% FOREACH row IN results %]
+    [% IF first_entry != "true" %],[% END %]
+    [% first_entry = "false" %]
+    {
+      "campus": "[% row.campus.dquote() %]",
+      "num": "[% row.num.dquote() %]"
+      [% IF row.official_name %]
+      ,"official": "[% row.official_name.name.dquote() %]"
+      [% END %]
+      [% IF row.short_name %]
+      ,"short": "[% row.short_name.name.dquote() %]"
+      [% END %]
+      [% IF row.uit_name %]
+      ,"uit": "[% row.uit_name.name.dquote() %]"
+      [% END %]
+      [% IF row.other_names %]
+      ,"other": 
+      [
+        [% other_names = [] %]
+        [% FOREACH other_name IN row.other_names.name %]
+        [% other_names.push("\"" _ other_name _ "\"") %]
+        [% END %]
+        [% other_names.join(",") %]
+      ]    
+      [% END %]
+    }
+  [% END %]
+  ]
+}

@@ -109,10 +109,10 @@ get '/ajax/content/search/ports' => require_login sub {
     if ($building){
       $set = $set->search(
       {
-        "port_info.building" => {-ilike => scalar sql_match($building)}
+        "official_name.name" => {-ilike => scalar sql_match($building)}
       },
       {
-        join => "port_info"
+        prefetch => { "port_info" => { building =>  "official_name" } }
       });
     }
     # filter by riser room

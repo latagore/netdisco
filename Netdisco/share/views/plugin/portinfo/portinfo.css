@@ -19,6 +19,22 @@
   min-width: 50px;
 }
 
+#dp-data-table .york-port-info[data-column=building]{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  margin-right: 0;
+}
+
+#dp-data-table td:hover .york-port-info[data-column=building],
+#dp-data-table .york-port-info[data-column=building]:focus
+{
+  max-width: none;
+  overflow: visible;
+  margin-right: 25px;
+}
+
 #dp-data-table .york-port-info-last-updated-by{
   min-width: 100px;
 }
@@ -85,12 +101,52 @@
   padding-right: 15px;
 }
 
+#advanced-port-search-btn {
+  /* copy appearance of port input */
+  position: absolute;
+  padding: 4px 14px;
+  width: 206px;
+  height: 18px;
+  border-radius: 15px;
+  
+  /* copy search button appearance */
+  background-image: linear-gradient(to bottom, #444, #222);
+  background-repeat: repeat-x;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  color: #999;
+
+  user-select: none;
+  text-align: center;
+  cursor: default;
+}
+
 /* format the form close button to the left */
 .location-port-search-close-btn {
   padding: 3px;
   position: absolute;
   left: -25px;
   top: 5px;
+}
+
+/* auto suggest styling */
+.nd_suggest-item {
+  border: 1px solid #EEEEEE;
+  border-radius: 5px;
+}
+
+.nd_suggest-match {
+  color: #777;
+  font-size: 75%;
+}
+.nd_suggest-building-number {
+  color: #777;
+}
+
+.nd_suggest-match-highlight {
+  font-weight: bold;
+  color: black;
 }
 
 .port-building-form-reset {

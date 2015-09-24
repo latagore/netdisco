@@ -79,29 +79,46 @@ ajax '/ajax/portinfocontrol' => require_role port_control => sub {
   my $port = $device->ports->search({port => param('port')})->first()
     or send_error('Bad Port', 400);  
 
-  $port->update_or_create_related("port_info", 
-    {
-      "$column" => "$value",
-      "last_modified" => \'NOW()',
-      "last_modified_by" => session('logged_in_user')
-    }); 
+  if ($column eq 'building'){
+    my $buildings = schema('netdisco')->resultset('Building')
+      ->search(
+        { "building_names.name" => $value },
+        { prefetch => "building_names" }
+      );
+    send_error('Bad building', 400) unless ($buildings->count == 1);
+    my $building = $buildings->first;
+    $port->update_or_create_related("port_info",
+      {
+        "building_campus" => $building->campus,
+        "building_num"    => $building->num,
+        "last_modified" => \'NOW()',
+        "last_modified_by" => session('logged_in_user')
+      });
+  } else {
+
+    $port->update_or_create_related("port_info", 
+      {
+        "$column" => "$value",
+        "last_modified" => \'NOW()',
+        "last_modified_by" => session('logged_in_user')
+      }); 
+  }
   
   content_type('text/plain');
   template 'plugin/portinfo/portinfo.tt', {}, {layout => undef};
 };
 
-ajax '/ajax/plugin/buildings' => require_login sub {
-  my @results = schema('netdisco')->resultset('Portinfo')->search(undef,
-    { columns => "building", order_by => "building", distinct => 1 })
-    ->all;
-  my @buildings;
-  foreach my $result (@results) {
-    push @buildings, $result->building if $result->building;
-  }
-  
+get '/ajax/plugin/buildings' => require_login sub {
+  my @results = schema('netdisco')->resultset('Building')->
+    search(undef,
+      {
+        prefetch => [qw/official_name short_name uit_name other_names/],
+        order_by => "official_name.name"
+      })->all;
+
   content_type('text/json');
   template 'plugin/portinfo/buildings.tt', 
-    { json => to_json(\@buildings) },
+    { results => \@results },
     { layout => undef };
 };
 

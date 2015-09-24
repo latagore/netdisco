@@ -110,6 +110,18 @@ __PACKAGE__->table("portinfo");
   data_type: 'text'
   is_nullable: 1
 
+=head2 building_campus
+
+  data_type: 'text'
+  is_foreign_key: 1
+  is_nullable: 1
+
+=head2 building_num
+
+  data_type: 'text'
+  is_foreign_key: 1
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -152,6 +164,10 @@ __PACKAGE__->add_columns(
   { data_type => "text", is_nullable => 1 },
   "phoneext",
   { data_type => "text", is_nullable => 1 },
+  "building_campus",
+  { data_type => "text", is_foreign_key => 1, is_nullable => 1 },
+  "building_num",
+  { data_type => "text", is_foreign_key => 1, is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -168,9 +184,31 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->set_primary_key("ip", "port");
 
+=head1 RELATIONS
 
-# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-06-19 15:52:09
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:lcS7yZUvEtCT+fHb3WiBRw
+=head2 building
+
+Type: belongs_to
+
+Related object: L<App::Netdisco::DB::Result::Building>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "building",
+  "App::Netdisco::DB::Result::Building",
+  { campus => "building_campus", num => "building_num" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07043 @ 2015-09-22 12:11:17
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:0hGLjigS4t/PK1p7G+/NpQ
 
 __PACKAGE__->belongs_to(
        device_port => "App::Netdisco::DB::Result::DevicePort",
