@@ -123,15 +123,25 @@ function makePortInfoFieldsInteractive (){
   $('#ports_submit').click(function(){
     $("html, body").animate({ scrollTop: 0 }, 2000, 'easeInOutQuart' );
   });
-  
 }
-function addBuildingSuggestionsToPortTable() {
+function addBuildingSuggestionsToPortsView() {
   var buildings;
   // Add a building dropdown
   // Suggestions initially ordered alphabetically and
   // re-ordered with the most recent item at the top when an item is selected
 
   $('.tab-content').on('focus', '[data-column=building]', function() {
+    if (!$(this).data('buildingAutocomplete')) {
+      $(this).autocomplete({
+        source: buildingAutocompleteSource,
+        minLength: 0,
+        delay: 200
+      });
+    }
+  });
+  
+  // add autocomplete to building search
+  $('#ports_form #nd_building-query').focus(function() {
     if (!$(this).data('buildingAutocomplete')) {
       $(this).autocomplete({
         source: buildingAutocompleteSource,
@@ -296,7 +306,7 @@ function addPortInfoFunctionality(){
 
     addSavePortInfoButton();
     makePortInfoFieldsInteractive();
-    addBuildingSuggestionsToPortTable();
+    addBuildingSuggestionsToPortsView();
   }
 }
 
