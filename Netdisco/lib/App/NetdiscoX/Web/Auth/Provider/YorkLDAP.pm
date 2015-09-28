@@ -110,7 +110,7 @@ sub get_user_roles {
         $ldap = Net::LDAP->new($server, %$opts) or next;
 
         my $results = _ldap_search($ldapuser, [], $netdiscouser, $netdiscopass);
-        return undef unless scalar @$results == 1;
+        return undef unless $results and scalar @$results == 1;
         my $entry = $results->[0];
         my $flags = $entry->get_value('pyAccessFlag', asref => 1) || [];
         
