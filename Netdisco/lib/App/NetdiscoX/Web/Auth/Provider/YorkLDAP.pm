@@ -15,6 +15,8 @@ use Net::LDAP;
 use Net::LDAP::Util qw/escape_filter_value/;
 use Try::Tiny;
 
+my %roles_cache = ();
+
 sub authenticate_user {
     my ($self, $username, $password) = @_;
     debug "using York LDAP authentication";
@@ -82,10 +84,19 @@ sub authenticate_with_ldap {
     return undef;
 }
 
+use Data::Dumper;
 sub get_user_roles {
     my ($self, $username) = @_;
     return unless defined $username;
-
+    
+    # check the cache before querying the servers
+    if ($roles_cache{$username}){
+	my %user_roles_cache = %{$roles_cache{$username}};
+        my $maxCacheTime = setting('max_ldap_cache_time') || 0; # number of minutes to cache
+        my $timeDiff = (time - $user_roles_cache{"lastTime"}) % 60; # time difference in minutes
+        return $user_roles_cache{"roles"} if $timeDiff < $maxCacheTime;
+    }
+    
     return unless setting('ldap') and ref {} eq ref setting('ldap');
     my $conf = setting('ldap');
 
@@ -120,6 +131,13 @@ sub get_user_roles {
         # match york ldap flags to roles
         push @$roles, "port_control" if $flaghash{'NETDISCO_PORTCONTROL'};
         push @$roles, "admin" if $flaghash{'NETDISCO_ADMIN'};
+        
+        
+        # cache the results
+        my %user_roles_cache = ();
+        $user_roles_cache{"lastTime"} = time;
+        $user_roles_cache{"roles"} = $roles;
+        $roles_cache{$username} = \%user_roles_cache;
 
         return $roles if scalar @$roles;
     }
