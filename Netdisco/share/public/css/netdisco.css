@@ -492,6 +492,12 @@ td > form.nd_inline-form {
   margin-bottom: 0px;
 }
 
+/* allow collapse content in collapses to overflow */
+.nd_sidebar .in {
+  overflow: visible;
+}
+
+
 /* for some reason bootstrap 2.1.0 displays add-on as block - no check supprt? */
 .nd_checkboxlabel {
   display: inline;
