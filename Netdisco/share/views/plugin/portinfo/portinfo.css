@@ -166,3 +166,10 @@
   font-size: 80%;
   padding-left: 15px;
 }
+
+
+/* fix for jQuery chosen plugin when selects are hidden */
+.chosen-container.chosen-container-single,
+.chosen-container.chosen-container-multi {
+  width: 163px !important;
+}
