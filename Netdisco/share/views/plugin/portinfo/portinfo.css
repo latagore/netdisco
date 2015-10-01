@@ -173,3 +173,19 @@
 .chosen-container.chosen-container-multi {
   width: 163px !important;
 }
+
+/* nav bar width when the screen is too small */
+@media (min-width: 801px) and (max-width: 1200px) {
+  body {
+    padding-top: 80px;
+  }
+}
+@media (max-width: 800px) {
+  body {
+    padding-top: 0px;
+  }
+  
+  .navbar {
+    position: static;
+  }
+}
