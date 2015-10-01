@@ -206,6 +206,11 @@ $(document).ready(function() {
         }
       });
     }
+    ,select: function(event, ui) {
+      var nq = $('#nq');
+      nq.val(ui.item.value);
+      nq.closest('form').submit();
+    }
     ,minLength: 3
     ,appendTo: "#nq-search"
   });
