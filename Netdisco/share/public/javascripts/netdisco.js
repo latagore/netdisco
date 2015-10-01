@@ -335,7 +335,7 @@ $(document).ready(function() {
   // dynamically resize data table size
   function resizeTable(){
     var e = $('.tab-content .dataTables_scrollBody');    
-    e.height((window.innerHeight - 200));
+    e.height(Math.max(window.innerHeight - 200,300));
   }
   resizeTable();
   $(".dataTable").DataTable().draw();
