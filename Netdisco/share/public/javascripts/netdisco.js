@@ -333,17 +333,21 @@ $(document).ready(function() {
   $('#daterange').trigger('input');
   
   // dynamically resize data table size
-  function resizeTable(){
+  function resize(){
     var e = $('.tab-content .dataTables_scrollBody');    
     e.height(Math.max(window.innerHeight - 200,300));
+    
+    if (window.innerWidth < 800 && $('.nd_sidebar').is(":visible")){
+      $('#nd_sidebar-toggle-img-in').click();
+    }
   }
-  resizeTable();
+  resize();
   $(".dataTable").DataTable().draw();
   
-  var d = debounce(resizeTable, 250);
+  var d = debounce(resize, 250);
   // resize on datatables init event because fixed columns 
   // plugin isn't robust
-  $(document).on("init.dt", resizeTable);
+  $(document).on("init.dt", resize);
   $(document).on("ajaxComplete", d);
   $(window).on("resize", d);
 
