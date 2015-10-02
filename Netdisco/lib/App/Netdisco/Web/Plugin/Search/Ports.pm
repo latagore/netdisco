@@ -104,6 +104,12 @@ get '/ajax/content/search/ports' => require_login sub {
         ],
       });
     }
+    
+    # join building official name if asked for
+    $set = $set->search_rs (undef, {
+        prefetch => { "port_info" => { building =>  "official_name" } }
+    }) if param('yorkportinfo_building');
+    
     # filter by building
     my $building = param('building');
     if ($building){

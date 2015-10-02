@@ -166,6 +166,11 @@ get '/ajax/content/device/ports' => require_login sub {
     # put in the York specific port information
     $set = $set->with_york_port_info;
 
+    # join building official name if asked for
+    $set = $set->search_rs (undef, {
+        prefetch => { "port_info" => { building =>  "official_name" } }
+    }) if param('yorkportinfo_building');
+
     # sort ports (empty set would be a 'no records' msg)
     my $results = [ sort { &App::Netdisco::Util::Web::sort_port($a->port, $b->port) } $set->all ];
     return unless scalar @$results;
