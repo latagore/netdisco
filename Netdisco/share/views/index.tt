@@ -47,15 +47,23 @@
           [% END %]
         </form>
         [% ELSE %]
-          [% IF user_has_role('admin') %]
           <form class="nd_login-form" method="post" action="[% uri_for('/admin/discover') %]">
-            <div class="form-horizontal">
-              <input placeholder="Device hostname or IP" class="span4" name="device" value="[% params.device %]" type="text"/>
-              <input type="hidden" name="extra" value="with-nodes"/>
-              <button type="submit" class="btn btn-info">Discover</button>
+            <div id="nd_home-advanced-container" class="clearfix">
+              <span id="nd_home-advanced-toggle" data-toggle="collapse" data-target="#nd_home-advanced">
+                <a>Advanced
+                <i class="icon-chevron-up nd_chevron"></i></a>
+              </span>
+              <div id="nd_home-advanced" class="collapse">
+                [% IF user_has_role('admin') %]
+                  <div class="form-horizontal">
+                    <input placeholder="Device hostname or IP" class="span4" name="device" value="[% params.device %]" type="text"/>
+                    <input type="hidden" name="extra" value="with-nodes"/>
+                    <button type="submit" class="btn btn-info">Discover</button>
+                  </div>
+                [% END %]
+              </div>
             </div>
           </form>
-          [% END %]
         [% END %]
       </div>
     </div>
@@ -63,7 +71,7 @@
   [% IF session.logged_in_user %]
   <div class="accordion" id="accordion-statistics">
     <div class="accordion-group">
-      <div class="accordion-heading nd_sysinfo-heading">
+      <div id="collapse-stats-heading" class="accordion-heading nd_sysinfo-heading">
           <a class="accordion-toggle" data-toggle="collapse" data-target="#collapse-stats" href="#">
             <i class="icon-chevron-up nd_chevron"></i> System Information
           </a>
@@ -87,8 +95,12 @@
   $('#nq').focus(); // set focus to navbar search
   $('#loginuser').focus(); // set focus to login, if it's there
 
-  $('.collapse').on('show', function() {
-    $('.nd_chevron').toggleClass('icon-chevron-up icon-chevron-down');
+  $('#nd_home-advanced').on('show hide', function() {
+    $('#nd_home-advanced-toggle .nd_chevron').toggleClass('icon-chevron-up icon-chevron-down');
+  });
+  
+  $('#collapse-stats').on('show', function() {
+    $('#collapse-stats-heading .nd_chevron').toggleClass('icon-chevron-up icon-chevron-down');
 
     if (! stats_loaded) {
       $('#nd_stats').load("[% uri_for('/ajax/content/statistics') %]", function(r,s,x) {
@@ -101,8 +113,8 @@
     }
   });
 
-  $('.collapse').on('hide', function() {
-    $('.nd_chevron').toggleClass('icon-chevron-up icon-chevron-down');
+  $('#collapse-stats').on('hide', function() {
+    $('#collapse-stats-heading .nd_chevron').toggleClass('icon-chevron-up icon-chevron-down');
   });
 </script>
 [% END %]
