@@ -255,6 +255,10 @@ get '/ajax/content/search/ports' => require_login sub {
     $set = $set->search_rs({}, { prefetch => [{$nodes_name => 'oui'}] })
       if param('c_nodes') && param('n_vendor');
 
+    # retrieve power, if asked for
+    $set = $set->search_rs({}, { prefetch => 'power' })
+      if param('c_power');
+
     # retrieve SSID, if asked for
     $set = $set->search({}, { prefetch => 'ssid' }) if param('c_ssid');
 
