@@ -118,7 +118,7 @@ get '/ajax/plugin/buildings' => require_login sub {
       {
         prefetch => [qw/official_name short_name uit_name other_names/],
         order_by => "official_name.name"
-      })->all;
+      })->hri->all;
 
   content_type('text/json');
   template 'plugin/portinfo/buildings.tt', 
