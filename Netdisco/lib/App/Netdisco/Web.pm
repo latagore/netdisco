@@ -18,6 +18,7 @@ use App::Netdisco::Util::Web 'interval_to_daterange';
 # can override splats only by loading first
 Module::Find::usesub 'App::NetdiscoE::Web';
 
+use App::Netdisco::Web::TemplateVMethods;
 use App::Netdisco::Web::AuthN;
 use App::Netdisco::Web::Static;
 use App::Netdisco::Web::Search;
@@ -186,7 +187,7 @@ hook 'before_template' => sub {
       $tokens->{device_ports}->query_param($key, params->{$key});
   }
 
-  $tokens->{mac_format_call} = 'as_'. lc(params->{'mac_format'})
+  $tokens->{mac_format_call} = 'mac_as_'. lc(params->{'mac_format'})
     if params->{'mac_format'};
 
   foreach my $col (@{ var('port_columns') }) {

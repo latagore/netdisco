@@ -110,7 +110,7 @@
     [% IF row.vlan_count %]
       [% SET output = '' %]
       [% SET vlanlist = [] %]
-      [% FOREACH vlan IN row.all_port_vlans %][% vlanlist.push(vlan.get_column('vlan')) %][% END %]
+      [% FOREACH vlan IN row.all_port_vlans %][% vlanlist.push(vlan.vlan) %][% END %]
       [% FOREACH vlan IN vlanlist.nsort %]
         [% SET output = output _ ',' IF NOT loop.first %]
         [% SET output = output _ vlan %]
@@ -182,7 +182,7 @@
       [% SET has_nodes = 1 %]
       [% SET mynode = [] %]
 
-      [% CALL mynode.push(node.net_mac.$mac_format_call) %]
+      [% CALL mynode.push(node.mac.$mac_format_call) %]
       [% CALL mynode.push((node.active ? 'No' : 'Yes')) %]
 
       [% CALL mynode.push(node.time_last_age) IF params.n_age %]

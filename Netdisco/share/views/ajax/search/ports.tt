@@ -202,7 +202,7 @@
           [% IF row.vlan_count %]
           [% SET output = '' %]
           [% SET vlanlist = [] %]
-          [% FOREACH vlan IN row.all_port_vlans %][% vlanlist.push(vlan.get_column('vlan')) %][% END %]
+          [% FOREACH vlan IN row.all_port_vlans %][% vlanlist.push(vlan.vlan) %][% END %]
           [% FOREACH vlan IN vlanlist.nsort %]
             [% SET output = output _
               '<a href="' _ uri_for('/search') _ '?tab=vlan&q=' _ vlan _ '">' _ vlan _ '</a>' %]
@@ -323,12 +323,12 @@
           [% ELSE %]
             <i class="icon-li icon-hdd"></i>
           [% END %]
-          <a href="[% search_node %]&q=[% node.net_mac.$mac_format_call | uri %]">
-            [% node.net_mac.$mac_format_call | html_entity %]</a>
+          <a href="[% search_node %]&q=[% node.mac.$mac_format_call | uri %]">
+            [% node.mac.$mac_format_call | html_entity %]</a>
           [% IF (node.vlan > 0) && (node.vlan != row.vlan) %]
             (on vlan [% node.vlan | html_entity %])
           [% END %]            
-          [% IF params.n_ssid AND node.wireless.defined %]
+          [% IF params.n_ssid AND node.wireless.length %]
             (SSID:
             [% FOREACH wlan IN node.wireless %]
               <a href="[%+ uri_for('/report/portssid') %]?ssid=[% wlan.ssid | uri %]">[% wlan.ssid | html_entity %]</a>
@@ -337,9 +337,7 @@
           [% END %]
           [% IF params.n_vendor AND node.oui.defined %]
             (Vendor:
-            [% FOREACH oui IN node.oui %]
-              <a href="[%+ uri_for('/report/nodevendor') %]?vendor=[% oui.abbrev | uri %]">[% oui.abbrev | html_entity %]</a>
-            [% END %]
+              <a href="[%+ uri_for('/report/nodevendor') %]?vendor=[% node.oui.abbrev | uri %]">[% node.oui.abbrev | html_entity %]</a>
             )
           [% END %]
           [% '<br />(' _ node.time_last_age _ ')' IF params.n_age %]
