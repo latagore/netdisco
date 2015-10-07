@@ -425,7 +425,6 @@
 
 <script>
 $(document).ready(function() {
-    var windowHeight = window.innerHeight;
     var table = $('#dp-data-table').dataTable({
         "columnDefs": [
             { "sortable": false, "targets": 0 },
@@ -433,8 +432,6 @@ $(document).ready(function() {
             { "type": 'portsort', "targets": [ 'portsort' ] }
         ],
         "order": [[ 1, 'asc' ]],
-        scrollX: true,
-        scrollY: windowHeight - 200,
         deferRender: true,
 [% INCLUDE 'ajax/datatabledefaults.tt' -%]
     } );
