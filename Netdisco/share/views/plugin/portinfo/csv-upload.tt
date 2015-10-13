@@ -10,7 +10,7 @@
               <form id="nd_csv-upload-form" method="POST" action="[% uri_for('/ajax/upload/ports') %]">
                 <p>Select a CSV to upload cable data for this device.</p>
                 <input type="hidden" name="device" value="[% params.q %]" />
-                <input name="file" class="btn" type="file" accept="text/csv" required="true" />
+                <input name="file" type="file" accept="text/csv" required="true" />
               </form>
             </div>
             <div class="modal-footer">
@@ -27,22 +27,22 @@
           </div>
           <div id="nd_csv-upload-modal-body-success">
             <div class="modal-body">
-              <p class="text-success">Uploaded cable data. Refresh to see the new changes.</p>
-              <div class="upload-warnings" class="text-warning"></div>
+              <strong><p class="text-success">Uploaded cable data. Refresh to see the new changes.</p></strong>
+              <div class="upload-warnings text-warning"></div>
             </div>
             <div class="modal-footer">
-              <button id="nd_csv-upload-modal-close"
-                formaction="#" class="btn btn-primary">Close</button>
+              <button formaction="#"
+                class="btn btn-primary nd_csv-upload-modal-close">Close</button>
             </div>
           </div>
           <div id="nd_csv-upload-modal-body-error">
             <div class="modal-body">
-              <div class="upload-errors" class="text-error"></div>
-              <div class="upload-warnings" class="text-warning"></div>
+              <div class="upload-errors text-error"></div>
+              <div class="upload-warnings text-warning"></div>
             </div>
             <div class="modal-footer">
-              <button id="nd_csv-upload-modal-close"
-                formaction="#" class="btn btn-primary">Close</button>
+              <button formaction="#" 
+                class="btn btn-primary nd_csv-upload-modal-close">Close</button>
             </div>
           </div>
         </div>

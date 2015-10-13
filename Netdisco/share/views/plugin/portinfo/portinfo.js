@@ -161,12 +161,24 @@ function addBuildingSuggestionsToPortsView() {
   });
 }
 function enableCSVUpload(){
+  // only show upload icon when ports tab shown
+  $('.nd_sidebar-form').submit(function(){
+    if (this.id === "ports_form"){
+      $('#nd_csv-upload-icon').show();
+    } else {
+      $('#nd_csv-upload-icon').hide();
+    }
+  });
+
   $('#nd_csv-upload-icon').click(function() {
     $('#nd_csv-upload-modal').show();
   });
   
-  $('#nd_csv-upload-modal-cancel, .upload-modal-close').click(function() {
+  $('#nd_csv-upload-modal-cancel, .nd_csv-upload-modal-close').click(function() {
     $('#nd_csv-upload-modal').hide();
+    $('#nd_csv-upload-modal-body-success').hide();
+    $('#nd_csv-upload-modal-body-error').hide();
+    $('#nd_csv-upload-modal-body-input').show();
     $('#nd_csv-upload-modal form').trigger('reset');
   });
   
@@ -187,15 +199,17 @@ function enableCSVUpload(){
       success: function(data) {
         var uploadWarnings = $('.upload-warnings');
         uploadWarnings.empty();
-        
-        if (data && data.warnings){
-          uploadWarnings.append(document.createTextNode("Warning: "));
 
-          var ul = document.createElement(ul);
+        if (data && data.warnings && data.warnings.length){
+          var warningBegin = document.createElement("strong");
+          warningBegin.appendChild(document.createTextNode("Warning: "));
+          uploadWarnings.append(warningBegin);
+
+          var ul = document.createElement("ul");
           ul = $(ul);
           data.warnings.forEach(function(val){
-            var warn = document.createElement(li);
-            warn.append(document.createTextNode(val));
+            var warn = document.createElement("li");
+            warn.appendChild(document.createTextNode(val));
             ul.append(warn);
           });
           uploadWarnings.append(ul);
@@ -212,14 +226,16 @@ function enableCSVUpload(){
         uploadErrors.empty();
         uploadErrors.hide();
 
-        if (data && data.errors){
-          uploadErrors.append(document.createTextNode("Error: "));
+        if (data && data.errors && data.errors.length){
+          var errorBegin = document.createElement("strong");
+          errorBegin.appendChild(document.createTextNode("Error: "));
+          uploadErrors.append(errorBegin);
           
-          var ul = document.createElement(ul);
+          var ul = document.createElement("ul");
           ul = $(ul);
           data.errors.forEach(function(val){
-            var error = document.createElement(li);
-            error.append(document.createTextNode(val));
+            var error = document.createElement("li");
+            error.appendChild(document.createTextNode(val));
             ul.append(warn);
           });
           uploadErrors.append(ul);
@@ -229,14 +245,16 @@ function enableCSVUpload(){
           uploadErrors.show();
         }
 
-        if (data && data.warnings){
-          uploadWarnings.append(document.createTextNode("Warning: "));
+        if (data && data.warnings && data.warnings.length){
+          var warningBegin = document.createElement("strong");
+          warningBegin.appendChild(document.createTextNode("Warning: "));
+          uploadWarnings.append(warningBegin);
 
-          var ul = document.createElement(ul);
+          var ul = document.createElement("ul");
           ul = $(ul);
           data.warnings.forEach(function(val){
-            var warn = document.createElement(li);
-            warn.append(document.createTextNode(val));
+            var warn = document.createElement("li");
+            warn.appendChild(document.createTextNode(val));
             ul.append(warn);
           });
           uploadWarnings.append(ul);

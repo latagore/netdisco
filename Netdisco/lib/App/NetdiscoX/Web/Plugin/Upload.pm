@@ -5,6 +5,7 @@ use Dancer::Plugin::Ajax;
 use Dancer::Plugin::DBIC;
 use Dancer::Plugin::Auth::Extensible;
 
+use Try::Tiny;
 use App::Netdisco::Web::Plugin;
 use Text::CSV;
 
@@ -56,26 +57,44 @@ post '/ajax/upload/ports' => require_role 'admin' => sub {
        ->search_for_device(param('device')) or send_error('Bad device', 400);
     my $ip = $device->ip;
     my @files = request->upload('file');
-    send_error('Must send only one file') if scalar @files != 1;
-
-    # TODO check HTTP header for content type
+    
+    # user messages for warnings and errors
+    my @warnings = ();
+    my @errors = ();
+    content_type 'application/json';
+    
+    # validation
+    push @errors, 'Must send only one file' if scalar @files != 1;
+    push @errors, "Wrong file type." # check HTTP header for content type
+      unless $files[0]->headers->{"Content-Type"} eq "text/comma-separated-values";
+    status 400 if scalar @errors;
+    return to_json( { errors => \@errors } ) if scalar @errors;
+    
+    # read the file
     my $file = $files[0]->file_handle;
-    
     my $csv = Text::CSV->new ( { binary => 1 } );  # should set binary attribute.
-    
     my $csv_header = $csv->getline($file);
     my $col_header;
     foreach my $col (@$csv_header){
       push @$col_header, ($CSV_MAP{$col} || "");
+      push @warnings, "'$col' is not a cable data column. Ignoring.";
     }
-
-    $csv->column_names (@$col_header);    
+    $csv->column_names (@$col_header);
     my $data = $csv->getline_hr_all($file);
-    # TODO validate that the CSV parses correctly
     
     # insert the data in the database
     schema('netdisco')->txn_do(sub {
-      foreach my $datarow (@$data){
+      schema('netdisco')->resultset('UserLog')->create({
+        username => session('logged_in_user'),
+        userip => request->remote_address,
+        event => "Cable Data CSV Upload",
+        details => $ip,
+      });
+      
+      # keep track of the line number for error reporting
+      my $linenumber = 1;
+      DATA: foreach my $datarow (@$data){
+        $linenumber++;
         my $result = schema('netdisco')->resultset('Portinfo')->find_or_new(
             {ip => $ip, port => $datarow->{port}});
             
@@ -85,6 +104,8 @@ post '/ajax/upload/ports' => require_role 'admin' => sub {
             and $col ne 'port';
           
           if ($DB_MAP{$col}){
+            # skip if value is blank or null, no point looking up
+            next unless defined $datarow->{col} and $datarow->{col} ne '';
             my $b = $DB_MAP{building};
             my ($success, $pkeycols) = get_pkey($datarow->{$col}, 
               $b->{column},
@@ -98,18 +119,29 @@ post '/ajax/upload/ports' => require_role 'admin' => sub {
                 $result->set_column($b->{key_columns_as}->{$pkeycol}, $pkeycols->{$pkeycol});
               }
             } else {
-              # TODO error
+              push @errors, "Failed to get primary key for for line $linenumber";
+              last DATA;
             }
           } else {
             $result->set_column($col, $datarow->{$col});
           }
           
         }
-        $result->update_or_insert;
+        try {
+          $result->update_or_insert;
+        } catch {
+          push @errors, "Failed to update or insert line $linenumber: ".$_;
+          last DATA;
+        }
       }
     });
-    # TODO print success status
-    # log csv upload
+
+    status 400 if scalar @errors;
+    return to_json(
+        {   errors      => \@errors,
+            warnings    => \@warnings,
+        }
+    );    
 };
 
 1;
