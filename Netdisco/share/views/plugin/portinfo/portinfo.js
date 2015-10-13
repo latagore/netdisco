@@ -160,6 +160,98 @@ function addBuildingSuggestionsToPortsView() {
     }
   });
 }
+function enableCSVUpload(){
+  $('#nd_csv-upload-icon').click(function() {
+    $('#nd_csv-upload-modal').show();
+  });
+  
+  $('#nd_csv-upload-modal-cancel, .upload-modal-close').click(function() {
+    $('#nd_csv-upload-modal').hide();
+    $('#nd_csv-upload-modal form').trigger('reset');
+  });
+  
+  // replace submit with ajax submit
+  $('#nd_csv-upload-form').submit(function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $('#nd_csv-upload-modal-body-input').hide();
+    $('#nd_csv-upload-modal-body-loading').show();
+    var form = $('#nd_csv-upload-form');
+    var formData = new FormData(form.get(0));
+
+    $.ajax(form.attr("action"), {
+      data: formData,
+      method: "POST",
+      processData: false,
+      contentType: false,
+      success: function(data) {
+        var uploadWarnings = $('.upload-warnings');
+        uploadWarnings.empty();
+        
+        if (data && data.warnings){
+          uploadWarnings.append(document.createTextNode("Warning: "));
+
+          var ul = document.createElement(ul);
+          ul = $(ul);
+          data.warnings.forEach(function(val){
+            var warn = document.createElement(li);
+            warn.append(document.createTextNode(val));
+            ul.append(warn);
+          });
+          uploadWarnings.append(ul);
+        }
+        
+        $('#nd_csv-upload-modal-body-loading').hide();
+        $('#nd_csv-upload-modal-body-success').show();
+      },
+      error: function(data) {
+        var uploadWarnings = $('.upload-warnings');
+        uploadWarnings.empty();
+        uploadWarnings.hide();
+        var uploadErrors = $('.upload-errors');
+        uploadErrors.empty();
+        uploadErrors.hide();
+
+        if (data && data.errors){
+          uploadErrors.append(document.createTextNode("Error: "));
+          
+          var ul = document.createElement(ul);
+          ul = $(ul);
+          data.errors.forEach(function(val){
+            var error = document.createElement(li);
+            error.append(document.createTextNode(val));
+            ul.append(warn);
+          });
+          uploadErrors.append(ul);
+          uploadErrors.show();
+        } else {
+          uploadErrors.append(document.createTextNode("Error, reason missing."));
+          uploadErrors.show();
+        }
+
+        if (data && data.warnings){
+          uploadWarnings.append(document.createTextNode("Warning: "));
+
+          var ul = document.createElement(ul);
+          ul = $(ul);
+          data.warnings.forEach(function(val){
+            var warn = document.createElement(li);
+            warn.append(document.createTextNode(val));
+            ul.append(warn);
+          });
+          uploadWarnings.append(ul);
+          uploadWarnings.show();
+        }
+        
+        $('#nd_csv-upload-modal-body-loading').hide();
+        $('#nd_csv-upload-modal-body-error').show();
+        
+      }
+    });
+    $('#nd_csv-upload-modal form').trigger('reset');
+  });
+}
+
 
 // utility functions
 // make a call to change the port info for a port
@@ -429,4 +521,5 @@ $.widget( "building.autocomplete", $.ui.autocomplete, {
 $(document).ready(function() {
   addPortInfoFunctionality();
   addNavBarFunctionality();
+  enableCSVUpload();
 });

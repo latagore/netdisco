@@ -1,0 +1,49 @@
+        [% IF user_has_role('admin') %]
+        <a id="nd_csv-upload" href="#">
+          <i id="nd_csv-upload-icon" class="text-info icon-upload-alt icon-large"
+            rel="tooltip" data-placement="left" data-offset="5" data-title="Upload Cable Data CSV"></i></a>
+        <div id="nd_csv-upload-modal" class="modal">
+          <div class="modal-header"><h3>Upload Cable Data CSV</h3></div>
+
+          <div id="nd_csv-upload-modal-body-input">
+            <div class="modal-body">
+              <form id="nd_csv-upload-form" method="POST" action="[% uri_for('/ajax/upload/ports') %]">
+                <p>Select a CSV to upload cable data for this device.</p>
+                <input type="hidden" name="device" value="[% params.q %]" />
+                <input name="file" class="btn" type="file" accept="text/csv" required="true" />
+              </form>
+            </div>
+            <div class="modal-footer">
+               <button id="nd_csv-upload-modal-cancel"
+                 formaction="#" class="btn">Cancel</button>
+               <button id="nd_csv-upload-modal-submit"
+                 form="nd_csv-upload-form" class="btn btn-primary">Upload</button>
+            </div>
+          </div>
+          <div id="nd_csv-upload-modal-body-loading">
+            <div class="modal-body">
+              <p><i class="icon-spinner icon-spin icon-large"></i> Uploading...</p>
+            </div>
+          </div>
+          <div id="nd_csv-upload-modal-body-success">
+            <div class="modal-body">
+              <p class="text-success">Uploaded cable data. Refresh to see the new changes.</p>
+              <div class="upload-warnings" class="text-warning"></div>
+            </div>
+            <div class="modal-footer">
+              <button id="nd_csv-upload-modal-close"
+                formaction="#" class="btn btn-primary">Close</button>
+            </div>
+          </div>
+          <div id="nd_csv-upload-modal-body-error">
+            <div class="modal-body">
+              <div class="upload-errors" class="text-error"></div>
+              <div class="upload-warnings" class="text-warning"></div>
+            </div>
+            <div class="modal-footer">
+              <button id="nd_csv-upload-modal-close"
+                formaction="#" class="btn btn-primary">Close</button>
+            </div>
+          </div>
+        </div>
+        [% END %]

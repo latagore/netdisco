@@ -189,3 +189,11 @@
     position: static;
   }
 }
+
+/* upload CSV feature styling */
+#nd_csv-upload-modal,
+#nd_csv-upload-modal-body-loading,
+#nd_csv-upload-modal-body-success,
+#nd_csv-upload-modal-body-error {
+  display: none;
+}

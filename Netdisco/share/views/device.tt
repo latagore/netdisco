@@ -43,6 +43,7 @@
         <a id="nd_csv-download" href="#" download="netdisco.csv">&nbsp;
           <i id="nd_csv-download-icon" class="text-info icon-file-text-alt icon-large"
             rel="tooltip" data-placement="left" data-offset="5" data-title="Download as CSV"></i></a>
+        [% INCLUDE 'plugin/portinfo/csv-upload.tt' %]
       </span>
     </ul>
     <div class="tab-content">
