@@ -233,11 +233,15 @@ td > form.nd_inline-form {
   margin-bottom: 10px;
 }
 
-/* for any label which we want to appear alongside tabs, floated to the right */
-#nd_device-name {
+/* group device and download icons on the right */
+#nd_search-results-right {
   float: right;
   margin-bottom: 0px;
   margin-top: 9px;
+}
+
+/* for any label which we want to appear alongside tabs, floated to the right */
+#nd_device-name {
   font-weight: bold;
   color: #6D5720;
 }
