@@ -15,7 +15,7 @@ function do_search (event, tab) {
     $('.content').css('margin-right', '10px');
   }
   else {
-    if (sidebar_hidden) {
+    if (sidebar_hidden || window.innerWidth < hide_sidebar_width) {
       $('#nd_sidebar-toggle-img-out').show();
     }
     else {
@@ -57,6 +57,7 @@ function do_search (event, tab) {
 }
 
 // keep track of which tabs have a sidebar, for when switching tab
+var hide_sidebar_width = 800; // min width before the sidebar is automatically hidden
 var has_sidebar = {};
 var sidebar_hidden = 0;
 
@@ -186,6 +187,12 @@ function debounce(func, wait, immediate) {
 };
 
 $(document).ready(function() {
+  // hide sidebar on page load if screen too small
+  if (window.innerWidth < hide_sidebar_width){
+    $('.content').css('margin-right', '10px');
+    $('.nd_sidebar').hide();
+  }
+  
   // sidebar form fields should change colour and have bin/copy icon
   $('.nd_field-copy-icon').hide();
   $('.nd_field-clear-icon').hide();
@@ -333,21 +340,17 @@ $(document).ready(function() {
   $('#daterange').trigger('input');
   
   // dynamically resize data table size
-  function resize(){
+  function resizeTable() {
     var e = $('.tab-content .dataTables_scrollBody');    
     e.height(Math.max(window.innerHeight - 200,300));
-    
-    if (window.innerWidth < 800 && $('.nd_sidebar').is(":visible")){
-      $('#nd_sidebar-toggle-img-in').click();
-    }
   }
-  resize();
+  resizeTable();
   $(".dataTable").DataTable().draw();
   
-  var d = debounce(resize, 250);
+  var d = debounce(resizeTable, 250);
   // resize on datatables init event because fixed columns 
   // plugin isn't robust
-  $(document).on("init.dt", resize);
+  $(document).on("init.dt", resizeTable);
   $(document).on("ajaxComplete", d);
   $(window).on("resize", d);
 
