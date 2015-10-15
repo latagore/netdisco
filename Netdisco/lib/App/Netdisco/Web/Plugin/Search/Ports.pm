@@ -23,7 +23,10 @@ get '/ajax/content/search/ports' => require_login sub {
         param('building') or
         param('cable') or
         param('pigtail') or
-        param('riserroom')
+        param('riserroom') or 
+        param('room') or 
+        param('vlan') or 
+        param('port')
       );
 
     my $prefer = param('prefer');
