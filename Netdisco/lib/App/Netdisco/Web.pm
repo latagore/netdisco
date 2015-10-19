@@ -82,7 +82,7 @@ hook 'before' => sub {
     { name => 'c_vmember',     label => 'VLAN Membership',   default => 'on' },
     { name => 'c_power',       label => 'PoE',               default => ''   },
     { name => 'c_ssid',        label => 'SSID',              default => ''   },
-    { name => 'c_nodes',       label => 'Connected Nodes',   default => ''   },
+    { name => 'c_nodes',       label => 'Connected Nodes',   default => 'on'   },
     { name => 'c_neighbors',   label => 'Connected Devices', default => 'on' },
     { name => 'c_stp',         label => 'Spanning Tree',     default => ''   },
     { name => 'c_up',          label => 'Status',            default => ''   },
