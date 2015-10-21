@@ -234,7 +234,7 @@ td > form.nd_inline-form {
 }
 
 /* group device and download icons on the right */
-#nd_search-results-right {
+#nd_content-header-right {
   float: right;
   margin-bottom: 0px;
   margin-top: 9px;

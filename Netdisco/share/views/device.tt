@@ -36,7 +36,7 @@
       [% FOREACH tab IN settings._device_tabs %]
       <li[% ' class="active"' IF params.tab == tab.tag %]><a id="[% tab.tag %]_link" href="#[% tab.tag %]_pane">[% tab.label %]</a></li>
       [% END %]
-      <span id="nd_search-results-right">
+      <span id="nd_content-header-right">
         <span id="nd_device-name">
           [% display_name | html_entity %]
         </span>

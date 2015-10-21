@@ -28,13 +28,13 @@
       <li class="active"><a id="[% report.tag %]_link" class="nd_single-tab"
         href="#[% report.tag %]_pane">[% report.label %]</a></li>
       [% IF report.tag == 'portlog' %]
-      <span id="nd_device-name">
+      <span id="nd_content-header-right">
         <a href="[% device_ports %]&q=[% params.q | uri %]">[% params.q %]</a>
         -
         <a href="[% device_ports %]&q=[% params.q | uri %]&f=[% params.f | uri %]">[% params.f %]</a>
       </span>
       [% ELSIF report.provides_csv %]
-      <span id="nd_device-name">
+      <span id="nd_content-header-right">
         <a id="nd_csv-download" href="#" download="netdisco.csv">
           <i id="nd_csv-download-icon" class="text-info icon-file-text-alt icon-large"
             rel="tooltip" data-placement="left" data-offset="5" data-title="Download as CSV"></i></a>

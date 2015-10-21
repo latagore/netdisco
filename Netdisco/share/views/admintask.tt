@@ -27,7 +27,7 @@
       <li class="active"><a id="[% task.tag %]_link" class="nd_single-tab"
         href="#[% task.tag %]_pane">[% task.label %]</a></li>
       [% IF task.tag == 'jobqueue' %]
-      <span id="nd_device-name">
+      <span id="nd_content-header-right">
         <a class="nd_adminbutton" name="delall" href="#"><i class="icon-trash text-error"></i></a>
         <a id="nd_countdown-refresh" href="#"><i class="text-success icon-refresh"></i></a>
         <a id="nd_countdown-control" href="#">
@@ -35,11 +35,11 @@
         <span id="nd_countdown"></span>
       </span>
       [% ELSIF task.tag == 'userlog' %]
-      <span id="nd_device-name">
+      <span id="nd_content-header-right">
         <a class="nd_adminbutton" name="delall" href="#"><i class="icon-trash text-error"></i></a>
       </span>
       [% ELSIF task.provides_csv %]
-      <span id="nd_device-name">
+      <span id="nd_content-header-right">
         <a id="nd_csv-download" href="#" download="netdisco.csv">
           <i id="nd_csv-download-icon" class="text-info icon-file-text-alt icon-large"
             rel="tooltip" data-placement="left" data-offset="5" data-title="Download as CSV"></i></a>
