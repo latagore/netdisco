@@ -137,7 +137,7 @@
         [% UNLESS m.module == 1 %]
           <br/>
         [% END %]
-        Module [% m.module %]: [% m.status | html_entity %], [% m.poe_capable_ports %] power-capable ports, [% m.poe_powered_ports %] powered ([% m.poe_disabled_ports %] admin disabled, [% m.poe_errored_ports %] errors), [% m.poe_power_committed %]/[% m.power %] watts committed.
+        Module [% m.module %]: [% m.status | html_entity %], [% m.poe_capable_ports %] power-capable ports, [% m.poe_powered_ports %] powered ([% m.poe_disabled_ports %] admin disabled, [% m.poe_errored_ports %] errors), [% m.poe_power_committed %]/[% m.power %] watts committed, [% m.poe_power_delivering %]/[% m.power %] watts delivered.
       [% END %]
       </td>
     </tr>
