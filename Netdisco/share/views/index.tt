@@ -47,6 +47,7 @@
           [% END %]
         </form>
         [% ELSE %]
+          <p><a href="https://netdisco.netops.yorku.ca">Click here to open the old Netdisco.</a></p>
           <form class="nd_login-form" method="post" action="[% uri_for('/admin/discover') %]">
             <div id="nd_home-advanced-container" class="clearfix">
               <span id="nd_home-advanced-toggle" data-toggle="collapse" data-target="#nd_home-advanced">
