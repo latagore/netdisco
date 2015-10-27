@@ -365,7 +365,6 @@ function buildingAutocompleteSource (request, response) {
 // add the various features to the page
 function addNavBarFunctionality(){
   var input = $('#port-building-input');
-  console.log(input.length);
   $('#advanced-port-search-btn').click(function(){
     if ($('.nd_location-port-search-additional:visible').length){
       $('.nd_location-port-search-additional').slideUp();
@@ -424,14 +423,10 @@ function addNavBarFunctionality(){
       building: {
         required: {
           "depends": function(element) {
-            console.log("depends");
             if (!dependsFired){
               dependsFired = true;
-              console.log(warned);
-              console.log($("#pigtail-input:filled, #cable-input:filled").length && !warned);
               return $("#pigtail-input:filled, #cable-input:filled").length && !warned;
             } else {
-              console.log("extra");
               return $("#pigtail-input:filled, #cable-input:filled").length;
             }
           }
@@ -453,7 +448,6 @@ function addNavBarFunctionality(){
   $('#nd_location-port-search form').keypress(function(e){
     dependsFired = false;
     if (e.keyCode === 13) {
-      console.log("enter");
       $(this).submit();
     } else {
       warned = false;
