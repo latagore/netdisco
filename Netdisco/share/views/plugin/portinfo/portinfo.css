@@ -114,10 +114,11 @@
   padding-left: 15px;
   padding-right: 15px;
 }
-
+.nd_location-port-search-additional label.error{
+  color: #FF6;
+}
 #advanced-port-search-btn {
   /* copy appearance of port input */
-  position: absolute;
   padding: 4px 14px;
   width: 206px;
   height: 18px;
@@ -165,9 +166,8 @@
 
 .port-building-form-reset {
   color: #AAC;
-  position: absolute;
-  right: 10px;
-  top: 5px;
+  margin-top: -3px;
+  margin-bottom: -3px;
   font-size: 80%;
   padding-left: 15px;
 }

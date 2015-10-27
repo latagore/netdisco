@@ -1,3 +1,4 @@
+
 // York cable data javascript
 
 // functions that add bits of features to the page
@@ -364,18 +365,19 @@ function buildingAutocompleteSource (request, response) {
 // add the various features to the page
 function addNavBarFunctionality(){
   var input = $('#port-building-input');
+  console.log(input.length);
   $('#advanced-port-search-btn').click(function(){
-    input.focus();
-    $(this).fadeOut('fast');
+    if ($('.nd_location-port-search-additional:visible').length){
+      $('.nd_location-port-search-additional').slideUp();
+    } else {
+      $('.nd_location-port-search-additional').slideDown();
+    }
   });
   
   // auto complete functionality for advanced ports search 
   input.autocomplete({
     source: buildingAutocompleteSource,
-    select: function() {
-      $('.nd_location-port-search-additional').slideDown();
-    },
-    appendTo: "#nd_location-port-search",
+    appendTo: ".nd_location-port-search-additional",
     minLength: 0,
     delay: 200
   });
@@ -388,42 +390,79 @@ function addNavBarFunctionality(){
       input.autocomplete("search", "");
     }
   });
-  $('#port-building-input').on('blur focus', function(){
-    if ($(this).val()){
-      $('.nd_location-port-search-additional').slideDown();
-    } else {
-      $('.nd_location-port-search-additional').slideUp();
-    }
-  });
 
   if ($('.nd_location-port-search-additional input')
         .filter(function(){ return this.value.length>0; }).length > 0){
-    $('#port-building-input')
-      .after("<div class='port-building-form-reset' rel='tooltip' data-placement='right'"
+    $('.nd_location-port-search-additional')
+      .prepend("<div class='port-building-form-reset' rel='tooltip' data-placement='right'"
         + " title='Reset search form'>Reset</div>");
     $('.port-building-form-reset').tooltip();
     $('.port-building-form-reset').click(function(){
-       $('#port-building-input').focus();
        $('.nd_location-port-search-additional').slideDown();
        $('#nd_location-port-search form input:visible').val('');
        $('.port-building-form-reset').mouseout().remove();
     });
   }
   
-  $('#nd_location-port-search form').keypress(function(e){
-    if ($('#port-building-input').val()){
-      // enter pressed
-      if (e.keyCode == 13) {
-        this.submit();
-      // tab pressed
-      } else if (e.keyCode == 9){
-        $('.nd_location-port-search-additional').slideDown();
+  $('#nd_location-port-search form').submit(function(e){
+    var ok = true;
+    if ($('#cable-input').val() !== ""
+          || $('#pigtail-input').val() !== ""){
+
+      // check that there is at least another field 
+      if ($('input:visible:not(#cable-input,#pigtail-input)')
+            .filter(function(){ return this.value.length>0; }).length === 0){
+        ok = false;
+        
       }
+    }
+  });
+  var warned = false;
+  var dependsFired = false;
+  $('#nd_location-port-search form').validate({
+    rules: {
+      building: {
+        required: {
+          "depends": function(element) {
+            console.log("depends");
+            if (!dependsFired){
+              dependsFired = true;
+              console.log(warned);
+              console.log($("#pigtail-input:filled, #cable-input:filled").length && !warned);
+              return $("#pigtail-input:filled, #cable-input:filled").length && !warned;
+            } else {
+              console.log("extra");
+              return $("#pigtail-input:filled, #cable-input:filled").length;
+            }
+          }
+        }
+      }
+    }, 
+    messages: {
+      building: "The building field is recommended when searching for pigtail or horizontal cable. Press Enter to search anyways.",
+    },
+    invalidHandler: function(event, validator){
+      warned = true;
+    },
+    errorPlacement: function(error, element){
+      element.before(error);
+    },
+    focusInvalid: false
+  });
+  
+  $('#nd_location-port-search form').keypress(function(e){
+    dependsFired = false;
+    if (e.keyCode === 13) {
+      console.log("enter");
+      $(this).submit();
+    } else {
+      warned = false;
     }
   });
   $('.location-port-search-close-btn').click(function(){
      $('.nd_location-port-search-additional').slideUp();
   });
+  
 }
 function addPortInfoFunctionality(){
   $('#nd_search-results').on('click', 'li a',  function() {
