@@ -22,7 +22,6 @@ body {
   margin-top: 0px !important;
 }
 .nd_navbar-search-icon {
-  color: #999;
   padding-left: 5px;
   padding-right: 5px;
 }
@@ -34,7 +33,7 @@ body {
 
 /* for the "logged in as..." text */
 .nd_navbar-text {
-  color: #666;
+  color: white;
   padding-top: 11px;
 }
 
@@ -706,4 +705,16 @@ td.nd_nowrap {
 /* use for clearinng float on data table headers*/
 .clear {
   clear: both;
+}
+
+/* navbar contrast improvements */
+.navbar-inverse .brand, .navbar-inverse .nav > li > a {
+  color: white;
+}
+.navbar-inverse .btn-inverse {
+  color: white;
+}
+.navbar-inverse .btn-inverse .caret {
+  border-top-color: white;
+  border-bottom-color: white;
 }
