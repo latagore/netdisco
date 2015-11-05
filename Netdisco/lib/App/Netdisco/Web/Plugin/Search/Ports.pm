@@ -26,6 +26,7 @@ get '/ajax/content/search/ports' => require_login sub {
         param('riserroom') or 
         param('room') or 
         param('vlan') or 
+        param('node') or 
         param('port')
       );
 
@@ -73,6 +74,30 @@ get '/ajax/content/search/ports' => require_login sub {
       {
         prefetch => "port_vlans"
       });
+
+    # refine by node if requested
+    my $fnode = param('node');
+    if ($fnode) {
+      my $match = sql_match($fnode);
+
+      #define DBI where clauses
+      my $nodemac = NetAddr::MAC->new(mac => $fnode);
+      my $nodeip = NetAddr::IP->new(ip => $fnode);
+      my @where;
+      if (defined $nodemac and !$nodemac->errstr) {
+        @where = ('nodes.mac' => $nodemac->as_ieee);
+      } elsif (!defined $nodeip or $nodeip->errstr) {
+        @where = ('ips.ip' => $nodeip->as_ieee);
+      } else {
+        @where = ('ips.dns' => { -ilike => $match });
+      }
+      
+      $set = $set->search({@where}, 
+        { 
+          join => { 'nodes' => 'ips' }
+        });
+      return unless $set->count;
+    }
     
     # refine by vlan if requested
     my $fvlan = param('vlan');

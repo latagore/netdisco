@@ -39,17 +39,24 @@
             </div>
             <div class="clearfix">
               <i class="nd_field-clear-icon icon-trash icon-large"
-                 id="port_clear_btn" data-btn-for="port"></i>
-              <input id="nd_port-query" class="nd_side-input" placeholder="Port"
-                name="port" value="[% params.port | html_entity %]" type="text"
-                rel="tooltip" data-placement="left" data-offset="5" data-title="Filter by Port"/>
-            </div>
-            <div class="clearfix">
-              <i class="nd_field-clear-icon icon-trash icon-large"
                  id="vlan_clear_btn" data-btn-for="vlan"></i>
               <input id="nd_vlan-query" class="nd_side-input" placeholder="VLAN"
                 name="vlan" value="[% params.vlan | html_entity %]" type="text"
                 rel="tooltip" data-placement="left" data-offset="5" data-title="Filter by VLAN"/>
+            </div>
+            <div class="clearfix">
+              <i class="nd_field-clear-icon icon-trash icon-large"
+                 id="node_clear_btn" data-btn-for="node"></i>
+              <input id="nd_node-query" class="nd_side-input" placeholder="Node"
+                name="node" value="[% params.node | html_entity %]" type="text"
+                rel="tooltip" data-placement="left" data-offset="5" data-title="Filter by Node"/>
+            </div>
+            <div class="clearfix">
+              <i class="nd_field-clear-icon icon-trash icon-large"
+                 id="port_clear_btn" data-btn-for="port"></i>
+              <input id="nd_port-query" class="nd_side-input" placeholder="Port"
+                name="port" value="[% params.port | html_entity %]" type="text"
+                rel="tooltip" data-placement="left" data-offset="5" data-title="Filter by Port"/>
             </div>
             <div class="clearfix">
               <span data-toggle="collapse" data-target="#nd_legend">

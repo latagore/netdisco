@@ -174,6 +174,7 @@
               <input id="riserroom-input" class="search-query" type="text" name="riserroom" title="Riser Room" rel="tooltip" data-placement="left" placeholder="...and Riser Room" value="[% params.riserroom %]"></input>
               <input id="room-input" class="search-query" type="text" name="room" title="Destination Room" rel="tooltip" data-placement="left" placeholder="...and Destination Room" value="[% params.room %]"></input>
               <input id="vlan-input" class="search-query" type="text" name="vlan" title="VLAN" rel="tooltip" data-placement="left" placeholder="...and VLAN" value="[% params.vlan %]"></input>
+              <input id="node-input" class="search-query" type="text" name="node" title="Node" rel="tooltip" data-placement="left" placeholder="...and Node" value="[% params.node %]"></input>
               <input id="port-input" class="search-query" type="text" name="port" title="Port" rel="tooltip" data-placement="left" placeholder="...and Port" value="[% params.port %]"></input>
               <button type="button" class="btn btn-inverse location-port-search-close-btn" data-placement="left"
                   title="Hide Additional Fields" rel="tooltip">
