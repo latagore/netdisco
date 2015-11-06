@@ -203,3 +203,12 @@
 #nd_csv-upload-modal-body-error {
   display: none;
 }
+
+/* inactive tabs styling on port search */
+.nav-tabs > li[disabled]{
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 12px;
+  padding-right: 12px;
+  color: #999;
+}

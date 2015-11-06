@@ -1,6 +1,39 @@
 
 // York cable data javascript
 
+var queryDict;
+function loadParameterDictionary(){
+  queryDict = {};
+  location.search.substr(1).split("&").forEach(function(item) {
+    queryDict[item.split("=")[0]] = item.split("=")[1]
+  });
+  // queryDict conveniently taken from http://stackoverflow.com/a/21210643/4961854
+}
+
+function disableTabsOnAdvancedPortSearch(){
+  
+  $('body').on('click', '.nav-tabs li[disabled]', function(event) {
+    event.preventDefault();
+  });
+  $('.nd_sidebar-form').submit(function(){
+    if (this.id === "ports_form" && queryDict['q'] === ""){
+      $('.nav-tabs li:not(.active) a')
+        .contents()
+        .filter(function() {
+          return this.nodeType === 3; //Node.TEXT_NODE
+          // use magic number 3 because IE 7 doesn't define Node global
+        })
+        .each(function(i, element){
+          var li = $(element).closest('li');
+          li.append(element);
+          li.children('a').remove();
+          li.attr('disabled', true);
+        });
+    }
+  });
+}
+
+
 // functions that add bits of features to the page
 function addSavePortInfoButton(){
   // use a mutation observer because we don't know when the data-table will be loaded
@@ -161,6 +194,7 @@ function addBuildingSuggestionsToPortsView() {
     }
   });
 }
+
 function enableCSVUpload(){
   // only show upload icon when ports tab shown
   $('.nd_sidebar-form').submit(function(){
@@ -467,11 +501,6 @@ function addPortInfoFunctionality(){
   });
   
   //make sure that we only do this on the right page
-  var queryDict = {}
-  location.search.substr(1).split("&").forEach(function(item) {
-    queryDict[item.split("=")[0]] = item.split("=")[1]
-  });
-  // queryDict conveniently taken from http://stackoverflow.com/a/21210643/4961854
   if ((location.pathname.indexOf('/device') === 0 || location.pathname.indexOf('/search') === 0)
       && queryDict.tab === "ports") {
     var porttable = $('#dp-data-table').DataTable();
@@ -570,6 +599,8 @@ $.widget( "building.autocomplete", $.ui.autocomplete, {
 });
 
 $(document).ready(function() {
+  loadParameterDictionary();
+  disableTabsOnAdvancedPortSearch();
   addPortInfoFunctionality();
   addNavBarFunctionality();
   enableCSVUpload();
