@@ -82,12 +82,12 @@ get '/ajax/content/search/ports' => require_login sub {
 
       #define DBI where clauses
       my $nodemac = NetAddr::MAC->new(mac => $fnode);
-      my $nodeip = NetAddr::IP->new(ip => $fnode);
+      my $nodeip = NetAddr::IP->new($fnode);
       my @where;
       if (defined $nodemac and !$nodemac->errstr) {
         @where = ('nodes.mac' => $nodemac->as_ieee);
-      } elsif (!defined $nodeip or $nodeip->errstr) {
-        @where = ('ips.ip' => $nodeip->as_ieee);
+      } elsif (defined $nodeip and defined $nodeip->addr) {
+        @where = ('ips.ip' => $nodeip->addr);
       } else {
         @where = ('ips.dns' => { -ilike => $match });
       }
@@ -105,8 +105,7 @@ get '/ajax/content/search/ports' => require_login sub {
       $set = $set->search({
         -or => {
           'me.vlan' => $fvlan,
-          'port_vlans.vlan' => $fvlan,
-          },
+          'port_vlans.vlan' => $fvlan,          },
         }, { join => 'port_vlans' });
       return unless $set->count;
     }
