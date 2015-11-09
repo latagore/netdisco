@@ -88,6 +88,7 @@
               </ul>
             </div>           
           </div>  
+          [% IF user_has_role('admin') %]
           <form class="nd_login-form" method="post" action="[% uri_for('/admin/discover') %]">
             <div id="nd_home-advanced-container" class="clearfix">
               <span id="nd_home-advanced-toggle" data-toggle="collapse" data-target="#nd_home-advanced">
@@ -95,16 +96,15 @@
                 <i class="icon-chevron-up nd_chevron"></i></a>
               </span>
               <div id="nd_home-advanced" class="collapse">
-                [% IF user_has_role('admin') %]
-                  <div class="form-horizontal">
-                    <input placeholder="Device hostname or IP" class="span4" name="device" value="[% params.device %]" type="text"/>
-                    <input type="hidden" name="extra" value="with-nodes"/>
-                    <button type="submit" class="btn btn-info">Discover</button>
-                  </div>
-                [% END %]
+                <div class="form-horizontal">
+                  <input placeholder="Device hostname or IP" class="span4" name="device" value="[% params.device %]" type="text"/>
+                  <input type="hidden" name="extra" value="with-nodes"/>
+                  <button type="submit" class="btn btn-info">Discover</button>
+                </div>
               </div>
             </div>
           </form>
+         [% END %]
         [% END %]
       </div>
     </div>
