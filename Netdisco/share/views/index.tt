@@ -48,6 +48,7 @@
         </form>
         [% ELSE %]
           <p><a href="https://netdisco.netops.yorku.ca/oldnetdisco">Click here to open the old Netdisco.</a></p>
+          <p><a href="http://netinfo.yorku.ca/">Click here to open the old Netinfo.</a></p>
           <div id="nd_home-help-container" class="clearfix">
             <span id="nd_home-help-toggle" data-toggle="collapse" data-target="#nd_home-help">
               <a>FAQ
