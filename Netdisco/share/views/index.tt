@@ -50,7 +50,7 @@
           <p><a href="https://netdisco.netops.yorku.ca/oldnetdisco">Click here to open the old Netdisco.</a></p>
           <div id="nd_home-help-container" class="clearfix">
             <span id="nd_home-help-toggle" data-toggle="collapse" data-target="#nd_home-help">
-              <a>Help
+              <a>FAQ
               <i class="icon-chevron-up nd_chevron"></i></a>
             </span>
             <div id="nd_home-help" class="collapse">
