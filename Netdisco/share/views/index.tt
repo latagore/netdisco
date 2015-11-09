@@ -48,6 +48,45 @@
         </form>
         [% ELSE %]
           <p><a href="https://netdisco.netops.yorku.ca/oldnetdisco">Click here to open the old Netdisco.</a></p>
+          <div id="nd_home-help-container" class="clearfix">
+            <span id="nd_home-help-toggle" data-toggle="collapse" data-target="#nd_home-help">
+              <a>Help
+              <i class="icon-chevron-up nd_chevron"></i></a>
+            </span>
+            <div id="nd_home-help" class="collapse">
+              <ul>
+                <li>
+                  <h4>How can I search for particular ports?</h4>
+                  <ol>
+                    <li>Click Advanced Port Search in the top navigation bar.</li>
+                    <li>Enter known information like Building, Pigtail, Room number, etc. To get a list of all the buildings, click on the Building field.</li>
+                  </ol>
+                </li>
+                <li>
+                  <h4>How can I search for a computer on the network?</h4>
+                  To search for computers which do not manage the network (or nodes), simply enter the IP, MAC or hostname in Find Anything in the top navigation bar. Alternatively, to find the switch port that the node is connected to, enter the IP/MAC/hostname in Advanced Port Search in the top navigation bar.
+                </li>
+                <li>
+                 <h4>Is there a difference between searching for VLAN using "Find Anything" and searching for VLAN with "Advanced Port Search"?</h4>
+                 Yes. Using Find Anything will find devices which contain that VLAN in their VLAN Database.
+                 Using Advanced Port Search will find ports with that Native VLAN configured.
+                </li>
+                <li>
+                  <h4>How can I enable or disable a port?</h4>
+                  <ol>
+                    <li>Find a device and click on the Ports tab at the top. Alternatively, search for some ports using Advanced Port Search in the top navigation bar.</li>
+                    <li>On the sidebar, enable Port Controls. </li>
+                    <li>At the bottom of the sidebar, click Update View.</li>
+                    <li>Hover over the name of a port to enable or disable. A button appears to enable or disable ports.</li>
+                  </ol>
+                </li>  
+                <li>
+                  <h4>What are ways I can quickly find the information I want in a table?</h4>
+                  You can click on the column headers such as Pigtail to sort by that column. In addition, there is a "Filter Records..." field which instantly filters rows.
+                </li>
+              </ul>
+            </div>           
+          </div>  
           <form class="nd_login-form" method="post" action="[% uri_for('/admin/discover') %]">
             <div id="nd_home-advanced-container" class="clearfix">
               <span id="nd_home-advanced-toggle" data-toggle="collapse" data-target="#nd_home-advanced">
