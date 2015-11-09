@@ -57,6 +57,14 @@
             <div id="nd_home-help" class="collapse">
               <ul>
                 <li>
+                  <h4>How do I get answers about how to use Netdisco v2?  How do I report a bug or submit a suggestion for improving Netdisco v2?</h4>
+                  Please submit a Trouble Ticket to Network Operations.  Start the Subject line with NetdiscoV2 and provide a detailed description of your concern or suggestion in the body of the ticket.
+                </li>
+                <li>
+                  <h4>Does Netdisco V2 support the "ITC Tools" and "PPY User Search" functions found in Netinfo?</h4>
+                  No. Both of these functions are now unsupported.
+                </li>
+                <li>
                   <h4>How can I search for particular ports?</h4>
                   <ol>
                     <li>Click Advanced Port Search in the top navigation bar.</li>
