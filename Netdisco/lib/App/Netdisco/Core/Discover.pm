@@ -192,9 +192,10 @@ sub _check_device_reset {
   my ($device, $snmp) = @_;
   
   return "" unless (defined $device->uptime); #don't log anything if this is a new device
-  
+  return "" unless (defined $snmp->uptime); #don't log anything if snmp returns undef
+
   my $olduptime = $device->uptime/100;
-  my $uptime = $snmp->uptime/100;
+  my $uptime = defined $snmp->uptime/100;
 
   # if the previous uptime is greater than the current, log a reset
   if ($olduptime > $uptime){
@@ -219,9 +220,11 @@ sub _check_device_reset {
 
 sub _check_device_os_version {
   my ($device, $snmp) = @_;
-  if (defined $device->os_ver and $device->os_ver ne $snmp->os_ver){
-    return "os version changed from " . $device->os_ver
-           . " to " . $snmp->os_ver;
+  my $oldosver = $device->os_ver ? $device->os_ver : "";
+  my $newosver = $snmp->os_ver ? $snmp->os_ver : "";
+  if ($oldosver ne $newosver){
+    return "os version changed from " . $oldosver
+           . " to " . $newosver;
   }
   return "";
 }
@@ -715,7 +718,9 @@ sub _check_modules_change {
   my $sep = "~~"; #separates the description and name in the key
   my %oldmodules;
   foreach (@$arg1){
-      $oldmodules{$_->description.$sep.$_->name} = $_;
+      my $desc = $_->description ? $_->description : "";
+      my $name = $_->name ? $_->name : "";
+      $oldmodules{$desc.$sep.$name} = $_;
   }
   my %newmodules;
   foreach (@$arg2){
@@ -747,7 +752,6 @@ sub _check_modules_change {
       model serial fru
     /;
     
-  debug [scalar @present, scalar @added, scalar @removed];
   foreach my $key(@added){
     my $addedmodule = $newmodules{$key};
     my $log = "Module ("
@@ -794,24 +798,27 @@ sub _check_modules_change {
       
       # need special processing because SNMP and DB represent boolean differently
       if ($property eq "fru"){
-        my $oldmodulefru = $oldmodule->fru == 0 ? "false" : "true";
-        if ($oldmodulefru ne $newmodule->{fru}){
+        my $oldmodulefru = $oldmodule->fru ? "true" : "false";
+        my $newmodulefru = $newmodule->fru && $newmodule->fru eq "true" ? "true" : "false";
+        if ($oldmodulefru ne $newmodulefru){
           $log .= "<li>$property: "
-            . $oldmodule->$property . " => " . $newmodule->{$property}
+            . $oldmodulefru . " => " . $newmodulefru
             ."</li>";
         }
       } else {
-        if ($oldmodule->$property ne $newmodule->{$property}){
+        my $oldprop = defined $oldmodule->$property ? $oldmodule->$property : "";
+        my $newprop = defined $newmodule->$property ? $newmodule->{$property} : "";
+        if ($oldprop ne $newprop){
          $log .= "<li>$property: "
-           . $oldmodule->$property . " => " . $newmodule->{$property}
+           . $oldprop . " => " . $newprop
            ."</li>";
         }
       }
     }
     $log = "Module ("
            ."class=, ".$oldmodule->class
-           .", name=".$oldmodule->name
-           .", desc=".$oldmodule->description
+           . defined $oldmodule->name ? ", name=".$oldmodule->name : ""
+           . defined $oldmodule->description ? ", desc=".$oldmodule->description : ""
            .") changed: <ul>$log</ul>" if $log;
     push @logs, $log if $log;
   }
