@@ -55,10 +55,24 @@
               <i class="icon-chevron-up nd_chevron"></i></a>
             </span>
             <div id="nd_home-help" class="collapse">
-              <ul>
+              <p> Last Updated: November 12, 2015 </p>
+              <ol>
                 <li>
                   <h4>How do I get answers about how to use Netdisco v2?  How do I report a bug or submit a suggestion for improving Netdisco v2?</h4>
                   Please submit a Trouble Ticket to Network Operations.  Start the Subject line with NetdiscoV2 and provide a detailed description of your concern or suggestion in the body of the ticket.
+                </li>
+                <li>
+                  <h4>I was familiar with the previous version of Netdisco/Netinfo.  Why did it need to be changed?</h4>
+                  Netdisco/Netinfo based on very old software which is very difficult to support any longer.   The objectives of the Netdisco V2 project included:
+                  <ul>
+                    <li>moving to an OS platform version and an application version which are more supportable than Netdisco v0.9x</li>
+                    <li>minimize negative impact to frequently used functions in Netdisco</li>
+                    <li>make available new functions which have been added since Netdisco v0.9x</li>
+                  </ul>
+                </li>
+                <li>
+                     <h4>Netdisco V2 returns answers more slowly than Netdisco/Netinfo.  Can this be corrected?</h4>
+                     This is a known problem.  It is due to an unfortunate design choice by developers of Netdisco V2 and is not something that we can resolve in the near term. Since Netdisco V2 is an open-source project, UIT will seek funding approval for a new project whose objectives will include improving performance of Netdisco at YorkU.
                 </li>
                 <li>
                   <h4>Does Netdisco V2 support the "ITC Tools" and "PPY User Search" functions found in Netinfo?</h4>
@@ -93,7 +107,7 @@
                   <h4>What are ways I can quickly find the information I want in a table?</h4>
                   You can click on the column headers such as Pigtail to sort by that column. In addition, there is a "Filter Records..." field which instantly filters rows.
                 </li>
-              </ul>
+              </ol>
             </div>           
           </div>  
           [% IF user_has_role('admin') %]
