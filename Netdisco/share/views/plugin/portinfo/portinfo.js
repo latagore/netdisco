@@ -140,20 +140,27 @@ function makePortInfoFieldsInteractive (){
 
       changeportinfo(div);
       $(div).blur();
-    } else {
-      // save the original to revert to and compare against
-      if (this.dataset.original === undefined) {
-        this.dataset.original = $(div).text();
-      } else {
-        // save attr to td to proper css appearance
-        td[0].title = "This change has not been saved.";
-        td.addClass("nd_portinfo-data-dirty");
-
-        $('#dp-data-table_submit-port-info').prop("disabled", false);
-      }
     }
   });
   
+  $('.tab-content').on('input', '.york-port-info[contenteditable=true]', function(event) {
+    var div = this,
+        td = $(div).closest('td');
+    
+    if (typeof this.dataset.original === 'undefined'
+        || this.dataset.original !== $(div).text()){
+      // save attr to td to proper css appearance
+      td[0].title = "This change has not been saved.";
+      td.addClass("nd_portinfo-data-dirty");
+ 
+      $('#dp-data-table_submit-port-info').prop("disabled", false);
+    }
+
+    // save the original to revert to and compare against
+    if (this.dataset.original === undefined) {
+      this.dataset.original = $(div).text();
+    }
+  });
   /* adjust columns on keypress because datatables does not
   automatically adjust columns on edit */
   $('.tab-content').on('keypress', '#dp-data-table',
