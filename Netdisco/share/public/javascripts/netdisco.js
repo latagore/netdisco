@@ -347,7 +347,7 @@ $(document).ready(function() {
   resizeTable();
   $(".dataTable").DataTable().draw();
   
-  var d = debounce(resizeTable, 250);
+  var d = debounce(resizeTable, 500);
   // resize on datatables init event because fixed columns 
   // plugin isn't robust
   $(document).on("init.dt", resizeTable);
