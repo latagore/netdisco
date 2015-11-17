@@ -163,7 +163,7 @@ function makePortInfoFieldsInteractive (){
   });
   /* adjust columns on keypress because datatables does not
   automatically adjust columns on edit */
-  $('.tab-content').on('keypress', '#dp-data-table',
+  $('.tab-content').on('input', '#dp-data-table',
     debounce(function(){
       $('#dp-data-table').DataTable().columns.adjust();
     }, 500)
