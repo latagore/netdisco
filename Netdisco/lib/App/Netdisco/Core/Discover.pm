@@ -799,7 +799,7 @@ sub _check_modules_change {
       # need special processing because SNMP and DB represent boolean differently
       if ($property eq "fru"){
         my $oldmodulefru = $oldmodule->fru ? "true" : "false";
-        my $newmodulefru = $newmodule->{fru} && $newmodule->{fru} eq "true" ? "true" : "false";
+        my $newmodulefru = ($newmodule->{fru} && $newmodule->{fru} eq "true") ? "true" : "false";
         if ($oldmodulefru ne $newmodulefru){
           $log .= "<li>$property: "
             . $oldmodulefru . " => " . $newmodulefru
