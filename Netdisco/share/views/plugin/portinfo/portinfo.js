@@ -502,9 +502,13 @@ function addNavBarFunctionality(){
 function addPortInfoFunctionality(){
   $('#nd_search-results').on('click', 'li a',  function() {
     addSavePortInfoButton();
+    makePortInfoFieldsInteractive();
+    addBuildingSuggestionsToPortsView();
   });
   $('.nd_sidebar').on('submit', '#ports_form', function() {
     addSavePortInfoButton();
+    makePortInfoFieldsInteractive();
+    addBuildingSuggestionsToPortsView();
   });
   
   //make sure that we only do this on the right page
