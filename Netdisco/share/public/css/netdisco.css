@@ -162,7 +162,7 @@ div.content > div.tab-content table.nd_floatinghead thead {
 /* nudge cell content to the right when port_control controls are enabled */
 .nd_editable-cell > .nd_this-port-only {
   margin-left: 14px;
-  margin-right: 35px;
+  margin-right: 55px;
 }
 .nd_editable-cell > .nd_port-only-first {
   margin-left: 5px;
@@ -287,6 +287,8 @@ td > form.nd_inline-form {
 .nd_edit-icon, .nd_hand-icon {
   cursor: pointer;
   float: right;
+  position: relative;
+  z-index: 100;
   display: none;
 }
 
