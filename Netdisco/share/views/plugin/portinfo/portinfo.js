@@ -166,7 +166,7 @@ function makePortInfoFieldsInteractive (){
   $('.tab-content').on('keypress', '#dp-data-table',
     debounce(function(){
       $('#dp-data-table').DataTable().columns.adjust();
-    }, 250)
+    }, 500)
   );
   
   /* take to the top when hitting "Update View" */
