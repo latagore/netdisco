@@ -18,7 +18,6 @@ use App::Netdisco::Util::Web 'interval_to_daterange';
 # can override splats only by loading first
 Module::Find::usesub 'App::NetdiscoE::Web';
 
-use App::Netdisco::Web::TemplateVMethods;
 use App::Netdisco::Web::AuthN;
 use App::Netdisco::Web::Static;
 use App::Netdisco::Web::Search;

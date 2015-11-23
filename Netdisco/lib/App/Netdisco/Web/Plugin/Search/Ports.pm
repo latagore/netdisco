@@ -301,7 +301,7 @@ get '/ajax/content/search/ports' => require_login sub {
     $set = $set->with_york_port_info;
 
     # sort ports (empty set would be a 'no records' msg)
-    my $results = [ sort { &App::Netdisco::Util::Web::sort_port($a->{port}, $b->{port}) } $set->hri->all ];
+    my $results = [ sort { &App::Netdisco::Util::Web::sort_port($a->port, $b->port) } $set->all ];
     return unless scalar @$results;
 
     if (request->is_ajax) {
