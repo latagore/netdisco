@@ -69,12 +69,6 @@ get '/ajax/content/search/ports' => require_login sub {
           );
     }
    
-    my $ports = $set;
-    my $port_vlans = $set->search(undef,
-      {
-        prefetch => "port_vlans"
-      });
-
     # refine by node if requested
     my $fnode = param('node');
     if ($fnode) {
@@ -252,6 +246,12 @@ get '/ajax/content/search/ports' => require_login sub {
     $set = $set->with_times if param('c_lastchange');
 
     # get vlans on the port, if there aren't too many
+    my $ports = $set;
+    my $port_vlans = $set->search(undef,
+      {
+        prefetch => "port_vlans"
+      });
+
     my $port_cnt = $ports->count() || 1;
     my $vlan_cnt = $port_vlans->count() || 1;
     my $vmember_ok =
