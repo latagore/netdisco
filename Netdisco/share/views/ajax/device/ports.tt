@@ -305,9 +305,10 @@
           [% END %]
           [% '<hr />' IF params.c_nodes AND row.$nodes %]
         [% END %]
-        [% IF params.c_nodes AND row.$nodes %]
+        [% SET nodes = row.search_related('nodes_with_age', [], { order_by => ['time_last_age']}) %]
+        [% IF params.c_nodes AND nodes %]
         <ul class="nd_node-list icons-ul">
-        [% FOREACH node IN row.$nodes %]
+        [% FOREACH node IN nodes %]
           <li >
           [% '<i class="icon-book"></i>&nbsp; ' IF NOT node.active %]
           [% IF row.remote_type AND row.remote_type.match('(?i)ip.phone') %]
