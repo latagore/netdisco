@@ -137,24 +137,24 @@ get '/ajax/content/device/ports' => require_login sub {
     # what kind of nodes are we interested in?
     my $nodes_name = (param('n_archived') ? 'nodes' : 'active_nodes');
     $nodes_name .= '_with_age' if param('c_nodes') and param('n_age');
-    $set = $set->search_rs({}, { order_by => ["${nodes_name}.vlan", "${nodes_name}.mac", "ips.ip"] })
-      if param('c_nodes');
+    #$set = $set->search_rs({}, { order_by => ["${nodes_name}.vlan", "${nodes_name}.mac", "ips.ip"] })
+    #  if param('c_nodes');
 
     # retrieve active/all connected nodes, if asked for
-    $set = $set->search_rs({}, { prefetch => [{$nodes_name => 'ips'}] })
-      if param('c_nodes');
+    #$set = $set->search_rs({}, { join => [{$nodes_name => 'ips'}] })
+    #  if param('c_nodes');
 
     # retrieve wireless SSIDs, if asked for
-    $set = $set->search_rs({}, { prefetch => [{$nodes_name => 'wireless'}] })
-      if param('c_nodes') && param('n_ssid');
+    #$set = $set->search_rs({}, { join => [{$nodes_name => 'wireless'}] })
+    #  if param('c_nodes') && param('n_ssid');
 
     # retrieve NetBIOS, if asked for
-    $set = $set->search_rs({}, { prefetch => [{$nodes_name => 'netbios'}] })
-      if param('c_nodes') && param('n_netbios');
+    #$set = $set->search_rs({}, { join => [{$nodes_name => 'netbios'}] })
+    #  if param('c_nodes') && param('n_netbios');
 
     # retrieve vendor, if asked for
-    $set = $set->search_rs({}, { prefetch => [{$nodes_name => 'oui'}] })
-      if param('c_nodes') && param('n_vendor');
+    #$set = $set->search_rs({}, { join => [{$nodes_name => 'oui'}] })
+    #  if param('c_nodes') && param('n_vendor');
 
     # retrieve power, if asked for
     $set = $set->search({}, { prefetch => 'power' }) if param('c_power');
