@@ -123,17 +123,6 @@ get '/ajax/content/device/ports' => require_login sub {
     # make sure query asks for formatted timestamps when needed
     $set = $set->with_times if param('c_lastchange');
 
-    # get vlans on the port, if there aren't too many
-    my $port_cnt = $device->ports->count() || 1;
-    my $vlan_cnt = $device->port_vlans->count() || 1;
-    my $vmember_ok =
-      (($vlan_cnt / $port_cnt) <= setting('devport_vlan_limit'));
-
-    if ($vmember_ok) {
-        $set = $set->search_rs({}, { prefetch => 'all_port_vlans' })->with_vlan_count
-          if param('c_vmember');
-    }
-
     # what kind of nodes are we interested in?
     my $nodes_name = (param('n_archived') ? 'nodes' : 'active_nodes');
     $nodes_name .= '_with_age' if param('c_nodes') and param('n_age');
@@ -182,8 +171,7 @@ get '/ajax/content/device/ports' => require_login sub {
         template 'ajax/device/ports.tt', {
           results => $results,
           nodes => $nodes_name,
-          device => $device,
-          vmember_ok => $vmember_ok,
+          device => $device
         }, { layout => undef };
     }
     else {
@@ -191,7 +179,7 @@ get '/ajax/content/device/ports' => require_login sub {
         template 'ajax/device/ports_csv.tt', {
           results => $results,
           nodes => $nodes_name,
-          device => $device,
+          device => $device
         }, { layout => undef };
     }
 };
