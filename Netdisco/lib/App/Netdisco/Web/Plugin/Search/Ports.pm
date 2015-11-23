@@ -69,12 +69,6 @@ get '/ajax/content/search/ports' => require_login sub {
           );
     }
    
-    my $ports = $set;
-    my $port_vlans = $set->search(undef,
-      {
-        prefetch => "port_vlans"
-      });
-
     # refine by node if requested
     my $fnode = param('node');
     if ($fnode) {
@@ -251,40 +245,11 @@ get '/ajax/content/search/ports' => require_login sub {
     # make sure query asks for formatted timestamps when needed
     $set = $set->with_times if param('c_lastchange');
 
-    # get vlans on the port, if there aren't too many
-    my $port_cnt = $ports->count() || 1;
-    my $vlan_cnt = $port_vlans->count() || 1;
-    my $vmember_ok =
-      (($vlan_cnt / $port_cnt) <= setting('devport_vlan_limit'));
-
-    if ($vmember_ok) {
-        $set = $set->search_rs({}, { prefetch => 'all_port_vlans' })->with_vlan_count
-          if param('c_vmember');
-    }
-
-    # die join "\n", $set->{vlan_count};
-
     # what kind of nodes are we interested in?
     my $nodes_name = (param('n_archived') ? 'nodes' : 'active_nodes');
     $nodes_name .= '_with_age' if param('c_nodes') and param('n_age');
     $set = $set->search_rs({}, { order_by => ["${nodes_name}.vlan", "${nodes_name}.mac", "ips.ip"] })
       if param('c_nodes');
-
-    # retrieve active/all connected nodes, if asked for
-    $set = $set->search_rs({}, { prefetch => [{$nodes_name => 'ips'}] })
-      if param('c_nodes');
-
-    # retrieve wireless SSIDs, if asked for
-    $set = $set->search_rs({}, { prefetch => [{$nodes_name => 'wireless'}] })
-      if param('c_nodes') && param('n_ssid');
-
-    # retrieve NetBIOS, if asked for
-    $set = $set->search_rs({}, { prefetch => [{$nodes_name => 'netbios'}] })
-      if param('c_nodes') && param('n_netbios');
-
-    # retrieve vendor, if asked for
-    $set = $set->search_rs({}, { prefetch => [{$nodes_name => 'oui'}] })
-      if param('c_nodes') && param('n_vendor');
 
     # retrieve power, if asked for
     $set = $set->search_rs({}, { prefetch => 'power' })
@@ -301,15 +266,14 @@ get '/ajax/content/search/ports' => require_login sub {
     $set = $set->with_york_port_info;
 
     # sort ports (empty set would be a 'no records' msg)
-    my $results = [ sort { &App::Netdisco::Util::Web::sort_port($a->{port}, $b->{port}) } $set->hri->all ];
+    my $results = [ sort { &App::Netdisco::Util::Web::sort_port($a->port, $b->port) } $set->all ];
     return unless scalar @$results;
 
     if (request->is_ajax) {
         template 'ajax/search/ports.tt', {
           results => $results,
           nodes => $nodes_name,
-          device => $device,
-          vmember_ok => $vmember_ok,
+          device => $device
         }, { layout => undef };
     }
     else {

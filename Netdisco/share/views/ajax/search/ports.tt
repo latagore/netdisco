@@ -24,7 +24,7 @@
       <td class="nd_center-cell nd_devport-icon nd_nowrap">
         [% IF row.up_admin != 'up' %]
         <i class="icon-remove" title="Admin Down" rel="tooltip" data-animation=""></i>
-        [% ELSIF row.up == 'up' AND row.stp == 'blocking' AND row.vlan_count < 2 %]
+        [% ELSIF row.up == 'up' AND row.stp == 'blocking' AND row.search_related_rs('all_port_vlans').count < 2 %]
         <i class="icon-fullscreen text-info" title="Admin Up, Link Up, STP Blocking State" rel="tooltip" data-animation=""></i>
         [% ELSIF row.up_admin == 'up' AND (row.up != 'up' AND row.up != 'dormant') %]
         <i class="icon-arrow-down text-error" title="Admin Up, Link Down" rel="tooltip" data-animation=""></i>
@@ -198,27 +198,25 @@
 
       [% IF params.c_vmember %]
       <td>
-        [% IF vmember_ok %]
-          [% IF row.vlan_count %]
-          [% SET output = '' %]
-          [% SET vlanlist = [] %]
-          [% FOREACH vlan IN row.all_port_vlans %][% vlanlist.push(vlan.vlan) %][% END %]
-          [% FOREACH vlan IN vlanlist.nsort %]
-            [% SET output = output _
-              '<a href="' _ uri_for('/search') _ '?tab=vlan&q=' _ vlan _ '">' _ vlan _ '</a>' %]
-            [% SET output = output _ ', ' IF NOT loop.last %]
-          [% END %]
-          [% IF row.vlan_count > 10 %] [%# TODO make this a settable variable %]
-            [% SET output = '<div class="nd_vlan-total">(' _ row.vlan_count
-              _ ')</div><span class="nd_linkcell nd_collapse-vlans">
-                <div class="nd_arrow-up-down-left icon-chevron-up icon-large"></div>Show VLANs</span>
-                <div class="nd_collapsing nd_collapse-pre-hidden">' _ output %]
-            [% SET output = output _ '</div>' %]
-          [% END %]
-          [% output %]
-          [% END %]
-        [% ELSE %]
-        <i class="icon-asterisk"></i> (too many to list)
+        [% SET vlans = row.all_port_vlans %]
+        [% IF vlans.size %]
+        [% SET output = '' %]
+        [% SET vlanlist = [] %]
+        [% FOREACH vlan IN vlans %][% vlanlist.push(vlan.get_column('vlan')) %][% END %]
+        [% FOREACH vlan IN vlanlist.nsort %]
+          [% SET output = output _
+            '<a href="' _ uri_for('/search') _ '?tab=vlan&q=' _ vlan _ '">' _ vlan _ '</a>' %]
+          [% SET output = output _ ', ' IF NOT loop.last %]
+        [% END %]
+        
+        [% IF vlans.size > 10 %] [%# TODO make this a settable variable %]
+          [% SET output = '<div class="nd_vlan-total">(' _ vlans.size
+            _ ')</div><span class="nd_linkcell nd_collapse-vlans">
+              <div class="nd_arrow-up-down-left icon-chevron-up icon-large"></div>Show VLANs</span>
+              <div class="nd_collapsing nd_collapse-pre-hidden">' _ output %]
+          [% SET output = output _ '</div>' %]
+        [% END %]
+        [% output %]
         [% END %]
       </td>
       [% END %]
@@ -323,12 +321,12 @@
           [% ELSE %]
             <i class="icon-li icon-hdd"></i>
           [% END %]
-          <a href="[% search_node %]&q=[% node.mac.$mac_format_call | uri %]">
-            [% node.mac.$mac_format_call | html_entity %]</a>
+          <a href="[% search_node %]&q=[% node.net_mac.$mac_format_call | uri %]">
+            [% node.net_mac.$mac_format_call | html_entity %]</a>
           [% IF (node.vlan > 0) && (node.vlan != row.vlan) %]
             (on vlan [% node.vlan | html_entity %])
           [% END %]            
-          [% IF params.n_ssid AND node.wireless.length %]
+          [% IF params.n_ssid AND node.wireless.defined %]
             (SSID:
             [% FOREACH wlan IN node.wireless %]
               <a href="[%+ uri_for('/report/portssid') %]?ssid=[% wlan.ssid | uri %]">[% wlan.ssid | html_entity %]</a>
@@ -337,7 +335,9 @@
           [% END %]
           [% IF params.n_vendor AND node.oui.defined %]
             (Vendor:
-              <a href="[%+ uri_for('/report/nodevendor') %]?vendor=[% node.oui.abbrev | uri %]">[% node.oui.abbrev | html_entity %]</a>
+            [% FOREACH oui IN node.oui %]
+              <a href="[%+ uri_for('/report/nodevendor') %]?vendor=[% oui.abbrev | uri %]">[% oui.abbrev | html_entity %]</a>
+            [% END %]
             )
           [% END %]
           [% '<br />(' _ node.time_last_age _ ')' IF params.n_age %]
