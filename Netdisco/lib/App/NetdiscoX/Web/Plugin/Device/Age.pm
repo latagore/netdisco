@@ -39,6 +39,10 @@ ajax '/ajax/deviceage' => require_login sub {
       ageLimit    => setting('age_limit_warning') || '2' #default at 2 days
     );
     
+    # hide arpnip age if device doesn't have layer 3
+    unless ($devicesearch->has_layer(3)->count){
+      $result{arpnipAge} = 0;
+    }
     content_type('text/json');
     template 'plugin/age/age.tt', {
       result => \%result

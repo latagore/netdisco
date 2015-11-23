@@ -131,7 +131,6 @@
   [% IF params.c_nodes %]
     [% myport.push('') %]
     [% myport.push('') %]
-    [% myport.push('') %]
     [% myport.push('') IF params.n_age %]
     [% myport.push('') IF params.n_ip %]
     [% myport.push('') IF params.n_ip %]
