@@ -248,8 +248,6 @@ get '/ajax/content/search/ports' => require_login sub {
     # what kind of nodes are we interested in?
     my $nodes_name = (param('n_archived') ? 'nodes' : 'active_nodes');
     $nodes_name .= '_with_age' if param('c_nodes') and param('n_age');
-    $set = $set->search_rs({}, { order_by => ["${nodes_name}.vlan", "${nodes_name}.mac", "ips.ip"] })
-      if param('c_nodes');
 
     # retrieve power, if asked for
     $set = $set->search_rs({}, { prefetch => 'power' })
