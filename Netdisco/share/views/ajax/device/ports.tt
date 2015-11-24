@@ -305,7 +305,7 @@
           [% END %]
           [% '<hr />' IF params.c_nodes AND row.$nodes %]
         [% END %]
-        [% SET nodes = row.search_related('nodes_with_age', [], { order_by => ['time_last_age']}) %]
+        [% SET nodes = row.search_related('nodes_with_age', [], { prefetch => ["netbios", "wireless","oui","ips"], order_by => ['time_last_age']}) %]
         [% IF params.c_nodes AND nodes %]
         <ul class="nd_node-list icons-ul">
         [% FOREACH node IN nodes %]
