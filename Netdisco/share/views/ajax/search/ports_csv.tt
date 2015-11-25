@@ -178,7 +178,8 @@
 
   [% SET has_nodes = 0 %]
   [% IF params.c_nodes %]
-    [% SET nodes = row.search_related(nodes_name, [], { prefetch => ["netbios", "wireless", "oui", "ips"], order_by => ['time_last_age']}) %]
+    [%# prefetch related node data and order it
+       SET nodes = row.search_related(nodes_name, [], { prefetch => ["netbios", "wireless", "oui", "ips"], order_by => [ { "-desc" = "me.time_last"} ]}) %]
     [% FOREACH node IN nodes %]
       [% SET has_nodes = 1 %]
       [% SET mynode = [] %]
