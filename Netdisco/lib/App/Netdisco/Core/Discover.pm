@@ -195,7 +195,7 @@ sub _check_device_reset {
   return "" unless (defined $snmp->uptime); #don't log anything if snmp returns undef
 
   my $olduptime = $device->uptime/100;
-  my $uptime = defined $snmp->uptime/100;
+  my $uptime = $snmp->uptime/100;
 
   # if the previous uptime is greater than the current, log a reset
   if ($olduptime > $uptime){
