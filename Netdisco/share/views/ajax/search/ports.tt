@@ -268,6 +268,7 @@
       [% END %]
 
       [% IF params.c_nodes OR params.c_neighbors %]
+      [% SET nodes = row.search_related(nodes_name, [], { prefetch => ["netbios", "wireless", "oui", "ips"], order_by => ['time_last_age']}) %]
       <td>
         [% IF params.c_neighbors AND (row.remote_ip OR row.is_uplink) %]
           [% IF row.neighbor %]
@@ -306,9 +307,8 @@
           [% ELSE %]
             <i class="icon-unlink text-error"></i>&nbsp; (possible uplink)
           [% END %]
-          [% '<hr />' IF params.c_nodes AND row.$nodes %]
+          [% '<hr />' IF params.c_nodes AND nodes %]
         [% END %]
-        [% SET nodes = row.search_related('nodes_with_age', [], { prefetch => ["netbios", "wireless","oui","ips"], order_by => ['time_last_age']}) %]
         [% IF params.c_nodes AND nodes %]
         <ul class="nd_node-list icons-ul">
         [% FOREACH node IN nodes %]

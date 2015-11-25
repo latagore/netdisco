@@ -104,7 +104,7 @@
   [% END %]
 
   [% IF params.c_vmember %]
-    [% IF row.vlan_count %]
+    [% IF row.all_port_vlans.size %]
       [% SET output = '' %]
       [% SET vlanlist = [] %]
       [% FOREACH vlan IN row.all_port_vlans %][% vlanlist.push(vlan.get_column('vlan')) %][% END %]
@@ -175,7 +175,8 @@
 
   [% SET has_nodes = 0 %]
   [% IF params.c_nodes %]
-    [% FOREACH node IN row.$nodes %]
+    [% SET nodes = row.search_related(nodes_name, [], { prefetch => ["netbios", "wireless", "oui", "ips"], order_by => ['time_last_age']}) %]
+    [% FOREACH node IN nodes %]
       [% SET has_nodes = 1 %]
       [% SET mynode = [] %]
 
@@ -188,6 +189,7 @@
         [% mynode.push('') %]
         [% mynode.push('') %]
         [% mynode.push('') %]
+
         [% SET has_ips = 0 %]
 
         [% FOREACH ip IN node.ips %]

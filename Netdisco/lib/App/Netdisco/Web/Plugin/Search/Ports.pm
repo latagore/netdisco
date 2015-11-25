@@ -270,7 +270,7 @@ get '/ajax/content/search/ports' => require_login sub {
     if (request->is_ajax) {
         template 'ajax/search/ports.tt', {
           results => $results,
-          nodes => $nodes_name,
+          nodes_name => $nodes_name,
           device => $device
         }, { layout => undef };
     }
@@ -278,7 +278,7 @@ get '/ajax/content/search/ports' => require_login sub {
         header( 'Content-Type' => 'text/comma-separated-values' );
         template 'ajax/search/ports_csv.tt', {
           results => $results,
-          nodes => $nodes_name,
+          nodes_name => $nodes_name,
           device => $device,
         }, { layout => undef };
     }
