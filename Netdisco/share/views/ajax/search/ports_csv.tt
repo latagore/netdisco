@@ -107,7 +107,7 @@
   [% END %]
 
   [% IF params.c_vmember %]
-    [% IF row.vlan_count %]
+    [% IF row.all_port_vlans.size %]
       [% SET output = '' %]
       [% SET vlanlist = [] %]
       [% FOREACH vlan IN row.all_port_vlans %][% vlanlist.push(vlan.get_column('vlan')) %][% END %]
