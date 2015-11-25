@@ -268,8 +268,8 @@
       [% END %]
 
       [% IF params.c_nodes OR params.c_neighbors %]
-      [%# prefetch related node data and order it
-         SET nodes = row.search_related(nodes_name, [], { prefetch => ["netbios", "wireless", "oui", "ips"], order_by => [ { "-desc" = "me.time_last"} ]}) %]
+      [% # prefetch related node data and order it
+          SET nodes = row.search_related(nodes_name, [], { prefetch => ["netbios", "wireless", "oui", "ips"], order_by => [ { "-desc" = "me.time_last"} ]}) %]
       <td>
         [% IF params.c_neighbors AND (row.remote_ip OR row.is_uplink) %]
           [% IF row.neighbor %]
