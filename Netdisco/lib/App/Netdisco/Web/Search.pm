@@ -13,7 +13,7 @@ hook 'before' => sub {
   var('node_options' => [
     { name => 'stamps',      label => 'Time Stamps',  default => 'on' },
     { name => 'deviceports', label => 'Device Ports', default => 'on' },
-    { name => 'archived', label => 'Archived', default => 'on' },
+    { name => 'archived', label => 'Archived', default => '' },
   ]);
 
   # view settings for device options
