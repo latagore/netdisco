@@ -86,6 +86,14 @@ get '/ajax/content/search/ports' => require_login sub {
         @where = ('ips.dns' => { -ilike => $match });
       }
       
+      my $search_archived = param('f_node_archived');
+      if (defined $search_archived and $search_archived eq 'on'){
+        params->{n_archive} = 'on';
+      } else {
+        params->{n_archive} = 'off';
+        push @where, 'nodes.active', 'true'; 
+      }
+
       $set = $set->search({@where}, 
         { 
           join => { 'nodes' => 'ips' }
@@ -266,7 +274,8 @@ get '/ajax/content/search/ports' => require_login sub {
     # sort ports (empty set would be a 'no records' msg)
     my $results = [ sort { &App::Netdisco::Util::Web::sort_port($a->port, $b->port) } $set->all ];
     return unless scalar @$results;
-
+    
+    
     if (request->is_ajax) {
         template 'ajax/search/ports.tt', {
           results => $results,
