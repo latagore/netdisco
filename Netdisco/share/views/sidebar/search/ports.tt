@@ -50,6 +50,11 @@
               <input id="nd_node-query" class="nd_side-input" placeholder="Node"
                 name="node" value="[% params.node | html_entity %]" type="text"
                 rel="tooltip" data-placement="left" data-offset="5" data-title="Filter by Node"/>
+              <label class="checkbox nd_filter-checkbox" rel="tooltip" title="Includes more, older node data. Can be slow." data-placement="left">
+                <input id="nd_node_archived-query" name="f_node_archived" type="checkbox" 
+                  [% IF params.f_node_archived == 'on' %]checked = "checked" [% END %] />
+                Include Archived Nodes
+              </label>
             </div>
             <div class="clearfix">
               <i class="nd_field-clear-icon icon-trash icon-large"

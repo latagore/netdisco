@@ -108,7 +108,7 @@ hook 'before' => sub {
     { name => 'n_netbios',  label => 'NetBIOS',       default => 'on' },
     { name => 'n_ssid',     label => 'SSID',          default => 'on' },
     { name => 'n_vendor',   label => 'Vendor',        default => ''   },
-    { name => 'n_archived', label => 'Archived Data', default => 'on'   },
+    { name => 'n_archived', label => 'Archived Data', default => ''   },
   ]);
 
   return unless 
@@ -274,3 +274,4 @@ any qr{.*} => sub {
 }
 
 true;
+
