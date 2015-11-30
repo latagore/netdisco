@@ -49,22 +49,59 @@ get '/ajax/content/search/ports' => require_login sub {
           }
           );
     } elsif ($q) {
+      # find nodes by q
+      my $match = sql_match($q);
+      my $nodemac = NetAddr::MAC->new(mac => $q);
+      my $nodeip = NetAddr::IP->new($q);
+      my @node_where;
+      if (defined $nodemac and !$nodemac->errstr) {
+        @node_where = ('me.mac' => $nodemac->as_ieee);
+      } elsif (defined $nodeip and defined $nodeip->addr) {
+        @node_where = ('ips.ip' => $nodeip->addr);
+      } else {
+        @node_where = ('ips.dns' => { -ilike => $match });
+      }
+      
+      my $search_archived = param('f_node_archived');
+      if (defined $search_archived and $search_archived eq 'on'){
+        params->{n_archive} = 'on';
+      } else {
+        params->{n_archive} = 'off';
+        push @node_where, 'me.active', 'true'; 
+      }
+       
+      my $node_set = schema('netdisco')->resultset('Node')
+                        ->search(
+                          {@node_where},
+                          { join => 'ips'}
+                        );
+      
+      # search for ports
       my ( $likeval, $likeclause ) = sql_match($q);
-       $set = $set->search(
-          {   -or => [
-                  { "me.name" => ( param('partial') ? $likeclause : $q ) },
-                  (   length $q == 17
-                      ? { "me.mac" => $q }
-                      : \[ 'me.mac::text ILIKE ?', $likeval ]
-                  ),
-                  { "me.remote_id"   => $likeclause },
-                  { "me.remote_type" => $likeclause }
-              ]
-          },
-          {   
-              join       => [qw/ port_vlans device /]
-          }
-          );
+      my $mac = NetAddr::MAC->new($q);
+
+      $set = $set->search(
+         {
+           -or => [
+             { "me.name" => ( $likeclause ) },
+             ((defined $mac and !($mac->errstr))
+               ? { "me.mac" => $mac->as_ieee }
+               : \[ 'me.mac::text ILIKE ?', $likeval ]
+             ),
+             { "me.remote_id"   => $likeclause },
+             { "me.remote_type" => $likeclause },
+             { 
+               "(me.ip, me.port)" => { -in => $node_set
+                   ->search_rs(undef, {columns => "me.switch, me.port"})
+                   ->as_query 
+                 }
+             }
+           ]
+         },
+         {   
+             join       => [qw/ port_vlans device /]
+         }
+         );
     }
    
     # refine by node if requested
