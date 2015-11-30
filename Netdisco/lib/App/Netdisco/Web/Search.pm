@@ -106,7 +106,7 @@ get '/search' => require_login sub {
                        ],
                      })->count) {
 
-                params->{'tab'} = 'port';
+                params->{'tab'} = 'ports';
             }
         }
 
