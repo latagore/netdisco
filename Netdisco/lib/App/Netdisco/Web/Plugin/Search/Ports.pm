@@ -39,9 +39,8 @@ get '/ajax/content/search/ports' => require_login sub {
     my $set = schema('netdisco')->resultset('DevicePort');
     
     # if searching for q finds a device, use it. otherwise, use it as a filter
-    if ($device->search_for_device($q)){
-      $device = $device->search_for_device($q);
-      $set = $device->ports;
+    if (defined $q and $device->search_for_device($q)){
+      $set = $device->search_for_device($q)->ports;
     } elsif ( $q =~ m/^\d+$/ ) {
       $set = $set->search(
           { "port_vlans.vlan" => $q },
@@ -59,8 +58,7 @@ get '/ajax/content/search/ports' => require_login sub {
                       : \[ 'me.mac::text ILIKE ?', $likeval ]
                   ),
                   { "me.remote_id"   => $likeclause },
-                  { "me.remote_type" => $likeclause },
-                  { "device.dns" => $likeclause }
+                  { "me.remote_type" => $likeclause }
               ]
           },
           {   
@@ -279,16 +277,14 @@ get '/ajax/content/search/ports' => require_login sub {
     if (request->is_ajax) {
         template 'ajax/search/ports.tt', {
           results => $results,
-          nodes_name => $nodes_name,
-          device => $device
+          nodes_name => $nodes_name
         }, { layout => undef };
     }
     else {
         header( 'Content-Type' => 'text/comma-separated-values' );
         template 'ajax/search/ports_csv.tt', {
           results => $results,
-          nodes_name => $nodes_name,
-          device => $device,
+          nodes_name => $nodes_name
         }, { layout => undef };
     }
 };
