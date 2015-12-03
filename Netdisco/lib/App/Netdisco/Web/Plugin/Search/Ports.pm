@@ -64,9 +64,9 @@ get '/ajax/content/search/ports' => require_login sub {
       
       my $search_archived = param('f_node_archived');
       if (defined $search_archived and $search_archived eq 'on'){
-        params->{n_archive} = 'on';
+        params->{n_archived} = 'checked';
       } else {
-        params->{n_archive} = 'off';
+        delete params->{n_archived};
         push @node_where, 'me.active', 'true'; 
       }
        
@@ -123,9 +123,9 @@ get '/ajax/content/search/ports' => require_login sub {
       
       my $search_archived = param('f_node_archived');
       if (defined $search_archived and $search_archived eq 'on'){
-        params->{n_archive} = 'on';
+        params->{n_archived} = 'checked';
       } else {
-        params->{n_archive} = 'off';
+        delete params->{n_archived};
         push @where, 'nodes.active', 'true'; 
       }
 

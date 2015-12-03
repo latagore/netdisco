@@ -47,15 +47,17 @@
           [% END %]
         </form>
         [% ELSE %]
-          <p><a href="https://netdisco.netops.yorku.ca/oldnetdisco">Click here to open the old Netdisco.</a></p>
-          <p><a href="http://netinfo.yorku.ca/">Click here to open the old Netinfo.</a></p>
+          <p>
+            <a href="https://netdisco.netops.yorku.ca/oldnetdisco">Old Netdisco</a>
+            &mdash;
+            <a href="http://netinfo.yorku.ca/">Old Netinfo</a>
+          </p>
           <div id="nd_home-help-container" class="clearfix">
             <span id="nd_home-help-toggle" data-toggle="collapse" data-target="#nd_home-help">
-              <a>FAQ
+              <a>FAQ (Last Updated: December 3, 2015)
               <i class="icon-chevron-up nd_chevron"></i></a>
             </span>
             <div id="nd_home-help" class="collapse">
-              <p> Last Updated: November 12, 2015 </p>
               <ol>
                 <li>
                   <h4>How do I get answers about how to use Netdisco v2?  How do I report a bug or submit a suggestion for improving Netdisco v2?</h4>
@@ -107,6 +109,16 @@
                   <h4>What are ways I can quickly find the information I want in a table?</h4>
                   You can click on the column headers such as Pigtail to sort by that column. In addition, there is a "Filter Records..." field which instantly filters rows.
                 </li>
+                <li class="faq-new">
+                  <h4>Why am I getting &quot;Search failed! Contact your network administrator for details.&quot;?</h4>
+                  Usually, this happens when searches have too many results. If this error pops up after a minute, then likely the issue is caused by too many results. Limit your search by filtering on additional criteria such as <emph>Horizontal Cable</emph> or <emph>Port</emph>.
+                  Additionally, to further improve performance, hide historical node data by the following steps:
+                  <ol>
+                      <li>Open Advanced Port Search.</li>
+                      <li>Perform any quick search. For example, search for "Steacie" in Building and "1" in Horizontal Cable.</li>
+                      <li>On the right sidebar, scroll down to Node Properties.</li>
+                      <li>Uncheck Archived Data and click Update View to save your preferences. Future searches will not include archived nodes, which will speed them up.</li>
+                  </ol>
               </ol>
             </div>           
           </div>  
