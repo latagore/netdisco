@@ -54,15 +54,59 @@
           </p>
           <div id="nd_home-help-container" class="clearfix">
             <span id="nd_home-help-toggle" data-toggle="collapse" data-target="#nd_home-help">
-              <a>FAQ (Last Updated: December 3, 2015)
+              <a>FAQ (Last Updated: December 4, 2015)
               <i class="icon-chevron-up nd_chevron"></i></a>
             </span>
             <div id="nd_home-help" class="collapse">
               <ol>
                 <li>
-                  <a><h4>How do I get answers about how to use Netdisco v2?  How do I report a bug or submit a suggestion for improving Netdisco v2?</h4></a>
+                  <a><h4>How can I search for particular ports?</h4></a>
                   <div class="answer">
-                    Please submit a Trouble Ticket to Network Operations.  Start the Subject line with NetdiscoV2 and provide a detailed description of your concern or suggestion in the body of the ticket.
+                    <ol>
+                      <li>Click Advanced Port Search in the top navigation bar.</li>
+                      <li>Enter known information like Building, Pigtail, Room number, etc. To get a list of all the buildings, click on the Building field.</li>
+                    </ol>
+                  </div>
+                </li>
+                <li>
+                  <a><h4>How can I search for a computer on the network?</h4></a>
+                  <div class="answer">
+                    To search for computers which do not manage the network (or nodes), simply enter the IP, MAC or hostname in Find Anything in the top navigation bar. Alternatively, to find the switch port that the node is connected to, enter the IP/MAC/hostname in Advanced Port Search in the top navigation bar.
+                  </div>
+                </li>
+                <li>
+                  <a><h4>How can I enable or disable a port?</h4></a>
+                  <div class="answer">
+                    <ol>
+                      <li>Find a device and click on the Ports tab at the top. Alternatively, search for some ports using Advanced Port Search in the top navigation bar.</li>
+                      <li>On the sidebar, enable Port Controls. </li>
+                      <li>At the bottom of the sidebar, click Update View.</li>
+                      <li>Hover over the name of a port to enable or disable. A button appears to enable or disable ports.</li>
+                    </ol>
+                  </div>
+                </li>
+                <li>
+                  <a><h4>Is there a difference between searching for VLAN using "Find Anything" and searching for VLAN with "Advanced Port Search"?</h4></a>
+                  <div class="answer">
+                    Yes. Using Find Anything will find devices which contain that VLAN in their VLAN Database.
+                    Using Advanced Port Search will find ports with that Native VLAN configured.
+                  </div>
+                </li>
+                <li>
+                  <a><h4>Why am I getting &quot;Search failed! Contact your network administrator for details.&quot;?</h4></a>
+                  <div class="answer">
+                    <p>
+                      Usually, this happens when searches have too many results. If this error pops up after a minute, then likely the issue is caused by too many results. Limit your search by filtering on additional criteria such as <emph>Horizontal Cable</emph> or <emph>Port</emph>.
+                    </p>
+                    <p>
+                      Additionally, to further improve performance, hide historical node data by the following steps:
+                    </p>
+                    <ol>
+                        <li>Open Advanced Port Search.</li>
+                        <li>Perform any quick search. For example, search for "Steacie" in Building and "1" in Horizontal Cable.</li>
+                        <li>On the right sidebar, scroll down to Node Properties.</li>
+                        <li>Uncheck Archived Data and click Update View to save your preferences. Future searches will not include archived nodes, which will speed them up.</li>
+                    </ol>
                   </div>
                 </li>
                 <li>
@@ -91,60 +135,11 @@
                   </div>
                 </li>
                 <li>
-                  <a><h4>How can I search for particular ports?</h4></a>
+                  <a><h4>How do I get answers about how to use Netdisco v2?  How do I report a bug or submit a suggestion for improving Netdisco v2?</h4></a>
                   <div class="answer">
-                    <ol>
-                      <li>Click Advanced Port Search in the top navigation bar.</li>
-                      <li>Enter known information like Building, Pigtail, Room number, etc. To get a list of all the buildings, click on the Building field.</li>
-                    </ol>
+                    Please submit a Trouble Ticket to Network Operations.  Start the Subject line with NetdiscoV2 and provide a detailed description of your concern or suggestion in the body of the ticket.
                   </div>
                 </li>
-                <li>
-                  <a><h4>How can I search for a computer on the network?</h4></a>
-                  <div class="answer">
-                    To search for computers which do not manage the network (or nodes), simply enter the IP, MAC or hostname in Find Anything in the top navigation bar. Alternatively, to find the switch port that the node is connected to, enter the IP/MAC/hostname in Advanced Port Search in the top navigation bar.
-                  </div>
-                </li>
-                <li>
-                  <a><h4>Is there a difference between searching for VLAN using "Find Anything" and searching for VLAN with "Advanced Port Search"?</h4></a>
-                  <div class="answer">
-                    Yes. Using Find Anything will find devices which contain that VLAN in their VLAN Database.
-                    Using Advanced Port Search will find ports with that Native VLAN configured.
-                  </div>
-                </li>
-                <li>
-                  <a><h4>How can I enable or disable a port?</h4></a>
-                  <div class="answer">
-                    <ol>
-                      <li>Find a device and click on the Ports tab at the top. Alternatively, search for some ports using Advanced Port Search in the top navigation bar.</li>
-                      <li>On the sidebar, enable Port Controls. </li>
-                      <li>At the bottom of the sidebar, click Update View.</li>
-                      <li>Hover over the name of a port to enable or disable. A button appears to enable or disable ports.</li>
-                    </ol>
-                  </div>
-                </li>
-                <li>
-                  <a><h4>What are ways I can quickly find the information I want in a table?</h4></a>
-                  <div class="answer">
-                    You can click on the column headers such as Pigtail to sort by that column. In addition, there is a "Filter Records..." field which instantly filters rows.
-                  </div>
-                </li>
-                <li class="faq-new">
-                  <a><h4>Why am I getting &quot;Search failed! Contact your network administrator for details.&quot;?</h4></a>
-                  <div class="answer">
-                    <p>
-                      Usually, this happens when searches have too many results. If this error pops up after a minute, then likely the issue is caused by too many results. Limit your search by filtering on additional criteria such as <emph>Horizontal Cable</emph> or <emph>Port</emph>.
-                    </p>
-                    <p>
-                      Additionally, to further improve performance, hide historical node data by the following steps:
-                    </p>
-                    <ol>
-                        <li>Open Advanced Port Search.</li>
-                        <li>Perform any quick search. For example, search for "Steacie" in Building and "1" in Horizontal Cable.</li>
-                        <li>On the right sidebar, scroll down to Node Properties.</li>
-                        <li>Uncheck Archived Data and click Update View to save your preferences. Future searches will not include archived nodes, which will speed them up.</li>
-                    </ol>
-                  </div>
               </ol>
             </div>
           </div>
