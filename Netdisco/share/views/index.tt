@@ -60,68 +60,94 @@
             <div id="nd_home-help" class="collapse">
               <ol>
                 <li>
-                  <h4>How do I get answers about how to use Netdisco v2?  How do I report a bug or submit a suggestion for improving Netdisco v2?</h4>
-                  Please submit a Trouble Ticket to Network Operations.  Start the Subject line with NetdiscoV2 and provide a detailed description of your concern or suggestion in the body of the ticket.
+                  <a><h4>How do I get answers about how to use Netdisco v2?  How do I report a bug or submit a suggestion for improving Netdisco v2?</h4></a>
+                  <div class="answer">
+                    Please submit a Trouble Ticket to Network Operations.  Start the Subject line with NetdiscoV2 and provide a detailed description of your concern or suggestion in the body of the ticket.
+                  </div>
                 </li>
                 <li>
-                  <h4>I was familiar with the previous version of Netdisco/Netinfo.  Why did it need to be changed?</h4>
-                  Netdisco/Netinfo based on very old software which is very difficult to support any longer.   The objectives of the Netdisco V2 project included:
-                  <ul>
-                    <li>moving to an OS platform version and an application version which are more supportable than Netdisco v0.9x</li>
-                    <li>minimize negative impact to frequently used functions in Netdisco</li>
-                    <li>make available new functions which have been added since Netdisco v0.9x</li>
-                  </ul>
+                  <a><h4>I was familiar with the previous version of Netdisco/Netinfo.  Why did it need to be changed?</h4></a>
+                  <div class="answer">
+                    <p>
+                      Netdisco/Netinfo based on very old software which is very difficult to support any longer.   The objectives of the Netdisco V2 project included:
+                    </p>
+                    <ul>
+                      <li>moving to an OS platform version and an application version which are more supportable than Netdisco v0.9x</li>
+                      <li>minimize negative impact to frequently used functions in Netdisco</li>
+                      <li>make available new functions which have been added since Netdisco v0.9x</li>
+                    </ul>
+                  </div>
                 </li>
                 <li>
-                     <h4>Netdisco V2 returns answers more slowly than Netdisco/Netinfo.  Can this be corrected?</h4>
-                     This is a known problem.  It is due to an unfortunate design choice by developers of Netdisco V2 and is not something that we can resolve in the near term. Since Netdisco V2 is an open-source project, UIT will seek funding approval for a new project whose objectives will include improving performance of Netdisco at YorkU.
+                  <a><h4>Netdisco V2 returns answers more slowly than Netdisco/Netinfo.  Can this be corrected?</h4></a>
+                  <div class="answer">
+                    This is a known problem.  It is due to an unfortunate design choice by developers of Netdisco V2 and is not something that we can resolve in the near term. Since Netdisco V2 is an open-source project, UIT will seek funding approval for a new project whose objectives will include improving performance of Netdisco at YorkU.
+                  </div>
                 </li>
                 <li>
-                  <h4>Does Netdisco V2 support the "ITC Tools" and "PPY User Search" functions found in Netinfo?</h4>
-                  No. Both of these functions are now unsupported.
+                  <a><h4>Does Netdisco V2 support the "ITC Tools" and "PPY User Search" functions found in Netinfo?</h4></a>
+                  <div class="answer">
+                    No. Both of these functions are now unsupported.
+                  </div>
                 </li>
                 <li>
-                  <h4>How can I search for particular ports?</h4>
-                  <ol>
-                    <li>Click Advanced Port Search in the top navigation bar.</li>
-                    <li>Enter known information like Building, Pigtail, Room number, etc. To get a list of all the buildings, click on the Building field.</li>
-                  </ol>
+                  <a><h4>How can I search for particular ports?</h4></a>
+                  <div class="answer">
+                    <ol>
+                      <li>Click Advanced Port Search in the top navigation bar.</li>
+                      <li>Enter known information like Building, Pigtail, Room number, etc. To get a list of all the buildings, click on the Building field.</li>
+                    </ol>
+                  </div>
                 </li>
                 <li>
-                  <h4>How can I search for a computer on the network?</h4>
-                  To search for computers which do not manage the network (or nodes), simply enter the IP, MAC or hostname in Find Anything in the top navigation bar. Alternatively, to find the switch port that the node is connected to, enter the IP/MAC/hostname in Advanced Port Search in the top navigation bar.
+                  <a><h4>How can I search for a computer on the network?</h4></a>
+                  <div class="answer">
+                    To search for computers which do not manage the network (or nodes), simply enter the IP, MAC or hostname in Find Anything in the top navigation bar. Alternatively, to find the switch port that the node is connected to, enter the IP/MAC/hostname in Advanced Port Search in the top navigation bar.
+                  </div>
                 </li>
                 <li>
-                 <h4>Is there a difference between searching for VLAN using "Find Anything" and searching for VLAN with "Advanced Port Search"?</h4>
-                 Yes. Using Find Anything will find devices which contain that VLAN in their VLAN Database.
-                 Using Advanced Port Search will find ports with that Native VLAN configured.
+                  <a><h4>Is there a difference between searching for VLAN using "Find Anything" and searching for VLAN with "Advanced Port Search"?</h4></a>
+                  <div class="answer">
+                    Yes. Using Find Anything will find devices which contain that VLAN in their VLAN Database.
+                    Using Advanced Port Search will find ports with that Native VLAN configured.
+                  </div>
                 </li>
                 <li>
-                  <h4>How can I enable or disable a port?</h4>
-                  <ol>
-                    <li>Find a device and click on the Ports tab at the top. Alternatively, search for some ports using Advanced Port Search in the top navigation bar.</li>
-                    <li>On the sidebar, enable Port Controls. </li>
-                    <li>At the bottom of the sidebar, click Update View.</li>
-                    <li>Hover over the name of a port to enable or disable. A button appears to enable or disable ports.</li>
-                  </ol>
-                </li>  
+                  <a><h4>How can I enable or disable a port?</h4></a>
+                  <div class="answer">
+                    <ol>
+                      <li>Find a device and click on the Ports tab at the top. Alternatively, search for some ports using Advanced Port Search in the top navigation bar.</li>
+                      <li>On the sidebar, enable Port Controls. </li>
+                      <li>At the bottom of the sidebar, click Update View.</li>
+                      <li>Hover over the name of a port to enable or disable. A button appears to enable or disable ports.</li>
+                    </ol>
+                  </div>
+                </li>
                 <li>
-                  <h4>What are ways I can quickly find the information I want in a table?</h4>
-                  You can click on the column headers such as Pigtail to sort by that column. In addition, there is a "Filter Records..." field which instantly filters rows.
+                  <a><h4>What are ways I can quickly find the information I want in a table?</h4></a>
+                  <div class="answer">
+                    You can click on the column headers such as Pigtail to sort by that column. In addition, there is a "Filter Records..." field which instantly filters rows.
+                  </div>
                 </li>
                 <li class="faq-new">
-                  <h4>Why am I getting &quot;Search failed! Contact your network administrator for details.&quot;?</h4>
-                  Usually, this happens when searches have too many results. If this error pops up after a minute, then likely the issue is caused by too many results. Limit your search by filtering on additional criteria such as <emph>Horizontal Cable</emph> or <emph>Port</emph>.
-                  Additionally, to further improve performance, hide historical node data by the following steps:
-                  <ol>
-                      <li>Open Advanced Port Search.</li>
-                      <li>Perform any quick search. For example, search for "Steacie" in Building and "1" in Horizontal Cable.</li>
-                      <li>On the right sidebar, scroll down to Node Properties.</li>
-                      <li>Uncheck Archived Data and click Update View to save your preferences. Future searches will not include archived nodes, which will speed them up.</li>
-                  </ol>
+                  <a><h4>Why am I getting &quot;Search failed! Contact your network administrator for details.&quot;?</h4></a>
+                  <div class="answer">
+                    <p>
+                      Usually, this happens when searches have too many results. If this error pops up after a minute, then likely the issue is caused by too many results. Limit your search by filtering on additional criteria such as <emph>Horizontal Cable</emph> or <emph>Port</emph>.
+                    </p>
+                    <p>
+                      Additionally, to further improve performance, hide historical node data by the following steps:
+                    </p>
+                    <ol>
+                        <li>Open Advanced Port Search.</li>
+                        <li>Perform any quick search. For example, search for "Steacie" in Building and "1" in Horizontal Cable.</li>
+                        <li>On the right sidebar, scroll down to Node Properties.</li>
+                        <li>Uncheck Archived Data and click Update View to save your preferences. Future searches will not include archived nodes, which will speed them up.</li>
+                    </ol>
+                  </div>
               </ol>
-            </div>           
-          </div>  
+            </div>
+          </div>
           [% IF user_has_role('admin') %]
           <form class="nd_login-form" method="post" action="[% uri_for('/admin/discover') %]">
             <div id="nd_home-advanced-container" class="clearfix">
@@ -173,7 +199,7 @@
   $('#nd_home-advanced').on('show hide', function() {
     $('#nd_home-advanced-toggle .nd_chevron').toggleClass('icon-chevron-up icon-chevron-down');
   });
-  
+
   $('#collapse-stats').on('show', function() {
     $('#collapse-stats-heading .nd_chevron').toggleClass('icon-chevron-up icon-chevron-down');
 
