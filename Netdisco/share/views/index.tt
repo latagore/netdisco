@@ -53,11 +53,11 @@
             <a href="http://netinfo.yorku.ca/">Old Netinfo</a>
           </p>
           
-          <span id="nd_home-user-doc-toggle" data-toggle="collapse" data-target="#nd_user-doc-container">
-              <a>User Documentation
+          <span id="nd_netdisco-user-doc-toggle" data-toggle="collapse" data-target="#nd_netdisco-user-docs">
+              <a>User Documentation for Netdisco V1 Users
               <i class="icon-chevron-up nd_chevron"></i></a>
           </span>
-          <div id="nd_user-doc-container" class="collapse">
+          <div id="nd_netdisco-user-docs" class="collapse user-doc-container">
             <table class="sidebar-bg" border="1" cellpadding="5" cellspacing="0">
               <tbody><tr>
                   <td class="sidebar-1">
@@ -171,15 +171,15 @@
               </tr>
               <tr>
                   <td class="sidebar-1">
-              [<a>Logout stevenx</a>]
+              [<a>Logout</a>]
                   </td>
               </tr>
               </tbody>
             </table>
-            <div id="nd_user-instructions-tip" class="text-info">
+            <div class="text-info user-doc-tip">
               Click the old sidebar to find out to use the new Netdisco.
             </div>
-            <div id="nd_user-instructions">
+            <div class="user-doc-instructions">
               <div>
                 In the navigation bar on the top, click the Netdisco logo on the left.
               </div>
@@ -243,6 +243,114 @@
               </div>
               <div>
                 Only available if you have administrative privileges. In the navigation bar at the top, click <strong>Admin</strong> to view administrative options.
+              </div>
+              <div>
+                Not available.
+              </div>
+              <div>
+                In the navigation bar at the top, click <strong>your username</strong> on the right, then click <strong>Log Out</strong>.
+              </div>
+            </div>
+          </div>
+          <span id="nd_netinfo-user-doc-toggle" data-toggle="collapse" data-target="#nd_netinfo-user-docs">
+              <a>User Documentation for Netinfo Users
+              <i class="icon-chevron-up nd_chevron"></i></a>
+          </span>
+          <div id="nd_netinfo-user-docs" class="collapse user-doc-container">
+            <table class="sidebar-bg" border="1" cellpadding="5" cellspacing="0">
+              <tbody>
+                <tr>
+                  <td class="sidebar-1">
+                    <a>
+                      <br />
+                      <b>&nbsp;&nbsp;&nbsp;N&nbsp;&nbsp;E&nbsp;&nbsp;T&nbsp;&nbsp;I&nbsp;&nbsp;N&nbsp;&nbsp;F&nbsp;&nbsp;O&nbsp;&nbsp;</b>
+                    </a>
+                    <p>
+                      <a/>
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="sidebar-0">
+                    [<a>Node Search</a>]
+
+                    <form action="http://netinfo.yorku.ca/nodesearch.html" method="GET">
+                      <input size="10" maxlength="60" name="node" title="Enter the IP, DNS, or MAC of a node and hit return." type="text" />
+                    </form>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="sidebar-1">
+                    [<a>Port Search</a>]
+
+                  </td>
+                </tr>
+                <tr>
+                  <td class="sidebar-0">
+                    [<a>Port Report</a>]
+
+                  </td>
+                </tr>
+                <tr>
+                  <td class="sidebar-1">
+                    [<a>VLAN Search</a>]
+
+                    <form action="http://netinfo.yorku.ca/vlansearch.html" method="GET">
+                      <input size="10" maxlength="60" name="vlan" title="Enter the VLAN and hit return." type="text" />
+                    </form>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="sidebar-0">
+                    [<a>ITC Tools</a>]
+
+                  </td>
+                </tr>
+                <tr>
+                  <td class="sidebar-1">
+                    [<a>PPY User Search</a>]
+
+                  </td>
+                </tr>
+                <tr>
+                  <td class="sidebar-0">
+                    [<a>About</a>]
+
+                  </td>
+                </tr>
+                <tr>
+                  <td class="sidebar-1">
+                    [<a>Logout</a>]
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="text-info user-doc-tip">
+              Click the old sidebar to find out to use the new Netdisco.
+            </div>
+            <div class="user-doc-instructions">
+              <div>
+                In the navigation bar on the top, click the Netdisco logo on the left.
+              </div>
+              <div>
+                In the navigation bar at the top, click <strong>Find Anything</strong>. Enter a hostname like <strong>GL-YH219-LAB02.yorku.yorku.ca</strong>. You can also search by MAC address or IP address.
+              </div>
+              <div>
+                In the navigation bar at the top, click <strong>Advanced Port Search</strong>. To pick a building, click on the Building field to get a list.
+              </div>
+              <div>
+                Not available.
+              </div>
+              <div>
+                <p>In the navigation bar at the top, click <strong>Advanced Port Search.</strong> Select the <strong>VLAN</strong> field and enter a VLAN like <strong>16</strong>.</p>
+                <p class="text-warning">Note: Some VLANs are quite large, which will cause some searches to fail with "Search failed! Contact your network administrator". Limit your searches by additionally searching by building, room or other criteria. Alteratively, after performing a search, disable some unneeded columns in the sidebar.</p>
+              </div>
+              <div>
+                Not available.
+              </div>
+              <div>
+                Not available.
               </div>
               <div>
                 Not available.

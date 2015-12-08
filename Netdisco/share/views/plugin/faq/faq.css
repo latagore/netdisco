@@ -1,5 +1,5 @@
 /* user documentation styling */
-#nd_user-doc-container {
+.user-doc-container {
   font-size:10pt;
   line-height: normal;
 }
@@ -20,30 +20,29 @@
   padding: 1px;
 }
 
-#nd_user-doc-container::after {
+.user-doc-container::after {
   content: "";
   display: block;
   clear: both;    
 }
 
-#nd_user-instructions-tip {
+.user-doc-tip {
   float: left;
   width: 73%;
   position: relative;
   left: 10px;
 }
 
-#nd_user-instructions {
+.user-doc-instructions {
   float: left;
   width: 73%;
   position: relative;
 }
-
-#nd_user-instructions li {
+.user-doc-instructions li {
   line-height: normal;
 }
 
-#nd_user-instructions > div {
+.user-doc-instructions > div {
   display: none;
   position: absolute;
   top: 0px;

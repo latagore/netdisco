@@ -7,10 +7,10 @@ $(document).ready(function(){
 
   // documentation answers might get cut off. need to allow
   // overflow for all answers to display.
-  $('#nd_user-doc-container').on('shown', function(){
+  $('.user-doc-container').on('shown', function(){
     $(this).css({'overflow': 'visible'});
   });
-  $('#nd_user-doc-container').on('hide', function(){
+  $('.user-doc-container').on('hide', function(){
     $(this).css({'overflow': 'hidden'});
   });
   
@@ -29,11 +29,13 @@ $(document).ready(function(){
     var y = tr.position().top;
     var duration = 300;
     
-    var tip =  $('#nd_user-instructions-tip');
+    var container = tr.closest('.user-doc-container');
+    var instructions = container.children('.user-doc-instructions');
+    var tip =  container.find('.user-doc-tip');
     if (tip.is(':visible')){
       tip.fadeOut(duration);
     
-      $('#nd_user-instructions > div')
+      instructions.children('div')
         .eq(index)
         .delay(duration)
         .fadeIn(duration)
@@ -41,11 +43,11 @@ $(document).ready(function(){
           top: (y) + "px"
         });
     } else {
-      if ($('#nd_user-instructions > div:visible').index() == index){
-        $('#nd_user-instructions > div')
+      if (instructions.children('div:visible').index() == index){
+        instructions.children('div')
           .fadeOut(duration);
       } else {
-        $('#nd_user-instructions > div')
+        instructions.children('div')
           .fadeOut(duration)
           .eq(index)
           .delay(duration)
