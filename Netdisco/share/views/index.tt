@@ -52,6 +52,206 @@
             &mdash;
             <a href="http://netinfo.yorku.ca/">Old Netinfo</a>
           </p>
+          
+          <span id="nd_home-user-doc-toggle" data-toggle="collapse" data-target="#nd_user-doc-container">
+              <a>User Documentation
+              <i class="icon-chevron-up nd_chevron"></i></a>
+          </span>
+          <div id="nd_user-doc-container" class="collapse">
+            <table class="sidebar-bg" border="1" cellpadding="5" cellspacing="0">
+              <tbody><tr>
+                  <td class="sidebar-1">
+                  <a><br /><b>N  E  T  D  I  S  C  O</b></a><p>
+                  </p></td>
+              </tr>
+              <tr>
+                  <td class="sidebar-0">
+                  [<a>Network Maps</a>]
+                  </td>
+              </tr>
+              <tr>
+                  <td class="sidebar-1">
+                  [<a>Netops Reports</a>]
+                  </td>
+              </tr>
+              <tr>
+                  <td class="sidebar-0">
+                  [<a id="user-device-search">Device Search</a>]
+                  <form action="/oldnetdisco/device.html" method="GET">
+                  <input size="10" maxlength="60" name="ip" title="Enter the DNS or IP of a device and hit return." type="text" />
+                  </form>
+                  </td>
+              </tr>
+              <tr>
+                  <td class="sidebar-1">
+                  [<a>Device Inventory</a>]
+                  </td>
+              </tr>
+              <tr>
+                  <td class="sidebar-0">
+                  [<a>Node Search</a>]
+                  <form action="/oldnetdisco/node.html" method="GET">
+                  <input size="10" maxlength="60" name="node" title="Enter the IP, DNS, or MAC of a node and hit return." type="text" />
+                  </form>
+                  </td>
+              </tr>
+              <tr>
+                  <td class="sidebar-1">
+                  [<a class="disabled">Port Report</a>]
+                  </td>
+              </tr>
+              <tr>
+                  <td class="sidebar-0">
+                  [<a>VLAN Search</a>]
+                  <form action="/oldnetdisco/vlan_search.html" method="GET">
+                  <input size="10" maxlength="60" name="vlan" title="Enter the VLAN and hit return." type="text" />
+                  </form>
+                  </td>
+              </tr>
+              <tr>
+                  <td class="sidebar-1">
+                  [<a>Edit Port Information</a>]
+                  </td>
+              </tr>
+              <tr>
+                  <td class="sidebar-0">
+                  [<a>Search Port Information</a>]
+                  </td>
+              </tr>
+              <tr>
+                  <td class="sidebar-1">
+                  [<a>Edit Voice Information</a>]
+                  </td>
+              </tr>
+              <tr>
+                  <td class="sidebar-0">
+                      [<a>Search Voice Information</a>]
+                  </td>
+              </tr>
+              <tr>
+                  <td class="sidebar-1">
+                  [<a>PPY User Search</a>]
+                  </td>
+              </tr>
+              <!--
+              <TR>
+                  <TD CLASS="sidebar-0">
+                  [<A>Layer 2 Traceroute</A>]
+                  </TD>
+              </TR>
+              -->
+              <tr>
+                  <td class="sidebar-1">
+                  [<a>Duplex Mismatch Finder</a>]
+                  </td>
+              </tr>
+              <tr>
+                  <td class="sidebar-0">
+                  [<a>Node IP Inventory</a>]
+                  </td>
+              </tr><tr>
+                  <td class="sidebar-1">
+                  [<a>Log</a>]
+                  </td>
+              </tr>
+              <tr>
+                  <td class="sidebar-0">
+                  [<a>Documentation</a>]
+                  </td>
+              </tr>
+              <tr>
+                  <td class="sidebar-1">
+                  [<a>Administration Panel</a>]
+                  </td>
+              </tr>
+              <tr>
+                  <td class="sidebar-0">
+                  [<a>About</a>]
+                  </td>
+              </tr>
+              <tr>
+                  <td class="sidebar-1">
+              [<a>Logout stevenx</a>]
+                  </td>
+              </tr>
+              </tbody>
+            </table>
+            <div id="nd_user-instructions-tip" class="text-info">
+              Click the old sidebar to find out to use the new Netdisco.
+            </div>
+            <div id="nd_user-instructions">
+              <div>
+                In the navigation bar on the top, click the Netdisco logo on the left.
+              </div>
+              <div>
+                <ol>
+                  <li>
+                    <a class="doc-link" data-topic="user-device-search">Search for a device.</a>
+                  </li>
+                  <li>
+                    Select the <strong>Neighbors</strong> tab.
+                  </li>
+                </ol>
+              </div>
+              <div>
+                In the navigation bar at the top, click <strong>Reports</strong> to get a list of reports available.
+              </div>
+              <div>
+                In the navigation bar at the top, click <strong>Find Anything</strong>. Enter a name like <strong>server12</strong>. You can also search by IP, model, serial and many other things.
+              </div>
+              <div>
+                In the navigation bar at the top, click <strong>Inventory</strong>.
+              </div>
+              <div>
+                In the navigation bar at the top, click <strong>Find Anything</strong>. Enter a hostname like <strong>GL-YH219-LAB02.yorku.yorku.ca</strong>. You can also search by MAC address or IP address.
+              </div>
+              <div>
+                Not available.
+              </div>
+              <div>
+                <p>In the navigation bar at the top, click <strong>Advanced Port Search.</strong> Select the <strong>VLAN</strong> field and enter a VLAN like <strong>16</strong>.</p>
+                <p class="text-warning">Note: Some VLANs are quite large, which will cause some searches to fail with "Search failed! Contact your network administrator". Limit your searches by additionally searching by building, room or other criteria. Alteratively, after performing a search, disable some unneeded columns in the sidebar.</p>
+              </div>
+              <div>
+                <p>Not available.</p>
+                <p>If looking for ports, in <strong>Advanced Port Search</strong>, enter information you know like <strong>Building</strong> and <strong>Room</strong> in their respective fields.</p>
+                <p>If looking for devices, in <strong>Find Anything</strong>, enter information you know like <strong>Building</strong>.</p>
+              </div>
+              <div>
+                In the navigation bar at the top, click <strong>Advanced Port Search</strong>. To pick a building, click on the Building field to get a list.
+              </div>
+              <div>
+                Not available.
+              </div>
+              <div>
+                Not available.
+              </div>
+              <div>
+                Not available.
+              </div>
+              <div>
+                In the navigation bar at the top, click <strong>Reports</strong> &gt; <strong>Port</strong> &gt; <strong>Duplex Mismatch Between Devices</strong>.
+              </div>
+              <div>
+                In the navigation bar at the top, click <strong>Reports</strong> &gt; <strong>IP</strong> &gt; <strong>IP Inventory</strong>. On the sidebar on the right, enter a <strong>CIDR Prefix/Subnet</strong> and click <strong>Update View</strong>.
+              </div>
+              <div>
+                Only available if you have administrative privileges. Click <strong>Admin</strong> &gt; <strong>Poller Performance</strong>.
+              </div>
+              <div>
+                You're looking at it!
+              </div>
+              <div>
+                Only available if you have administrative privileges. In the navigation bar at the top, click <strong>Admin</strong> to view administrative options.
+              </div>
+              <div>
+                Not available.
+              </div>
+              <div>
+                In the navigation bar at the top, click <strong>your username</strong> on the right, then click <strong>Log Out</strong>.
+              </div>
+            </div>
+          </div>
           <div id="nd_home-help-container" class="clearfix">
             <span id="nd_home-help-toggle" data-toggle="collapse" data-target="#nd_home-help">
               <a>FAQ (Last Updated: December 4, 2015)
@@ -144,7 +344,7 @@
             </div>
           </div>
           [% IF user_has_role('admin') %]
-          <form class="nd_login-form" method="post" action="[% uri_for('/admin/discover') %]">
+          <form method="post" action="[% uri_for('/admin/discover') %]">
             <div id="nd_home-advanced-container" class="clearfix">
               <span id="nd_home-advanced-toggle" data-toggle="collapse" data-target="#nd_home-advanced">
                 <a>Advanced
