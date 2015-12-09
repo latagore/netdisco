@@ -52,9 +52,22 @@
             &mdash;
             <a href="http://netinfo.yorku.ca/">Old Netinfo</a>
           </p>
+          <span id="nd_changelog-toggle" data-toggle="collapse" data-target="#changelog">
+            <a>Changelog (Last Updated: December 9th, 2015)
+            <i class="icon-chevron-up nd_chevron"></i></a>
+          </span>
+          <div id="changelog" class="collapse">
+          <div class="log">
+          <h4>December 9, 2015</h4>
+          <ul>
+            <li>Added user documentation for Netinfo and Netdisco version 1 users.</li>
+            <li>Fixed node search. Can now search by the first part of a hostname, such as <strong>GL-YH219-LAB02</strong> instead of <strong>GL-YH219-LAB02.yorku.yorku.ca</strong></li>
+          </ul>
+          </div>
+          </div>
           
           <span id="nd_netdisco-user-doc-toggle" data-toggle="collapse" data-target="#nd_netdisco-user-docs">
-              <a>User Documentation for Netdisco V1 Users
+              <a>User Documentation for V1 Users
               <i class="icon-chevron-up nd_chevron"></i></a>
           </span>
           <div id="nd_netdisco-user-docs" class="collapse user-doc-container">
@@ -362,7 +375,7 @@
           </div>
           <div id="nd_home-help-container" class="clearfix">
             <span id="nd_home-help-toggle" data-toggle="collapse" data-target="#nd_home-help">
-              <a>FAQ (Last Updated: December 4, 2015)
+              <a>FAQ
               <i class="icon-chevron-up nd_chevron"></i></a>
             </span>
             <div id="nd_home-help" class="collapse">

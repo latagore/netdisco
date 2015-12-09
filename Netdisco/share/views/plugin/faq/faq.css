@@ -1,3 +1,13 @@
+/* changelog styling */
+#changelog {
+  font-size:10pt;
+  line-height: normal;
+}
+
+#changelog li{
+  line-height: normal;
+}
+
 /* user documentation styling */
 .user-doc-container {
   font-size:10pt;
