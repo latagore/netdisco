@@ -1,0 +1,83 @@
+/* changelog styling */
+#changelog {
+  font-size:10pt;
+  line-height: normal;
+}
+
+#changelog li{
+  line-height: normal;
+}
+
+/* user documentation styling */
+.user-doc-container {
+  font-size:10pt;
+  line-height: normal;
+}
+
+.sidebar-bg{
+  text-align: center;
+  width: 27%;
+  float: left;
+  position: relative;
+}
+.sidebar-bg form {
+  margin: 0px;
+}
+
+.sidebar-bg input {
+  width: 70px;
+  margin: 0px;
+  padding: 1px;
+}
+
+.user-doc-container::after {
+  content: "";
+  display: block;
+  clear: both;    
+}
+
+.user-doc-tip {
+  float: left;
+  width: 73%;
+  position: relative;
+  left: 10px;
+}
+
+.user-doc-instructions {
+  float: left;
+  width: 73%;
+  position: relative;
+}
+.user-doc-instructions li {
+  line-height: normal;
+}
+
+.user-doc-instructions > div {
+  display: none;
+  position: absolute;
+  top: 0px;
+  left: 10px;
+  padding: 7px;
+
+  background-color: white;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+}
+
+/* FAQ styling */
+#nd_home-help-container ol {
+  margin-left: 32px;
+  font-size: medium;
+}
+
+#nd_home-help-container li {
+  line-height: normal;
+}
+
+.faq-new h4 {
+  margin-top: 0px;
+}
+
+.answer {
+  display: none;
+}

@@ -218,26 +218,3 @@
   padding-right: 12px;
   color: #999;
 }
-
-/* home page styling */
-#nd_home-help-toggle a {
-  color: #00A;
-}
-
-#nd_home-help-container ol {
-  margin-left: 32px;
-  font-size: medium;  
-}
-
-#nd_home-help-container li {
-  line-height: normal;
-}
-
-.faq-new {
-  background-color: lightyellow;
-  padding: 10px 5px 10px 5px;
-}
-
-.faq-new h4 {
-  margin-top: 0px;
-}

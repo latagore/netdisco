@@ -141,7 +141,7 @@ sub search_by_dns {
     die "dns field required for search_by_dns\n"
       if ref {} ne ref $cond or !exists $cond->{dns};
 
-    $cond->{dns} = { '-ilike' => delete $cond->{dns} };
+    $cond->{dns} = { '~*' => delete $cond->{dns} };
 
     return $rs
       ->search_rs({}, $search_attr)

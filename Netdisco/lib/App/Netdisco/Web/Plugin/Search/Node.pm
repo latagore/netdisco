@@ -152,11 +152,19 @@ ajax '/ajax/content/search/node' => require_login sub {
               ->search_by_ip({ip => $ip, @active, @times});
         }
         else {
-            $likeval .= setting('domain_suffix')
-              if index($node, setting('domain_suffix')) == -1;
+
+            my $match = '^'
+                . quotemeta($node)
+                . "(\\..+)*";
+            if (index($node, setting('domain_suffix')) == -1){
+              $match .= setting('domain_suffix')
+                                 .'$';
+            } else {
+              $match .= '$';
+            }
 
             $set = schema('netdisco')->resultset('NodeIp')
-              ->search_by_dns({dns => $likeval, @active, @times});
+              ->search_by_dns({dns => $match, @active, @times});
 
             # if the user selects Vendor search opt, then
             # we'll try the OUI company name as a fallback

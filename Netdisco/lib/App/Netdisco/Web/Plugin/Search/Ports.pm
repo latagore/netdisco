@@ -50,7 +50,16 @@ get '/ajax/content/search/ports' => require_login sub {
           );
     } elsif ($q) {
       # find nodes by q
-      my $match = sql_match($q);
+      my $match = '^'
+          . quotemeta($q)
+          . "(\\..+)*";
+      if (index($q, setting('domain_suffix')) == -1){
+        $match .= setting('domain_suffix')
+                           .'$';
+      } else {
+        $match .= '$';
+      }
+
       my $nodemac = NetAddr::MAC->new(mac => $q);
       my $nodeip = NetAddr::IP->new($q);
       my @node_where;
@@ -59,7 +68,7 @@ get '/ajax/content/search/ports' => require_login sub {
       } elsif (defined $nodeip and defined $nodeip->addr) {
         @node_where = ('ips.ip' => $nodeip->addr);
       } else {
-        @node_where = ('ips.dns' => { -ilike => $match });
+        @node_where = ('ips.dns' => { '~*' => $match });
       }
       
       my $search_archived = param('f_node_archived');
@@ -107,7 +116,15 @@ get '/ajax/content/search/ports' => require_login sub {
     # refine by node if requested
     my $fnode = param('node');
     if ($fnode) {
-      my $match = sql_match($fnode);
+      my $match = '^'
+          . quotemeta($fnode)
+          . "(\\..+)*";
+      if (index($q, setting('domain_suffix')) == -1){
+        $match .= setting('domain_suffix')
+                           .'$';
+      } else {
+        $match .= '$';
+      }
 
       #define DBI where clauses
       my $nodemac = NetAddr::MAC->new(mac => $fnode);
@@ -118,7 +135,7 @@ get '/ajax/content/search/ports' => require_login sub {
       } elsif (defined $nodeip and defined $nodeip->addr) {
         @where = ('ips.ip' => $nodeip->addr);
       } else {
-        @where = ('ips.dns' => { -ilike => $match });
+        @where = ('ips.dns' => { '~*' => $match });
       }
       
       my $search_archived = param('f_node_archived');
