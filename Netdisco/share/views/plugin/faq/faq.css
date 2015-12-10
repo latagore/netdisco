@@ -8,6 +8,60 @@
   line-height: normal;
 }
 
+/* full documentation styling */
+#nd_user-docs .toc {
+  float: right;
+  padding: 10px;
+  border: 1 solid lightgrey;
+  border-radius:  10px;
+  background-color: white;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+#nd_user-docs .toc h4 {
+  margin: 0px;
+}
+
+#nd_user-docs .toc ul {
+  margin-left: 10px;
+  margin-bottom: 0px;
+}
+
+#nd_user-docs .toc li {
+  line-height: normal;
+  list-style-type: none;
+}
+
+#nd_user-docs .toc ul > li li {
+  margin-left: 25px;
+}
+
+
+#nd_user-docs table {
+  margin-bottom: 30px;
+  border: 1px solid grey;  
+}
+
+#nd_user-docs td,
+#nd_user-docs th
+{
+  border-left: 1px solid grey;
+  border-top: 1px solid grey;
+}
+
+#nd_user-docs td {
+  padding: 7px 10px;
+}
+
+#nd_user-docs .tip {
+  background-color: white;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  padding: 5px;
+  margin-top: 5px;
+}
+
 /* user documentation styling */
 .user-doc-container {
   font-size:10pt;

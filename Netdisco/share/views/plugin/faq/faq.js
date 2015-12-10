@@ -5,6 +5,22 @@ $(document).ready(function(){
       $(this).parent().next(".answer").slideToggle();
     });
 
+  // need to scroll with an offset; otherwise the nav bar will
+  // overlap the content
+  $('#nd_user-docs a')
+    .click(function (e){
+      var a = $(this);
+      var href = a.attr("href")
+      if (href.startsWith("#")) {
+        e.preventDefault();
+        var scrollY =  $(href).offset().top - $('.navbar').height() - 5
+        $('html').animate({
+            scrollTop: scrollY
+        });
+      }
+    });
+
+
   // documentation answers might get cut off. need to allow
   // overflow for all answers to display.
   $('.user-doc-container').on('shown', function(){

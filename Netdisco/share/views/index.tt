@@ -373,6 +373,14 @@
               </div>
             </div>
           </div>
+          
+          <span id="nd_user-doc-toggle" data-toggle="collapse" data-target="#nd_user-docs">
+              <a>Netdisco V2 User Documentation
+              <i class="icon-chevron-up nd_chevron"></i></a>
+          </span>
+          <div id="nd_user-docs" class="collapse user-doc-container">
+            [% INCLUDE userdoc.tt %]
+          </div>
           <div id="nd_home-help-container" class="clearfix">
             <span id="nd_home-help-toggle" data-toggle="collapse" data-target="#nd_home-help">
               <a>FAQ
