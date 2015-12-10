@@ -254,7 +254,7 @@
   <li><a href="#search-for-ports">Find a port.</a></li>
   <li>Enable <strong>Port Controls</strong> in the sidebar, under <strong>Display Columns</strong>.</li>
   <li>Check it and click <strong>Update View</strong>.</li>
-  <li>Hover the mouse over the port name. Ports that are already enabled have a <strong>Bounce</strong> (disable then enable) and <strong>Disable</strong> button. Ports that are disabled only have an <strong>Enable</strong> button. Clicking any of these buttons brings up a dialog, asking for a reason for the change in port status. Some ports cannot be port controlled, like VLAN interfaces.</li>
+  <li>Hover the mouse over the port name. Enabled <i class="text-success icon-angle-up"></i> ports have a <strong>Bounce</strong> <i class="icon-bullseye"></i>(disable then enable) and <strong>Disable</strong> <i class="icon-hand-down"></i> button. Disabled <i class="icon-arrow-down text-error"></i> ports only have an <strong>Enable</strong> <i class="icon-hand-up"></i> button. Clicking any of these buttons brings up a dialog, asking for a reason for the change in port status. Some ports cannot be port controlled, like VLAN interfaces.</li>
   <li>Select a reason and fill in a comment as needed and click <strong>Continue</strong>. When the port has been enabled or disabled, a notification will appear in the top right.</li>
 </ol>
 
