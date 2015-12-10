@@ -1,10 +1,10 @@
-/* changelog styling */
-#changelog {
-  font-size:10pt;
+.hero-unit li{
   line-height: normal;
 }
 
-#changelog li{
+/* changelog styling */
+#changelog {
+  font-size:10pt;
   line-height: normal;
 }
 
@@ -29,7 +29,6 @@
 }
 
 #nd_user-docs .toc li {
-  line-height: normal;
   list-style-type: none;
 }
 
@@ -102,9 +101,6 @@
   width: 73%;
   position: relative;
 }
-.user-doc-instructions li {
-  line-height: normal;
-}
 
 .user-doc-instructions > div {
   display: none;
@@ -122,10 +118,6 @@
 #nd_home-help-container ol {
   margin-left: 32px;
   font-size: medium;
-}
-
-#nd_home-help-container li {
-  line-height: normal;
 }
 
 .faq-new h4 {
