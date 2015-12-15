@@ -323,6 +323,7 @@ $(document).ready(function() {
     ,opens: 'left'
     ,format: 'YYYY-MM-DD'
     ,separator: ' to '
+    ,singleDatePicker: true
   }
   ,function(start, end) {
     $('#daterange').trigger('input');
@@ -360,7 +361,8 @@ $(document).ready(function() {
     t.chosen({
       inherit_select_classes: true,
       placeholder_text_multiple: this.dataset.title,
-      search_contains: true
+      search_contains: true,
+      disable_search_threshold: 10
     });
     var c = t.next('.chosen-container');
     c.prop("rel", this.rel);

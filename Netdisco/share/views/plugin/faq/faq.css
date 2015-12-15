@@ -1,11 +1,64 @@
+.hero-unit li{
+  line-height: normal;
+}
+
 /* changelog styling */
 #changelog {
   font-size:10pt;
   line-height: normal;
 }
 
-#changelog li{
-  line-height: normal;
+/* full documentation styling */
+#nd_user-docs .toc {
+  float: right;
+  padding: 10px;
+  border: 1 solid lightgrey;
+  border-radius:  10px;
+  background-color: white;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+#nd_user-docs .toc h4 {
+  margin: 0px;
+}
+
+#nd_user-docs .toc ul {
+  margin-left: 10px;
+  margin-bottom: 0px;
+}
+
+#nd_user-docs .toc li {
+  list-style-type: none;
+}
+
+#nd_user-docs .toc ul > li li {
+  margin-left: 25px;
+}
+
+
+#nd_user-docs table {
+  margin-bottom: 30px;
+  border: 1px solid grey;  
+}
+
+#nd_user-docs td,
+#nd_user-docs th
+{
+  border-left: 1px solid grey;
+  border-top: 1px solid grey;
+}
+
+#nd_user-docs td {
+  padding: 7px 10px;
+}
+
+#nd_user-docs .tip {
+  background-color: white;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  padding: 5px;
+  margin-top: 5px;
 }
 
 /* user documentation styling */
@@ -48,9 +101,6 @@
   width: 73%;
   position: relative;
 }
-.user-doc-instructions li {
-  line-height: normal;
-}
 
 .user-doc-instructions > div {
   display: none;
@@ -68,10 +118,6 @@
 #nd_home-help-container ol {
   margin-left: 32px;
   font-size: medium;
-}
-
-#nd_home-help-container li {
-  line-height: normal;
 }
 
 .faq-new h4 {

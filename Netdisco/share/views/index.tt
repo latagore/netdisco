@@ -53,16 +53,28 @@
             <a href="http://netinfo.yorku.ca/">Old Netinfo</a>
           </p>
           <span id="nd_changelog-toggle" data-toggle="collapse" data-target="#changelog">
-            <a>Changelog (Last Updated: December 9th, 2015)
+            <a>Changelog (Last Updated: December 10, 2015)
             <i class="icon-chevron-up nd_chevron"></i></a>
           </span>
           <div id="changelog" class="collapse">
           <div class="log">
-          <h4>December 9, 2015</h4>
-          <ul>
-            <li>Added quick start documentation for Netinfo and Netdisco version 1 users.</li>
-            <li>Fixed node search. Can now search by the first part of a hostname, such as <strong>GL-YH219-LAB02</strong> instead of <strong>GL-YH219-LAB02.yorku.yorku.ca</strong></li>
-          </ul>
+            <h4>December 15, 2015</h4>
+            <ul>
+              <li>Changed IP Inventory to be more straightforward like old Netdisco</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>December 10, 2015</h4>
+            <ul>
+              <li>Added full user documentation for Netdisco V2.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>December 9, 2015</h4>
+            <ul>
+              <li>Added quick start documentation for Netinfo and Netdisco version 1 users.</li>
+              <li>Fixed node search. Can now search by the first part of a hostname, such as <strong>GL-YH219-LAB02</strong> instead of <strong>GL-YH219-LAB02.yorku.yorku.ca</strong></li>
+            </ul>
           </div>
           </div>
           
@@ -372,6 +384,14 @@
                 In the navigation bar at the top, click <strong>your username</strong> on the right, then click <strong>Log Out</strong>.
               </div>
             </div>
+          </div>
+          
+          <span id="nd_user-doc-toggle" data-toggle="collapse" data-target="#nd_user-docs">
+              <a>Netdisco V2 User Documentation
+              <i class="icon-chevron-up nd_chevron"></i></a>
+          </span>
+          <div id="nd_user-docs" class="collapse user-doc-container">
+            [% INCLUDE userdoc.tt %]
           </div>
           <div id="nd_home-help-container" class="clearfix">
             <span id="nd_home-help-toggle" data-toggle="collapse" data-target="#nd_home-help">

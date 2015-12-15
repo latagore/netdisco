@@ -1,0 +1,294 @@
+<div class="toc">
+  <h4>Table of Contents</h4>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li>
+      <a href="#user-interface">User Interface</a>
+      <ul>
+        <li><a href="#navigation-bar">Navigation Bar</a></li>
+        <li>
+          <a href="#main-view">Main View</a>
+          <ul>
+            <li>
+              <a href="#sidebar">Sidebar</a>
+            </li>
+            <li><a href="#tables" />Tables</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="#how-to" />How To</a>
+      <ul>
+        <li><a href="#search-for-ports">Search for Ports</a></li>
+        <li><a href="#search-for-devices">Search for Devices</a></li>
+        <li><a href="#enable-or-disable-a-port">Enable or Disable a Port</a></li>
+        <li><a href="#edit-port-information">Edit Port Information</a></li>
+        </ul>
+    </li>
+    <li>
+      <a href="#handy-reports">Handy Reports</a>
+      <ul>
+        <li><a href="#device-power-over-ethernet-poe-status">Device &gt; Power over Ethernet (PoE) Status</a></li>
+        <li><a href="#device-port-utilization">Device &gt; Port Utilization</a></li>
+        <li><a href="#inventory">Inventory</a></li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<h3 id="overview">Overview</h3>
+
+<p>Netdisco is a tool for looking up information on network elements like switches and end-user nodes. At York, Netdisco has been customized to provide cabling and location information related to a port and the history of changes to a device. The new features in Netdisco version 2 are improved search functionality, a modern web interface and more information about nodes and switches.</p>
+
+<p>Netdisco's most important information can be separated into three categories: <strong>devices</strong>, <strong>device ports</strong> and <strong>nodes</strong>.</p>
+
+<p>"Devices" are network devices; particularly, computers that answer SNMP queries. Netdisco stores various information about devices, like OS, version, model, ports, and IP addresses. These might include switches or routers, but sometimes wireless access points or IP-enabled phones, depending on how they are configured.</p>
+
+<p>Device ports are interfaces to other devices, which could be physical or virtual. Some physical ports might include <em>GigabitEthernet1/0/1</em>, <em>FastEthernet1/0/1</em>. Virtual ports include aggregated, redundant-link interfaces like <em>Port-channel11</em> or VLAN interfaces like <em>VLAN 753</em>.</p>
+
+<p>A node are "an active electronic device that is attached to a network, and is capable of creating, receiving, or transmitting information over a communications channel." (see <a href="https://en.wikipedia.org/wiki/Node_%28networking%29">Wikipedia</a>) This can include things like workstations, access points or servers.</p>
+
+<h3 id="user-interface">User Interface</h3>
+
+<p>The user interface for Netdisco is comprised of the navigation bar and the main view. </p>
+
+
+
+<h4 id="navigation-bar">Navigation Bar</h4>
+
+<p>The navigation bar provides quick access to Netdisco's features and search capabilities.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Component</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody><tr>
+      <td>Inventory</td>
+      <td>Shows all the devices on the network grouped by OS or model. This can be useful for finding particular devices if you do not know them by name.</td>
+    </tr>
+    <tr>
+      <td>Reports</td>
+      <td>Lists all reports. Reports are useful for understanding the network as a whole or finding devices.</td>
+    </tr>
+    <tr>
+      <td>Admin</td>
+      <td>Only available to Netdisco administrators. Lists maintenance jobs and additonal admin reports.</td>
+    </tr>
+    <tr>
+      <td>Search Anything</td>
+      <td>Search for (nearly) anything about a device or node, such as location or model number. This does not search for cable, pigtail or room numbers, because they are not unique among buildings.</td>
+    </tr>
+    <tr>
+      <td>Advanced Port Search</td>
+      <td>Search for ports by specific criteria, like Building, Horizontal Cable, VLAN, among many other things. 
+        <div class="tip">
+          Tip: Click the Building field to get a list of all buildings. You can search by name to find the building number in brackets. You can do the opposite to find the name for a building number.
+        </div>
+      </td>
+    </tr>
+  </tbody></table>
+
+
+<h4 id="main-view">Main View</h4>
+
+<p>In the main view, this is where the actual content is shown. Depending on the task, a sidebar may also be present.</p>
+
+
+
+<h5 id="sidebar">Sidebar</h5>
+
+<p>Sidebars allow control over the content you see. It controls what appears and what to search for.</p>
+<p>When searching for ports, the sidebar has the following components:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Component</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody><tr>
+      <td>Building, Pigtail… Filters</td>
+      <td>Most are not displayed when looking at a particular device's ports. They are shown when performing a search for ports using Advanced Port Search. These are used to change the search criteria.</td>
+    </tr>
+    <tr>
+      <td>Legend</td>
+      <td>A list explaining the meaning of the various symbols in the results, such as port status icons.</td>
+    </tr>
+    <tr>
+      <td>Display Columns</td>
+      <td>Controls which columns are displayed. Click <strong>Update View</strong> after checking/unchecking columns to view your changes.
+        <div class="tip">Tip: Hiding the <strong>Connected Nodes</strong> or <strong>VLAN Membership</strong> columns can speed up searches, so it is possible to disable these columns if not needed.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>Port Properties</td>
+      <td>Allows additional filtering based by port status. Also controls how long a port must be free of nodes before it is displayed as free.</td>
+    </tr>
+    <tr>
+      <td>Node Properties</td>
+      <td>Controls what information is displayed for nodes. 
+        <div class="tip">
+          Tip: <strong>Archived Data</strong> (under <strong>Node Properties</strong>) displays historical data up to 14 months old. <em class="text-warning">However, this option can severely impact performance, even causing some pages to fail to load entirely. Uncheck this column or limit your search if you encounter this problem.</em>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>Update View</td>
+      <td>Reloads with the new settings. Click after making changes in the sidebar.</td>
+    </tr>
+  </tbody></table>
+
+
+<p>When searching for nodes:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Component</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody><tr>
+      <td>Time Stamps</td>
+      <td>Displays a column indicating the age of the record.</td>
+    </tr>
+    <tr>
+      <td>Device Ports</td>
+      <td>Displays the device ports that this node has been found at.</td>
+    </tr>
+    <tr>
+      <td>Vendor</td>
+      <td>Displays the vendor for the node.</td>
+    </tr>
+    <tr>
+      <td>Archived Data</td>
+      <td>Displays all historical data up to 14 months old. <em class="text-warning">However, this option can severely impact performance, even causing some searches to fail to load entirely.</em></td>
+    </tr>
+    <tr>
+      <td>Partial Match</td>
+      <td>List results that partially match the search term.</td>
+    </tr>
+    <tr>
+      <td>Date Range</td>
+      <td>Limits results based on the age of the record.</td>
+    </tr>
+    <tr>
+      <td>MAC Address Format</td>
+      <td>Displays MAC addresses in a given format.</td>
+    </tr>
+    <tr>
+      <td>Update View</td>
+      <td>Reloads with the new settings. Click after making changes in the sidebar.</td>
+    </tr>
+  </tbody></table>
+
+
+<p>When searching for devices:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Component</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody><tr>
+      <td>DNS, IP, System Name, Location, Description</td>
+      <td>Text fields limiting the results.</td>
+    </tr>
+    <tr>
+      <td>Model, Operating System, OS Release, Vendor, Layer</td>
+      <td>Dropdowns that allow filtering on particular types. Click to list the possible values.</td>
+    </tr>
+    <tr>
+      <td>Match All Options</td>
+      <td>Indicates whether all of the criteria need to be met to be listed in the search results.</td>
+    </tr>
+    <tr>
+      <td>Update View</td>
+      <td>Reloads with the new settings. Click after making changes in the sidebar.</td>
+    </tr>
+  </tbody></table>
+
+
+
+
+<h5 id="tables">Tables</h5>
+
+<p>Tables are a main way of displaying information in Netdisco. Netdisco version 2 has additional features for tables: sorting, quick filtering and paging. To quickly find entries, instead of manually sifting a large number of entries, sorting and filtering is encouraged. Click the Previous, Next or page number buttons to change pages. </p>
+
+<ul>
+  <li>Sorting can be done by clicking on the column headers. Clicking again will reverse the sort. </li>
+  <li>Quick filtering is an easy way to find specific information. For example, when looking at ports on a device, searching for <em>PortChannel</em> would quickly filter for all of the <em>PortChannel</em> interfaces.</li>
+  <li>Tables list all entries by default. Sometimes, limiting page size can slightly improve performance. To change the page size, select a different number in the <strong>Show __ Records</strong> field.</li>
+</ul>
+
+<p><em class="text-warning">Sorting and quick filtering can be extremely slow for large tables with 500 or more entries. Limiting your search in the sidebar with additional criteria is recommended.</em></p>
+
+<h3 id="how-to">How To</h3>
+
+
+
+<h4 id="search-for-ports">Search for Ports</h4>
+
+<p>The easiest way to search for ports is using <strong>Advanced Port Search</strong>. In the navigation bar at the top, click <strong>Advanced Port Search</strong>. A list of fields will be displayed. Fill in known information like <strong>Building</strong> or <strong>Pigtail</strong>.</p>
+
+<p>Alternatively, you can <a href="#search-for-devices">search for a device</a>, then click the <strong>Ports</strong> tab to look for ports.</p>
+
+
+
+<h4 id="search-for-devices">Search for Devices</h4>
+
+<p>Using <strong>Find Anything</strong>, you can enter any information about the device, such as the device location, ip or model. If you are looking for a particular device, some suggestions are offered below your search. Select one to find more information about that device. </p>
+
+<p>Otherwise, hit <strong>enter</strong> or click the <strong>Search</strong> button to get a list of matching results. When doing this, if a search has more than one result, then the list of matching devices is shown.</p>
+
+<h4 id="enable-or-disable-a-port">Enable or Disable a Port</h4>
+
+<ol>
+  <li><a href="#search-for-ports">Find a port.</a></li>
+  <li>Enable <strong>Port Controls</strong> in the sidebar, under <strong>Display Columns</strong>.</li>
+  <li>Check it and click <strong>Update View</strong>.</li>
+  <li>Hover the mouse over the port name. Enabled <i class="text-success icon-angle-up"></i> ports have a <strong>Bounce</strong> <i class="icon-bullseye"></i>(disable then enable) and <strong>Disable</strong> <i class="icon-hand-down"></i> button. Disabled <i class="icon-arrow-down text-error"></i> ports only have an <strong>Enable</strong> <i class="icon-hand-up"></i> button. Clicking any of these buttons brings up a dialog, asking for a reason for the change in port status. Some ports cannot be port controlled, like VLAN interfaces.</li>
+  <li>Select a reason and fill in a comment as needed and click <strong>Continue</strong>. When the port has been enabled or disabled, a notification will appear in the top right.</li>
+</ol>
+
+
+
+<h4 id="edit-port-information">Edit Port Information</h4>
+
+<ol>
+  <li><a href="#search-for-ports">Find a port.</a></li>
+  <li>Enable <strong>Port Controls</strong> in the sidebar, under <strong>Display Columns</strong>.</li>
+  <li>Check it and click <strong>Update View</strong>.</li>
+  <li>To edit VLAN or Name for a port, simply click the table cell, modify the information and hit enter to save. Similarly for cable data, such as pigtail and cable, you can do the same. 
+    <div class="tip">
+      Tip: Multiple fields can be modified at once. Unsaved data will be indicated with a black box. Click the <strong>Save Port Info</strong> button at the top of the table to save all the data at once.
+    </div>
+  </li>
+</ol>
+
+
+
+<h3 id="handy-reports">Handy Reports</h3>
+
+
+
+<h4 id="device-power-over-ethernet-poe-status">Device &gt; Power over Ethernet (PoE) Status</h4>
+
+<p>Provides a summary of the Power over Ethernet (PoE) capabilities of all of the devices on the network. It shows the ports counts, as well as total, committed and delivered power for each switch blade.</p>
+
+<h4 id="device-port-utilization">Device &gt; Port Utilization</h4>
+
+<p>Indicates the number of free, used and disabled ports on each device. A port is counted as free when Netdisco has not found an active node associated with that port for 14 months. Select a device name to view all the ports for that device.</p>
+
+
+
+<h4 id="inventory">Inventory</h4>
+
+<p>Lists all the models and OS versions. Select one to search for all of the devices with a particular model or version. </p>
