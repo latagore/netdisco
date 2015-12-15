@@ -58,6 +58,12 @@
           </span>
           <div id="changelog" class="collapse">
           <div class="log">
+            <h4>December 15, 2015</h4>
+            <ul>
+              <li>Changed IP Inventory to be more straightforward like old Netdisco</li>
+            </ul>
+          </div>
+          <div class="log">
             <h4>December 10, 2015</h4>
             <ul>
               <li>Added full user documentation for Netdisco V2.</li>
