@@ -150,6 +150,17 @@ get '/ajax/content/report/ipinventory' => require_login sub {
 
     }
 
+    if ($registered eq "registered") {      
+      $rs = $rs->search(
+        { dns => { '!=' => undef } }
+      );
+
+    } elsif ($registered eq "unregistered") {
+      $rs = $rs->search(
+        {dns => undef}
+      );
+    }
+
     my @results = $rs->order_by($order)->limit($limit)->all;
     return unless scalar @results;
 

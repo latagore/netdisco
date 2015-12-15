@@ -33,7 +33,7 @@
                     <select name="registered">
                       <option value="registered">Registered</option>
                       <option value="unregistered">Unregistered</option>
-                      <option value="both">Both</option>
+                      <option selected="selected" value="both">Both</option>
                     </select>
                   </li>
                   <li>
