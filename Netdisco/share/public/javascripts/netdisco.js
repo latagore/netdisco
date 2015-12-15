@@ -323,6 +323,7 @@ $(document).ready(function() {
     ,opens: 'left'
     ,format: 'YYYY-MM-DD'
     ,separator: ' to '
+    ,singleDatePicker: true
   }
   ,function(start, end) {
     $('#daterange').trigger('input');

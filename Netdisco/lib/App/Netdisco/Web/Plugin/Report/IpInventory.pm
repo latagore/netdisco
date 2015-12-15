@@ -24,12 +24,19 @@ get '/ajax/content/report/ipinventory' => require_login sub {
     $subnet = NetAddr::IP::Lite->new('0.0.0.0/32')
       if (! $subnet) or ($subnet->addr eq '0.0.0.0');
 
-    my $agenot = param('age_invert') || '0';
-    my ( $start, $end ) = param('daterange') =~ /(\d+-\d+-\d+)/gmx;
-
     my $limit = param('limit') || 256;
-    my $never = param('never') || '0';
     my $order = [{-desc => 'age'}, {-asc => 'ip'}];
+
+    my $used = param('used');
+    my $num = param('num');
+    my $unit = param('unit');
+    my $registered = param('registered');
+
+    send_error("Invalid unit") unless grep { $_ eq $unit } qw/months days weeks/;
+    send_error("Invalid registered field") unless grep { $_ eq $registered } qw/registered unregistered both/;
+
+    debug $unit;
+    my $interval = "\'$num $unit\'::interval";
 
     # We need a reasonable limit to prevent a potential DoS, especially if
     # 'never' is true.  TODO: Need better input validation, both JS and
@@ -69,30 +76,13 @@ get '/ajax/content/report/ipinventory' => require_login sub {
             '+select' => [
                 'nbname AS dns', 'active',
                 \'true AS node',
-                \qq/replace( date_trunc( 'minute', age( now(), time_last ) ) ::text, 'mon', 'month') AS age/ 
+                \qq/replace( date_trunc( 'minute', age( now(), time_last ) ) ::text, 'mon', 'month') AS age/
             ],
             '+as' => [ 'dns', 'active', 'node', 'age' ],
         }
     )->hri;
 
     my $rs_union = $rs1->union( [ $rs2, $rs3 ] );
-
-    if ( $never ) {
-        $subnet = NetAddr::IP::Lite->new('0.0.0.0/32') if ($subnet->bits ne 32);
-
-        my $rs4 = schema('netdisco')->resultset('Virtual::CidrIps')->search(
-            undef,
-            {   bind => [ $subnet->cidr ],
-                columns   => [qw( ip mac time_first time_last dns active)],
-                '+select' => [ \'false AS node',
-                               \qq/replace( date_trunc( 'minute', age( now(), time_last ) ) ::text, 'mon', 'month') AS age/
-                             ],
-                '+as'     => [ 'node', 'age' ],
-            }
-        )->hri;
-
-        $rs_union = $rs_union->union( [$rs4] );
-    }
 
     my $rs_sub = $rs_union->search(
         { ip => { '<<' => $subnet->cidr } },
@@ -115,39 +105,49 @@ get '/ajax/content/report/ipinventory' => require_login sub {
     )->as_query;
 
     my $rs;
-    if ( $start && $end ) {
-        $start = $start . ' 00:00:00';
-        $end   = $end . ' 23:59:59';
+    if ( $used eq "unused") {
+        $rs = $rs_union->search(
+                { -or =>
+                  [  
+                    { time_last => { '<', \"now() - $interval" } },
+                    { time_last => undef }
+                  ]
+                },
+                { from => { me => $rs_sub }, }
+            );
+    } elsif ($used eq "used") {
+        $rs = $rs_union->search(
+            { time_last => { '>=',  \"now() - $interval" } },
+            { from => { me => $rs_sub }, }
+        );
+    } else {
+        $subnet = NetAddr::IP::Lite->new('0.0.0.0/32') if ($subnet->bits ne 32);
 
-        if ( $agenot ) {
-            $rs = $rs_union->search(
-                {   -or => [
-                        time_first => [ undef ],
-                        time_last => [ { '<', $start }, { '>', $end } ]
-                    ]
-                },
-                { from => { me => $rs_sub }, }
-            );
-        }
-        else {
-            $rs = $rs_union->search(
-                {   -or => [
-                      -and => [
-                          time_first => undef,
-                          time_last  => undef,
-                      ],
-                      -and => [
-                          time_last => { '>=', $start },
-                          time_last => { '<=', $end },
-                      ],
-                    ],
-                },
-                { from => { me => $rs_sub }, }
-            );
-        }
-    }
-    else {
-        $rs = $rs_union->search( undef, { from => { me => $rs_sub }, } );
+        # check if subnet ip doesn't exist in DB
+        
+        $rs_union = $rs_union->search(
+          { "me.ip" => { "=" => \"n.ip"} },
+          { 
+            columns => 'ip',
+          });
+          
+        $rs = schema('netdisco')->resultset('Virtual::CidrIps')->search(
+            { -and =>
+              [
+                { ip => { '<<' => $subnet->cidr }},
+                { '-not exists' => $rs_union->as_query }
+              ]
+            },
+            {   bind => [ $subnet->cidr ],
+                columns   => [qw( ip mac time_first time_last dns active)],
+                '+select' => [ \'false AS node',
+                               \qq/replace( date_trunc( 'minute', age( now(), time_last ) ) ::text, 'mon', 'month') AS age/
+                             ],
+                '+as'     => [ 'node', 'age' ],
+                alias => "n"
+            }
+        )->hri;
+
     }
 
     my @results = $rs->order_by($order)->limit($limit)->all;
