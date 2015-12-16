@@ -1,3 +1,5 @@
+var search_xhr;
+
 // parameterised for the active tab - submits search form and injects
 // HTML response into the tab pane, or an error/empty-results message
 function do_search (event, tab) {
@@ -29,21 +31,28 @@ function do_search (event, tab) {
     '<div class="span2 alert"><i class="icon-spinner icon-spin"></i> Waiting for results...</div>'
   );
 
+  // cancel the last search request, then issue the new one
+  if (search_xhr) {
+    search_xhr.abort();
+  }
+  
   // submit the query and put results into the tab pane
-  $(target).load( uri_base + '/ajax/content/' + path + '/' + tab + '?' + query,
+  search_xhr = $.get( uri_base + '/ajax/content/' + path + '/' + tab + '?' + query,
     function(response, status, xhr) {
-      if (status !== "success") {
+      if (status !== "success" && status !== "notmodified") {
         $(target).html(
           '<div class="span5 alert alert-error"><i class="icon-warning-sign"></i> ' +
           'Search failed! Please contact your site administrator.</div>'
         );
         return;
       }
+
       if (response == "") {
         $(target).html(
           '<div class="span2 alert alert-info">No matching records.</div>'
-
         );
+      } else {
+        $(target).html(response);
       }
 
       // delegate to any [device|search] specific JS code
@@ -52,7 +61,8 @@ function do_search (event, tab) {
         ,useAbsolutePositioning: false
       });
       inner_view_processing(tab);
-    }
+    },
+    "text"
   );
 }
 
