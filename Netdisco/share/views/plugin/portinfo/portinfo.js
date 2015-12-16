@@ -381,7 +381,7 @@ function buildingAutocompleteSource (request, response) {
         suggest.matchingName = b.uit;
         suggest.matchingNameType = "UIT";
         suggests.push(suggest);
-      } else if (b.other) {
+      } else if (b.other.length > 0) {
         for (var j = 0, ol = b.other.length; j < ol; j++){
           var other = b.other[j];
           if (r.test(other)) {
