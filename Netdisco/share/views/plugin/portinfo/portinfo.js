@@ -180,13 +180,11 @@ function addBuildingSuggestionsToPortsView() {
   // re-ordered with the most recent item at the top when an item is selected
 
   $('.tab-content').on('focus', '[data-column=building]', function() {
-    if (!$(this).hasClass('ui-autocomplete-input')) {
-      $(this).autocomplete({
-        source: buildingAutocompleteSource,
-        minLength: 0,
-        delay: 200
-      });
-    }
+    $(this).autocomplete({
+      source: buildingAutocompleteSource,
+      minLength: 0,
+      delay: 200
+    });
   });
   
   // add autocomplete to building search
