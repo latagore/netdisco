@@ -78,7 +78,8 @@ post '/ajax/upload/ports' => require_role 'admin' => sub {
     my $col_header;
     foreach my $col (@$csv_header){
       push @$col_header, ($CSV_MAP{$col} || "");
-      push @warnings, "'$col' is not a cable data column. Ignoring.";
+      push @warnings, "'$col' is not a cable data column. Ignoring."
+          unless $CSV_MAP{$col};
     }
     $csv->column_names (@$col_header);
     my $data = $csv->getline_hr_all($file);
