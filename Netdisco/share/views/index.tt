@@ -61,6 +61,7 @@
             <h4>December 18, 2015</h4>
             <ul>
               <li>On the device page, the management IP is now shown beside the hostname in the top right.</li>
+              <li>System Information only shown to administrators.</li>
             </ul>
           </div>
           <div class="log">
