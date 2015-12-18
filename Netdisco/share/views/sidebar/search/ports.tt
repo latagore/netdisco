@@ -70,19 +70,19 @@
                 </label></span>
               <div id="nd_legend" class="collapse">
                 <ul class="icons-ul"><!-- nd_inputs-list unstyled"> -->
-                  <li><i class="icon-li icon-angle-up text-success"></i>&nbsp; Link Up</li>
-                  <li><i class="icon-li icon-arrow-down text-error"></i>&nbsp; Link Down</li>
-                  <li><i class="icon-li icon-remove"></i>&nbsp; Admin Disabled</li>
-                  <li><i class="icon-li icon-undo text-success"></i>&nbsp; Port Free</li>
-                  <li><i class="icon-li icon-fullscreen text-info"></i>&nbsp; Blocking</li>
-                  <li><i class="icon-li icon-link text-warning"></i>&nbsp; Manual Topology</li>
-                  <li><i class="icon-li icon-link"></i>&nbsp; Neighbor Device</li>
-                  <li><i class="icon-li icon-unlink text-error"></i>&nbsp; Neighbor Inacessible</li>
+                  <li class="has-tooltip" title="Port currently has a connected node and is administratively enabled." data-animation=""><i class="icon-li icon-angle-up text-success"></i>&nbsp; Connected</li>
+                  <li class="has-tooltip" title="Port currently does not have a connected node and is administratively enabled." data-animation=""><i class="icon-li icon-arrow-down text-error"></i>&nbsp; Not Connected</li>
+                  <li class="has-tooltip" title="Port is administratively disabled on the device." data-animation=""><i class="icon-li icon-remove"></i>&nbsp; Shutdown</li>
+                  <li class="has-tooltip" title="Port has not had a connected node for [% settings.ports_free_threshold %] months and can be reclaimed." data-animation=""><i class="icon-li icon-undo text-success"></i>&nbsp; Port Free</li>
+                  <li class="has-tooltip" title="Port is disabled because port is in STP blocking state." data-animation=""><i class="icon-li icon-fullscreen text-info"></i>&nbsp; Blocking</li>
+                  <li class="has-tooltip" title="Neighbor device was manually added. Minimal data available." data-animation=""><i class="icon-li icon-link text-warning"></i>&nbsp; Manual Topology</li>
+                  <li class="has-tooltip" title="Network device connected to this port." data-animation=""><i class="icon-li icon-link"></i>&nbsp; Neighbor Device</li>
+                  <li class="has-tooltip" title="Neighbor device connected. Minimal data available." data-animation=""><i class="icon-li icon-unlink text-error"></i>&nbsp; Neighbor Inaccessible</li>
                   <li><i class="icon-li icon-hdd"></i>&nbsp; Node</li>
                   <li><i class="icon-li icon-phone"></i>&nbsp; IP Phone</li>
                   <li><i class="icon-li icon-signal"></i>&nbsp; Wireless Client</li>
-                  <li><i class="icon-li icon-book"></i>&nbsp; Archived Data</li>
-                  <li><i class="icon-li icon-group"></i>&nbsp; Link Aggregate</li>
+                  <li class="has-tooltip" title="Historical data. Entries are archived when the node has been seen on a different port." data-animation=""><i class="icon-li icon-book"></i>&nbsp; Archived Data</li>
+                  <li class="has-tooltip" title="Virtual port that groups multiple physical ports." data-animation=""><i class="icon-li icon-group"></i>&nbsp; Link Aggregate</li>
                   [% IF user_has_role('port_control') %]
                   <li><i class="icon-li icon-refresh icon-spin"></i>&nbsp; Click "Update View"</li>
                   [% END %]

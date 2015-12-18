@@ -233,7 +233,7 @@ $(document).ready(function() {
   });
 
   // activate tooltips
-  $("[rel=tooltip]").tooltip({live: true});
+  $("[rel=tooltip],.has-tooltip").tooltip({live: true});
 
   // bind submission to the navbar go icon
   $('#navsearchgo').click(function() {
