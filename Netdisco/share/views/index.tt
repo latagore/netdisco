@@ -63,6 +63,7 @@
               <li>On the device page, the management IP is now shown beside the hostname in the top right.</li>
               <li>System Information only shown to administrators.</li>
               <li>Fixed CSV cable upload issue where buildings would not be uploaded.</li>
+              <li>Fixed port CSV results where wrong node data was given.</li>
             </ul>
           </div>
           <div class="log">
