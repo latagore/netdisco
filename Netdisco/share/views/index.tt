@@ -60,11 +60,13 @@
           <div class="log">
             <h4>December 18, 2015</h4>
             <ul>
+              <li>When searching for a building, you can now search by building code. (previously broken)</li>
               <li>On the device page, the management IP is now shown beside the hostname in the top right.</li>
-              <li>System Information only shown to administrators.</li>
+              <li>On the ports pages, added definitions to the icons in the legend.</li>
+              <li>On the home page, System Information now only shown to administrators.</li>
+              <li>On the home page, System Information now only shown to administrators.</li>
               <li>Fixed CSV cable upload issue where buildings would not be uploaded.</li>
-              <li>Fixed port CSV results where wrong node data was given.</li>
-              <li>Added definitions to legend on ports page.</li>
+              <li>Fixed CSV results where wrong node data was given.</li>
             </ul>
           </div>
           <div class="log">
