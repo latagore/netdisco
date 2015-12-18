@@ -257,7 +257,8 @@ function enableCSVUpload(){
         $('#nd_csv-upload-modal-body-loading').hide();
         $('#nd_csv-upload-modal-body-success').show();
       },
-      error: function(data) {
+      error: function(xhr, status, errorThrown) {
+        var data = JSON.parse(xhr.responseText);
         var uploadWarnings = $('.upload-warnings');
         uploadWarnings.empty();
         uploadWarnings.hide();
@@ -267,7 +268,7 @@ function enableCSVUpload(){
 
         if (data && data.errors && data.errors.length){
           var errorBegin = document.createElement("strong");
-          errorBegin.appendChild(document.createTextNode("Error: "));
+          errorBegin.appendChild(document.createTextNode("Error, upload cancelled: "));
           uploadErrors.append(errorBegin);
           
           var ul = document.createElement("ul");
@@ -275,12 +276,12 @@ function enableCSVUpload(){
           data.errors.forEach(function(val){
             var error = document.createElement("li");
             error.appendChild(document.createTextNode(val));
-            ul.append(warn);
+            ul.append(error);
           });
           uploadErrors.append(ul);
           uploadErrors.show();
         } else {
-          uploadErrors.append(document.createTextNode("Error, reason missing."));
+          uploadErrors.append(document.createTextNode("Error, contact your site administrator."));
           uploadErrors.show();
         }
 

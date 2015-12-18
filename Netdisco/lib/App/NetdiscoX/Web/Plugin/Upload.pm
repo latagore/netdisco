@@ -107,8 +107,8 @@ post '/ajax/upload/ports' => require_role 'admin' => sub {
           
           if ($DB_MAP{$col}){
             # skip if value is blank or null, no point looking up
-            next unless defined $datarow->{col} and $datarow->{col} ne '';
-            my $b = $DB_MAP{building};
+            next unless defined $datarow->{$col} and $datarow->{$col} ne '';
+            my $b = $DB_MAP{$col};
             my ($success, $pkeycols) = get_pkey($datarow->{$col}, 
               $b->{column},
               $b->{resultclass},
@@ -121,7 +121,7 @@ post '/ajax/upload/ports' => require_role 'admin' => sub {
                 $result->set_column($b->{key_columns_as}->{$pkeycol}, $pkeycols->{$pkeycol});
               }
             } else {
-              push @errors, "Failed to get primary key for for line $linenumber";
+              push @errors, "Failed to get $col \"$datarow->{$col}\" for line $linenumber";
               last DATA;
             }
           } else {
