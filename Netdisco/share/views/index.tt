@@ -89,7 +89,7 @@
             </ul>
           </div>
           </div>
-          
+
           <span id="nd_netinfo-user-doc-toggle" data-toggle="collapse" data-target="#nd_netinfo-user-docs">
               <a>Quick Start for Netinfo Users
               <i class="icon-chevron-up nd_chevron"></i></a>
@@ -397,7 +397,7 @@
               </div>
             </div>
           </div>
-          
+
           <span id="nd_user-doc-toggle" data-toggle="collapse" data-target="#nd_user-docs">
               <a>Netdisco V2 User Documentation
               <i class="icon-chevron-up nd_chevron"></i></a>
@@ -517,7 +517,7 @@
       </div>
     </div>
   </div>
-  [% IF session.logged_in_user %]
+  [% IF session.logged_in_user and user_has_role('admin') %]
   <div class="accordion" id="accordion-statistics">
     <div class="accordion-group">
       <div id="collapse-stats-heading" class="accordion-heading nd_sysinfo-heading">
