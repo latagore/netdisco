@@ -23,13 +23,13 @@
     <tr>
       <td class="nd_center-cell nd_devport-icon nd_nowrap">
         [% IF row.up_admin != 'up' %]
-        <i class="icon-remove" title="Admin Down" rel="tooltip" data-animation=""></i>
+        <i class="icon-remove" title="Shutdown" rel="tooltip" data-animation=""></i>
         [% ELSIF row.up == 'up' AND row.stp == 'blocking' AND row.search_related_rs('all_port_vlans').count < 2 %]
-        <i class="icon-fullscreen text-info" title="Admin Up, Link Up, STP Blocking State" rel="tooltip" data-animation=""></i>
+        <i class="icon-fullscreen text-info" title="STP Blocking" rel="tooltip" data-animation=""></i>
         [% ELSIF row.up_admin == 'up' AND (row.up != 'up' AND row.up != 'dormant') %]
-        <i class="icon-arrow-down text-error" title="Admin Up, Link Down" rel="tooltip" data-animation=""></i>
+        <i class="icon-arrow-down text-error" title="Not Connected" rel="tooltip" data-animation=""></i>
         [% ELSE %]
-        <i class="icon-angle-up text-success" title="Admin Up, Link Up"  rel="tooltip" data-animation=""></i>
+        <i class="icon-angle-up text-success" title="Connected"  rel="tooltip" data-animation=""></i>
         [% END %]
         
         [% IF row.has_column_loaded('is_free') AND row.is_free %]
