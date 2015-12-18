@@ -64,6 +64,7 @@
               <li>System Information only shown to administrators.</li>
               <li>Fixed CSV cable upload issue where buildings would not be uploaded.</li>
               <li>Fixed port CSV results where wrong node data was given.</li>
+              <li>Added definitions to legend on ports page.</li>
             </ul>
           </div>
           <div class="log">
