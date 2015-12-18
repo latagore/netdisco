@@ -58,6 +58,12 @@
           </span>
           <div id="changelog" class="collapse">
           <div class="log">
+            <h4>December 16, 2015</h4>
+            <ul>
+              <li>When waiting for a long search, making a new search will not be interrupted by the previous one.</li>
+            </ul>
+          </div>
+          <div class="log">
             <h4>December 15, 2015</h4>
             <ul>
               <li>Changed IP Inventory to be more straightforward like old Netdisco</li>

@@ -70,9 +70,8 @@ function addSavePortInfoButton(){
   });
 }
 // needed to make port info fields like vanilla netdisco editable fields
-function makePortInfoFieldsInteractive (){
+function addPortInfoInteractiveListeners (){
   //var editicon = $('#nd_portinfo-edit-icon');
-
   $('.tab-content').on('mouseover', 'td',
     function(event) {
       if ($(this).children('.york-port-info[contenteditable]').length === 1) {
@@ -88,7 +87,7 @@ function makePortInfoFieldsInteractive (){
       }
     }
   );
-  $('.tab-content').on('click', 'td:has(.york-port-info[contenteditable])',
+  $('.tab-content').on('click', 'td',
     function(event) {
       var children = $(this).children('.york-port-info[contenteditable]');
       if (children.length) {
@@ -101,7 +100,7 @@ function makePortInfoFieldsInteractive (){
     function(event) {
       // adjust columns on focusing building cell
       if (this.dataset.column === 'building'){
-        $('#dp-data-table').DataTable().columns.adjust();
+        // $('#dp-data-table').DataTable().columns.adjust();
       }
       editicon.hide();
       $(this).closest("td")[0].style.backgroundColor = "#FFFFD3";
@@ -181,13 +180,11 @@ function addBuildingSuggestionsToPortsView() {
   // re-ordered with the most recent item at the top when an item is selected
 
   $('.tab-content').on('focus', '[data-column=building]', function() {
-    if (!$(this).data('buildingAutocomplete')) {
-      $(this).autocomplete({
-        source: buildingAutocompleteSource,
-        minLength: 0,
-        delay: 200
-      });
-    }
+    $(this).autocomplete({
+      source: buildingAutocompleteSource,
+      minLength: 0,
+      delay: 200
+    });
   });
   
   // add autocomplete to building search
@@ -384,7 +381,7 @@ function buildingAutocompleteSource (request, response) {
         suggest.matchingName = b.uit;
         suggest.matchingNameType = "UIT";
         suggests.push(suggest);
-      } else if (b.other) {
+      } else if (b.other.length > 0) {
         for (var j = 0, ol = b.other.length; j < ol; j++){
           var other = b.other[j];
           if (r.test(other)) {
@@ -502,12 +499,10 @@ function addNavBarFunctionality(){
 function addPortInfoFunctionality(){
   $('#nd_search-results').on('click', 'li a',  function() {
     addSavePortInfoButton();
-    makePortInfoFieldsInteractive();
     addBuildingSuggestionsToPortsView();
   });
   $('.nd_sidebar').on('submit', '#ports_form', function() {
     addSavePortInfoButton();
-    makePortInfoFieldsInteractive();
     addBuildingSuggestionsToPortsView();
   });
   
@@ -516,8 +511,8 @@ function addPortInfoFunctionality(){
       && queryDict.tab === "ports") {
     var porttable = $('#dp-data-table').DataTable();
 
+    addPortInfoInteractiveListeners(); // only need to do once
     addSavePortInfoButton();
-    makePortInfoFieldsInteractive();
     addBuildingSuggestionsToPortsView();
   }
 }
