@@ -37,16 +37,23 @@ function do_search (event, tab) {
   }
   
   // submit the query and put results into the tab pane
-  search_xhr = $.get( uri_base + '/ajax/content/' + path + '/' + tab + '?' + query,
-    function(response, status, xhr) {
-      if (status !== "success" && status !== "notmodified") {
+  search_xhr = $.ajax( uri_base + '/ajax/content/' + path + '/' + tab + '?' + query,
+    {
+    timeout: 55000,
+    error: function(xhr, status, errorThrown){
+      if (status === "timeout") {
+        $(target).html(
+          '<div class="span5 alert alert-error"><i class="icon-warning-sign"></i> ' +
+          'Search timed out! Reduce the size of your search by filtering on additional criteria or contact your site administrator.</div>'
+        );
+      } else if (status !== "abort") {
         $(target).html(
           '<div class="span5 alert alert-error"><i class="icon-warning-sign"></i> ' +
           'Search failed! Please contact your site administrator.</div>'
         );
-        return;
       }
-
+    },
+    success: function(response, status, xhr) {
       if (response == "") {
         $(target).html(
           '<div class="span2 alert alert-info">No matching records.</div>'
@@ -62,7 +69,8 @@ function do_search (event, tab) {
       });
       inner_view_processing(tab);
     },
-    "text"
+    dataType: "text"
+    }
   );
 }
 
