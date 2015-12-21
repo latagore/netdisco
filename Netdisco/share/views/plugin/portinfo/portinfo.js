@@ -429,19 +429,6 @@ function addNavBarFunctionality(){
     }
   });
 
-  if ($('.nd_location-port-search-additional input')
-        .filter(function(){ return this.value.length>0; }).length > 0){
-    $('.nd_location-port-search-additional')
-      .prepend("<div class='port-building-form-reset' rel='tooltip' data-placement='right'"
-        + " title='Reset search form'>Reset</div>");
-    $('.port-building-form-reset').tooltip();
-    $('.port-building-form-reset').click(function(){
-       $('.nd_location-port-search-additional').slideDown();
-       $('#nd_location-port-search form input:visible').val('');
-       $('.port-building-form-reset').mouseout().remove();
-    });
-  }
-  
   $('#nd_location-port-search form').submit(function(e){
     var ok = true;
     if ($('#cable-input').val() !== ""
