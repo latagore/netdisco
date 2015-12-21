@@ -73,6 +73,19 @@ register_device_port_column({ name => 'yorkportinfo_lastupdatedbycable',
 	position => 'right',
 	default => 'on' });
 
+my %DB_TO_HUMAN_NAME = (
+  cable => "Pigtail",
+  jack => "Horizontal Cable",
+  room => "Room",
+  riser1 => "Riser Room 1",
+  riser2 => "Riser Room 2",
+  pairs1 => "Pairs 1",
+  pairs2 => "Pairs 2",
+  grid => "Grid",
+  phoneext => "Phone Extension",
+  comment => "Comment"
+);
+
 ajax '/ajax/portinfocontrol' => require_role port_control => sub {
   my $column = param('column');
   my $value = param('value');
@@ -84,6 +97,12 @@ ajax '/ajax/portinfocontrol' => require_role port_control => sub {
     or send_error('Bad Port', 400);  
 
   if ($column eq 'building'){
+    my $oldbuildingname = "";
+    if ($port->port_info 
+        and $port->port_info->building 
+        and $port->port_info->building->official_name) {
+      $oldbuildingname = $port->port_info->building->official_name->name;
+    }
     my $buildings = schema('netdisco')->resultset('Building')
       ->search(
         { "building_names.name" => $value },
@@ -91,6 +110,8 @@ ajax '/ajax/portinfocontrol' => require_role port_control => sub {
       );
     send_error('Bad building', 400) unless ($buildings->count == 1);
     my $building = $buildings->first;
+    my $newbuildingname = $building->official_name->name;
+    
     $port->update_or_create_related("port_info",
       {
         "building_campus" => $building->campus,
@@ -98,14 +119,40 @@ ajax '/ajax/portinfocontrol' => require_role port_control => sub {
         "last_modified" => \'NOW()',
         "last_modified_by" => session('logged_in_user')
       });
+    $port->create_related("logs",
+      {
+        log => "Building changed from '$oldbuildingname' "
+                  . "to '$newbuildingname'",
+        reason => "other",
+        action => "cable change",
+        username => session('logged_in_user'),
+        userip => request->address
+      });
   } else {
-
+    my $oldvalue = "";
+    if ($port->port_info and $port->port_info->$column){
+       $oldvalue = $port->port_info->$column;
+    }
+    
+    # column name for humans to read
+    my $columnname = $DB_TO_HUMAN_NAME{$column};
+    
     $port->update_or_create_related("port_info", 
       {
         "$column" => "$value",
         "last_modified" => \'NOW()',
         "last_modified_by" => session('logged_in_user')
       }); 
+    $port->create_related("logs",
+      {
+        log => "$columnname changed from '$oldvalue' "
+                  . "to '$value'",
+        reason => "other",
+        action => "cable change",
+        username => session('logged_in_user'),
+        userip => request->address
+      });
+
   }
   
   content_type('text/plain');

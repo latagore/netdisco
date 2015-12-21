@@ -53,10 +53,31 @@
             <a href="http://netinfo.yorku.ca/">Old Netinfo</a>
           </p>
           <span id="nd_changelog-toggle" data-toggle="collapse" data-target="#changelog">
-            <a>Changelog (Last Updated: December 10, 2015)
+            <a>Changelog (Last Updated: December 21, 2015)
             <i class="icon-chevron-up nd_chevron"></i></a>
           </span>
           <div id="changelog" class="collapse">
+          <div class="log">
+            <h4>December 21, 2015</h4>
+            <ul>
+              <li>Fixed editing cable fields for devices.</li>
+              <li>Fixed searching for alterative building names in advanced port search.</li>
+              <li>Advanced Port Search is no longer filled with values from the last search.</li>
+              <li>More informative error on searches that take too long.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>December 18, 2015</h4>
+            <ul>
+              <li>When searching for a building, you can now search by building code. (previously broken)</li>
+              <li>On the device page, the management IP is now shown beside the hostname in the top right.</li>
+              <li>On the ports pages, added definitions to the icons in the legend.</li>
+              <li>On the home page, System Information now only shown to administrators.</li>
+              <li>On the home page, System Information now only shown to administrators.</li>
+              <li>Fixed CSV cable upload issue where buildings would not be uploaded.</li>
+              <li>Fixed CSV results where wrong node data was given.</li>
+            </ul>
+          </div>
           <div class="log">
             <h4>December 16, 2015</h4>
             <ul>
@@ -83,7 +104,7 @@
             </ul>
           </div>
           </div>
-          
+
           <span id="nd_netinfo-user-doc-toggle" data-toggle="collapse" data-target="#nd_netinfo-user-docs">
               <a>Quick Start for Netinfo Users
               <i class="icon-chevron-up nd_chevron"></i></a>
@@ -391,7 +412,7 @@
               </div>
             </div>
           </div>
-          
+
           <span id="nd_user-doc-toggle" data-toggle="collapse" data-target="#nd_user-docs">
               <a>Netdisco V2 User Documentation
               <i class="icon-chevron-up nd_chevron"></i></a>
@@ -511,7 +532,7 @@
       </div>
     </div>
   </div>
-  [% IF session.logged_in_user %]
+  [% IF session.logged_in_user and user_has_role('admin') %]
   <div class="accordion" id="accordion-statistics">
     <div class="accordion-group">
       <div id="collapse-stats-heading" class="accordion-heading nd_sysinfo-heading">

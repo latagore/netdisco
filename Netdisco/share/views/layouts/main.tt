@@ -168,18 +168,18 @@
             <input type="hidden" name="tab" value="ports"></input>
             <div id='advanced-port-search-btn'>Advanced Port Search</div>
             <div class="nd_location-port-search-additional" hidden="true">
-              <input id="port-building-input" class="search-query" type="text" title="Building" rel="tooltip" data-placement="left" name="building" placeholder="Find Ports by Building" value="[% params.building %]"></input>
-              <input id="cable-input" class="search-query" type="text" name="cable" title="Horizontal Cable" rel="tooltip" data-placement="left" placeholder="...and Horizontal Cable" value="[% params.cable %]"></input>
-              <input id="pigtail-input" class="search-query" type="text" name="pigtail" title="Pigtail" rel="tooltip" data-placement="left" placeholder="...and Pigtail" value="[% params.pigtail %]"></input>
-              <input id="riserroom-input" class="search-query" type="text" name="riserroom" title="Riser Room" rel="tooltip" data-placement="left" placeholder="...and Riser Room" value="[% params.riserroom %]"></input>
-              <input id="room-input" class="search-query" type="text" name="room" title="Destination Room" rel="tooltip" data-placement="left" placeholder="...and Destination Room" value="[% params.room %]"></input>
-              <input id="vlan-input" class="search-query" type="text" name="vlan" title="VLAN" rel="tooltip" data-placement="left" placeholder="...and VLAN" value="[% params.vlan %]"></input>
-              <input id="node-input" class="search-query" type="text" name="node" title="Node" rel="tooltip" data-placement="left" placeholder="...and Node" value="[% params.node %]"></input>
+              <input id="port-building-input" class="search-query" type="text" title="Building" rel="tooltip" data-placement="left" name="building" placeholder="Find Ports by Building"></input>
+              <input id="cable-input" class="search-query" type="text" name="cable" title="Horizontal Cable" rel="tooltip" data-placement="left" placeholder="...and Horizontal Cable"></input>
+              <input id="pigtail-input" class="search-query" type="text" name="pigtail" title="Pigtail" rel="tooltip" data-placement="left" placeholder="...and Pigtail"></input>
+              <input id="riserroom-input" class="search-query" type="text" name="riserroom" title="Riser Room" rel="tooltip" data-placement="left" placeholder="...and Riser Room"></input>
+              <input id="room-input" class="search-query" type="text" name="room" title="Destination Room" rel="tooltip" data-placement="left" placeholder="...and Destination Room"></input>
+              <input id="vlan-input" class="search-query" type="text" name="vlan" title="VLAN" rel="tooltip" data-placement="left" placeholder="...and VLAN"></input>
+              <input id="node-input" class="search-query" type="text" name="node" title="Node" rel="tooltip" data-placement="left" placeholder="...and Node"></input>
               <label class="checkbox" rel="tooltip" title="Includes more, older node data. Can be slow." data-placement="left">
                 <input id="node_archived-input" type="checkbox" name="f_node_archived" [% IF params.f_node_archived == 'on' %]checked="checked" [% END %]></input>
                 Include Archived Nodes
               </label>
-              <input id="port-input" class="search-query" type="text" name="port" title="Port" rel="tooltip" data-placement="left" placeholder="...and Port" value="[% params.port %]"></input>
+              <input id="port-input" class="search-query" type="text" name="port" title="Port" rel="tooltip" data-placement="left" placeholder="...and Port"></input>
               <button type="button" class="btn btn-inverse location-port-search-close-btn" data-placement="left"
                   title="Hide Additional Fields" rel="tooltip">
                 <i class="icon-remove"></i>

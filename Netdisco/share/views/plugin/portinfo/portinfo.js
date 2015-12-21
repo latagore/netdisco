@@ -173,7 +173,7 @@ function addPortInfoInteractiveListeners (){
     $("html, body").animate({ scrollTop: 0 }, 2000, 'easeInOutQuart' );
   });
 }
-function addBuildingSuggestionsToPortsView() {
+function addBuildingSuggestionsToPortsTable() {
   var buildings;
   // Add a building dropdown
   // Suggestions initially ordered alphabetically and
@@ -186,8 +186,10 @@ function addBuildingSuggestionsToPortsView() {
       delay: 200
     });
   });
-  
-  // add autocomplete to building search
+}
+
+function addBuildingSuggestionsToPortsSidebar() {
+  // add autocomplete to building search on sidebar
   $('#ports_form #nd_building-query').focus(function() {
     if (!$(this).data('buildingAutocomplete')) {
       $(this).autocomplete({
@@ -257,7 +259,8 @@ function enableCSVUpload(){
         $('#nd_csv-upload-modal-body-loading').hide();
         $('#nd_csv-upload-modal-body-success').show();
       },
-      error: function(data) {
+      error: function(xhr, status, errorThrown) {
+        var data = JSON.parse(xhr.responseText);
         var uploadWarnings = $('.upload-warnings');
         uploadWarnings.empty();
         uploadWarnings.hide();
@@ -267,7 +270,7 @@ function enableCSVUpload(){
 
         if (data && data.errors && data.errors.length){
           var errorBegin = document.createElement("strong");
-          errorBegin.appendChild(document.createTextNode("Error: "));
+          errorBegin.appendChild(document.createTextNode("Error, upload cancelled: "));
           uploadErrors.append(errorBegin);
           
           var ul = document.createElement("ul");
@@ -275,12 +278,12 @@ function enableCSVUpload(){
           data.errors.forEach(function(val){
             var error = document.createElement("li");
             error.appendChild(document.createTextNode(val));
-            ul.append(warn);
+            ul.append(error);
           });
           uploadErrors.append(ul);
           uploadErrors.show();
         } else {
-          uploadErrors.append(document.createTextNode("Error, reason missing."));
+          uploadErrors.append(document.createTextNode("Error, contact your site administrator."));
           uploadErrors.show();
         }
 
@@ -428,19 +431,6 @@ function addNavBarFunctionality(){
     }
   });
 
-  if ($('.nd_location-port-search-additional input')
-        .filter(function(){ return this.value.length>0; }).length > 0){
-    $('.nd_location-port-search-additional')
-      .prepend("<div class='port-building-form-reset' rel='tooltip' data-placement='right'"
-        + " title='Reset search form'>Reset</div>");
-    $('.port-building-form-reset').tooltip();
-    $('.port-building-form-reset').click(function(){
-       $('.nd_location-port-search-additional').slideDown();
-       $('#nd_location-port-search form input:visible').val('');
-       $('.port-building-form-reset').mouseout().remove();
-    });
-  }
-  
   $('#nd_location-port-search form').submit(function(e){
     var ok = true;
     if ($('#cable-input').val() !== ""
@@ -498,12 +488,12 @@ function addNavBarFunctionality(){
 }
 function addPortInfoFunctionality(){
   $('#nd_search-results').on('click', 'li a',  function() {
+    addPortInfoInteractiveListeners();
     addSavePortInfoButton();
-    addBuildingSuggestionsToPortsView();
+    addBuildingSuggestionsToPortsTable();
   });
   $('.nd_sidebar').on('submit', '#ports_form', function() {
     addSavePortInfoButton();
-    addBuildingSuggestionsToPortsView();
   });
   
   //make sure that we only do this on the right page
@@ -511,9 +501,9 @@ function addPortInfoFunctionality(){
       && queryDict.tab === "ports") {
     var porttable = $('#dp-data-table').DataTable();
 
-    addPortInfoInteractiveListeners(); // only need to do once
+    addPortInfoInteractiveListeners();
     addSavePortInfoButton();
-    addBuildingSuggestionsToPortsView();
+    addBuildingSuggestionsToPortsTable();
   }
 }
 

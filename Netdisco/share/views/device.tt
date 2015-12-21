@@ -38,7 +38,7 @@
       [% END %]
       <span id="nd_content-header-right">
         <span id="nd_device-name">
-          [% display_name | html_entity %]
+          [% display_name | html_entity %][% IF display_name != device_ip %] ([% device_ip | html_entity %])[% END %]
         </span>
         <a id="nd_csv-download" href="#" download="netdisco.csv">&nbsp;
           <i id="nd_csv-download-icon" class="text-info icon-file-text-alt icon-large"

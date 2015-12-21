@@ -35,34 +35,42 @@ function do_search (event, tab) {
   if (search_xhr) {
     search_xhr.abort();
   }
-  
+
   // submit the query and put results into the tab pane
-  search_xhr = $.get( uri_base + '/ajax/content/' + path + '/' + tab + '?' + query,
-    function(response, status, xhr) {
-      if (status !== "success" && status !== "notmodified") {
-        $(target).html(
-          '<div class="span5 alert alert-error"><i class="icon-warning-sign"></i> ' +
-          'Search failed! Please contact your site administrator.</div>'
-        );
-        return;
-      }
+  search_xhr = $.ajax( uri_base + '/ajax/content/' + path + '/' + tab + '?' + query,
+    {
+      timeout: 55000,
+      error: function(xhr, status, errorThrown){
+        if (status === "timeout") {
+          $(target).html(
+            '<div class="span5 alert alert-error"><i class="icon-warning-sign"></i> ' +
+            'Search timed out! Reduce the size of your search by filtering on additional criteria or contact your site administrator.</div>'
+          );
+        } else if (status !== "abort") {
+          $(target).html(
+            '<div class="span5 alert alert-error"><i class="icon-warning-sign"></i> ' +
+            'Search failed! Please contact your site administrator.</div>'
+          );
+        }
+      },
+      success: function(response, status, xhr) {
+        if (response == "") {
+          $(target).html(
+            '<div class="span2 alert alert-info">No matching records.</div>'
+          );
+        } else {
+          $(target).html(response);
+        }
 
-      if (response == "") {
-        $(target).html(
-          '<div class="span2 alert alert-info">No matching records.</div>'
-        );
-      } else {
-        $(target).html(response);
-      }
-
-      // delegate to any [device|search] specific JS code
-      $('div.content > div.tab-content table.nd_floatinghead').floatThead({
-        scrollingTop: 40
-        ,useAbsolutePositioning: false
-      });
-      inner_view_processing(tab);
-    },
-    "text"
+        // delegate to any [device|search] specific JS code
+        $('div.content > div.tab-content table.nd_floatinghead').floatThead({
+          scrollingTop: 40
+          ,useAbsolutePositioning: false
+        });
+        inner_view_processing(tab);
+      },
+      dataType: "text"
+    }
   );
 }
 
@@ -233,7 +241,7 @@ $(document).ready(function() {
   });
 
   // activate tooltips
-  $("[rel=tooltip]").tooltip({live: true});
+  $("[rel=tooltip],.has-tooltip").tooltip({live: true});
 
   // bind submission to the navbar go icon
   $('#navsearchgo').click(function() {
