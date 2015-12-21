@@ -20,8 +20,8 @@
       ,"other": 
       [
         [% other_names = [] %]
-        [% FOREACH other_name IN row.other_names.name %]
-        [% other_names.push("\"" _ other_name _ "\"") %]
+        [% FOREACH other_name IN row.other_names %]
+        [% other_names.push("\"" _ other_name.name _ "\"") %]
         [% END %]
         [% other_names.join(",") %]
       ]    
