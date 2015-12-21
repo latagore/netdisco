@@ -53,10 +53,19 @@
             <a href="http://netinfo.yorku.ca/">Old Netinfo</a>
           </p>
           <span id="nd_changelog-toggle" data-toggle="collapse" data-target="#changelog">
-            <a>Changelog (Last Updated: December 18, 2015)
+            <a>Changelog (Last Updated: December 21, 2015)
             <i class="icon-chevron-up nd_chevron"></i></a>
           </span>
           <div id="changelog" class="collapse">
+          <div class="log">
+            <h4>December 21, 2015</h4>
+            <ul>
+              <li>Fixed editing cable fields for devices.</li>
+              <li>Fixed searching for alterative building names in advanced port search.</li>
+              <li>Advanced Port Search is no longer filled with values from the last search.</li>
+              <li>More informative error on searches that take too long.</li>
+            </ul>
+          </div>
           <div class="log">
             <h4>December 18, 2015</h4>
             <ul>
