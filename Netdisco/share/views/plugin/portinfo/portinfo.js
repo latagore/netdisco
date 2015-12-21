@@ -173,7 +173,7 @@ function addPortInfoInteractiveListeners (){
     $("html, body").animate({ scrollTop: 0 }, 2000, 'easeInOutQuart' );
   });
 }
-function addBuildingSuggestionsToPortsView() {
+function addBuildingSuggestionsToPortsTable() {
   var buildings;
   // Add a building dropdown
   // Suggestions initially ordered alphabetically and
@@ -186,8 +186,10 @@ function addBuildingSuggestionsToPortsView() {
       delay: 200
     });
   });
-  
-  // add autocomplete to building search
+}
+
+function addBuildingSuggestionsToPortsSidebar() {
+  // add autocomplete to building search on sidebar
   $('#ports_form #nd_building-query').focus(function() {
     if (!$(this).data('buildingAutocomplete')) {
       $(this).autocomplete({
@@ -487,12 +489,12 @@ function addNavBarFunctionality(){
 }
 function addPortInfoFunctionality(){
   $('#nd_search-results').on('click', 'li a',  function() {
+    addPortInfoInteractiveListeners();
     addSavePortInfoButton();
-    addBuildingSuggestionsToPortsView();
+    addBuildingSuggestionsToPortsTable();
   });
   $('.nd_sidebar').on('submit', '#ports_form', function() {
     addSavePortInfoButton();
-    addBuildingSuggestionsToPortsView();
   });
   
   //make sure that we only do this on the right page
@@ -500,9 +502,9 @@ function addPortInfoFunctionality(){
       && queryDict.tab === "ports") {
     var porttable = $('#dp-data-table').DataTable();
 
-    addPortInfoInteractiveListeners(); // only need to do once
+    addPortInfoInteractiveListeners();
     addSavePortInfoButton();
-    addBuildingSuggestionsToPortsView();
+    addBuildingSuggestionsToPortsTable();
   }
 }
 
