@@ -417,7 +417,8 @@ function addNavBarFunctionality(){
     source: buildingAutocompleteSource,
     appendTo: ".nd_location-port-search-additional",
     minLength: 0,
-    delay: 200
+    delay: 200,
+    position: { my: "right top", at: "left top" }
   });
   input.data('buildingAutocomplete').option('showBuildingNumber', true);
 
