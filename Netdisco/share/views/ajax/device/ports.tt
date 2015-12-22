@@ -30,23 +30,18 @@
         [% ELSE %]
         <i class="icon-angle-up text-success" title="Connected"  rel="tooltip" data-animation=""></i>
         [% END %]
-        
+
         [% IF row.has_column_loaded('is_free') AND row.is_free %]
         <i class="icon-undo text-success" title="Free Port" rel="tooltip" data-animation=""></i>
         [% END %]
       </td>
 
-      [% FOREACH config IN settings._extra_device_port_cols %]
-        [% NEXT UNLESS config.position == 'left' AND params.${config.name} %]
-        <td>
-          [% TRY %]
-          [% INCLUDE "plugin/${config.name}/device_port_column.tt" %]
-          [% CATCH %]
-          <!-- dummy content required by Template Toolkit TRY -->
-          [% END %]
-        </td>
+      [% IF params.c_up %]
+      <td>
+        [% row.up_admin.ucfirst | html_entity %] / [% row.up.ucfirst | html_entity %]
+      </td>
       [% END %]
-
+      
       [% IF params.c_port %]
       [% IF user_can_port_control AND params.c_admin %]
       [% IF row.up_admin == 'up' %]
@@ -113,7 +108,7 @@
       [% END %]
 
       [% FOREACH config IN settings._extra_device_port_cols %]
-        [% NEXT UNLESS config.position == 'mid' AND params.${config.name} %]
+        [% NEXT UNLESS config.position == 'left' AND params.${config.name} %]
         <td>
           [% TRY %]
           [% INCLUDE "plugin/${config.name}/device_port_column.tt" %]
@@ -127,10 +122,6 @@
       <td nowrap>[% row.descr | html_entity %]</td>
       [% END %]
 
-      [% IF params.c_comment %]
-      <td nowrap>[% row.last_comment | html_entity %]</td>
-      [% END %]
-
       [% IF params.c_type %]
       <td>[% row.type | html_entity %]</td>
       [% END %]
@@ -141,10 +132,6 @@
         [% (row.duplex_admin.ucfirst || 'Auto') | html_entity %] / [% row.duplex.ucfirst | html_entity %]
         [% END %]
       </td>
-      [% END %]
-
-      [% IF params.c_lastchange %]
-      <td>[% row.lastchange_stamp | html_entity %]</td>
       [% END %]
 
       [% IF params.c_name %]
@@ -204,7 +191,7 @@
             '<a href="' _ uri_for('/search') _ '?tab=vlan&q=' _ vlan _ '">' _ vlan _ '</a>' %]
           [% SET output = output _ ', ' IF NOT loop.last %]
         [% END %]
-        
+
         [% IF vlans.size > 10 %] [%# TODO make this a settable variable %]
           [% SET output = '<div class="nd_vlan-total">(' _ vlans.size
             _ ')</div><span class="nd_linkcell nd_collapse-vlans">
@@ -216,6 +203,10 @@
         [% END %]
       [% ELSE %]
       </td>
+      [% END %]
+      
+      [% IF params.c_stp %]
+      <td>[% row.stp | html_entity %]</td>
       [% END %]
 
       [% IF params.c_power %]
@@ -264,6 +255,17 @@
       <td>[% row.ssid.ssid | html_entity %]</td>
       [% END %]
 
+      [% FOREACH config IN settings._extra_device_port_cols %]
+        [% NEXT UNLESS config.position == 'mid' AND params.${config.name} %]
+        <td>
+          [% TRY %]
+          [% INCLUDE "plugin/${config.name}/device_port_column.tt" %]
+          [% CATCH %]
+          <!-- dummy content required by Template Toolkit TRY -->
+          [% END %]
+        </td>
+      [% END %]
+      
       [% IF params.c_nodes OR params.c_neighbors %]
       [% # prefetch related node data and order it
           SET nodes = row.search_related(nodes_name, [], { prefetch => ["netbios", "wireless", "oui", "ips"], order_by => [ { "-desc" = "me.time_last"} ]}) %]
@@ -324,7 +326,7 @@
             [% node.net_mac.$mac_format_call | html_entity %]</a>
           [% IF (node.vlan > 0) && (node.vlan != row.vlan) %]
             (on vlan [% node.vlan | html_entity %])
-          [% END %]            
+          [% END %]
           [% IF params.n_ssid AND node.wireless.defined %]
             (SSID:
             [% FOREACH wlan IN node.wireless %]
@@ -372,16 +374,14 @@
       </td>
       [% END %]
 
-      [% IF params.c_stp %]
-      <td>[% row.stp | html_entity %]</td>
+      [% IF params.c_comment %]
+      <td nowrap>[% row.last_comment | html_entity %]</td>
       [% END %]
-
-      [% IF params.c_up %]
-      <td>
-        [% row.up_admin.ucfirst | html_entity %] / [% row.up.ucfirst | html_entity %]
-      </td>
+      
+      [% IF params.c_lastchange %]
+      <td>[% row.lastchange_stamp | html_entity %]</td>
       [% END %]
-
+      
       [% FOREACH config IN settings._extra_device_port_cols %]
         [% NEXT UNLESS config.position == 'right' AND params.${config.name} %]
         <td>
@@ -428,7 +428,11 @@ $(document).ready(function() {
             { "searchable": false, "targets": 0 },
             { "type": 'portsort', "targets": [ 'portsort' ] }
         ],
+        [% IF params.c_up %]
+        "order": [[ 2, 'asc' ]],
+        [% ELSE %]
         "order": [[ 1, 'asc' ]],
+        [% END %]
         deferRender: true,
 [% INCLUDE 'ajax/datatabledefaults.tt' -%]
     } );

@@ -66,36 +66,40 @@ hook 'before' => sub {
   params->{q} =~ s/(^\s+)|(\s+$)//g;
 
   my @default_port_columns_left = (
+    { name => 'c_up',          label => 'Status',            default => ''   },
     { name => 'c_admin',       label => 'Port Controls',     default => ''   },
-    { name => 'c_port',        label => 'Port',              default => 'on' },
+    { name => 'c_port',        label => 'Port ID',           default => 'on' },
   );
 
-  my @default_port_columns_right = (
-    { name => 'c_descr',       label => 'Description',       default => ''   },
-    { name => 'c_comment',     label => 'Last Comment',      default => ''   },
+  my @default_port_columns_mid = (
+    { name => 'c_descr',       label => 'Port Name',       default => ''   },
     { name => 'c_type',        label => 'Type',              default => ''   },
     { name => 'c_duplex',      label => 'Duplex',            default => ''   },
-    { name => 'c_lastchange',  label => 'Last Change',       default => ''   },
-    { name => 'c_name',        label => 'Name',              default => '' },
+    { name => 'c_name',        label => 'Port Description',              default => '' },
     { name => 'c_speed',       label => 'Speed',             default => ''   },
     { name => 'c_mac',         label => 'Port MAC',          default => ''   },
     { name => 'c_mtu',         label => 'MTU',               default => ''   },
     { name => 'c_pvid',        label => 'Native VLAN',       default => 'on' },
     { name => 'c_vmember',     label => 'VLAN Membership',   default => 'on' },
+    { name => 'c_stp',         label => 'Spanning Tree',     default => ''   },
     { name => 'c_power',       label => 'PoE',               default => ''   },
     { name => 'c_ssid',        label => 'SSID',              default => ''   },
-    { name => 'c_nodes',       label => 'Connected Nodes',   default => 'on'   },
+  );
+  
+  my @default_port_columns_right = (
     { name => 'c_neighbors',   label => 'Connected Devices', default => 'on' },
-    { name => 'c_stp',         label => 'Spanning Tree',     default => ''   },
-    { name => 'c_up',          label => 'Status',            default => ''   },
+    { name => 'c_nodes',       label => 'Connected Nodes',   default => 'on' },
+    { name => 'c_comment',     label => 'Last Comment',      default => ''   },
+    { name => 'c_lastchange',  label => 'Last Change',       default => ''   },
   );
 
   # build list of port detail columns
   my @port_columns = ();
 
+  push @port_columns, @default_port_columns_left;
   push @port_columns,
     grep {$_->{position} eq 'left'} @{ setting('_extra_device_port_cols') };
-  push @port_columns, @default_port_columns_left;
+  push @port_columns, @default_port_columns_mid;
   push @port_columns,
     grep {$_->{position} eq 'mid'} @{ setting('_extra_device_port_cols') };
   push @port_columns, @default_port_columns_right;

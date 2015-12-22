@@ -11,7 +11,7 @@ function loadParameterDictionary(){
 }
 
 function disableTabsOnAdvancedPortSearch(){
-  
+
   $('body').on('click', '.nav-tabs li[disabled]', function(event) {
     event.preventDefault();
   });
@@ -95,7 +95,7 @@ function addPortInfoInteractiveListeners (){
       }
     }
   );
-   
+
   $('.tab-content').on('focus', '.york-port-info',
     function(event) {
       // adjust columns on focusing building cell
@@ -112,7 +112,7 @@ function addPortInfoInteractiveListeners (){
       if (this.dataset.column === 'building'){
         $('#dp-data-table').DataTable().columns.adjust();
       }
-      
+
       var td = $(this).closest("td");
       td[0].style.backgroundColor = "";
       // more hacks... autosuggest has hidden text for accessibility
@@ -141,17 +141,17 @@ function addPortInfoInteractiveListeners (){
       $(div).blur();
     }
   });
-  
+
   $('.tab-content').on('input', '.york-port-info[contenteditable=true]', function(event) {
     var div = this,
         td = $(div).closest('td');
-    
+
     if (typeof this.dataset.original === 'undefined'
         || this.dataset.original !== $(div).text()){
       // save attr to td to proper css appearance
       td[0].title = "This change has not been saved.";
       td.addClass("nd_portinfo-data-dirty");
- 
+
       $('#dp-data-table_submit-port-info').prop("disabled", false);
     }
 
@@ -167,7 +167,7 @@ function addPortInfoInteractiveListeners (){
       $('#dp-data-table').DataTable().columns.adjust();
     }, 500)
   );
-  
+
   /* take to the top when hitting "Update View" */
   $('#ports_submit').click(function(){
     $("html, body").animate({ scrollTop: 0 }, 2000, 'easeInOutQuart' );
@@ -214,7 +214,7 @@ function enableCSVUpload(){
   $('#nd_csv-upload-icon').click(function() {
     $('#nd_csv-upload-modal').show();
   });
-  
+
   $('#nd_csv-upload-modal-cancel, .nd_csv-upload-modal-close').click(function() {
     $('#nd_csv-upload-modal').hide();
     $('#nd_csv-upload-modal-body-success').hide();
@@ -222,7 +222,7 @@ function enableCSVUpload(){
     $('#nd_csv-upload-modal-body-input').show();
     $('#nd_csv-upload-modal form').trigger('reset');
   });
-  
+
   // replace submit with ajax submit
   $('#nd_csv-upload-form').submit(function(e) {
     e.preventDefault();
@@ -255,7 +255,7 @@ function enableCSVUpload(){
           });
           uploadWarnings.append(ul);
         }
-        
+
         $('#nd_csv-upload-modal-body-loading').hide();
         $('#nd_csv-upload-modal-body-success').show();
       },
@@ -272,7 +272,7 @@ function enableCSVUpload(){
           var errorBegin = document.createElement("strong");
           errorBegin.appendChild(document.createTextNode("Error, upload cancelled: "));
           uploadErrors.append(errorBegin);
-          
+
           var ul = document.createElement("ul");
           ul = $(ul);
           data.errors.forEach(function(val){
@@ -302,10 +302,10 @@ function enableCSVUpload(){
           uploadWarnings.append(ul);
           uploadWarnings.show();
         }
-        
+
         $('#nd_csv-upload-modal-body-loading').hide();
         $('#nd_csv-upload-modal-body-error').show();
-        
+
       }
     });
     $('#nd_csv-upload-modal form').trigger('reset');
@@ -440,8 +440,8 @@ function addNavBarFunctionality(){
       $('.nd_location-port-search-additional').slideDown();
     }
   });
-  
-  // auto complete functionality for advanced ports search 
+
+  // auto complete functionality for advanced ports search
   input.autocomplete({
     source: buildingAutocompleteSource,
     appendTo: ".nd_location-port-search-additional",
@@ -463,11 +463,11 @@ function addNavBarFunctionality(){
     if ($('#cable-input').val() !== ""
           || $('#pigtail-input').val() !== ""){
 
-      // check that there is at least another field 
+      // check that there is at least another field
       if ($('input:visible:not(#cable-input,#pigtail-input)')
             .filter(function(){ return this.value.length>0; }).length === 0){
         ok = false;
-        
+
       }
     }
   });
@@ -487,7 +487,7 @@ function addNavBarFunctionality(){
           }
         }
       }
-    }, 
+    },
     messages: {
       building: "The building field is recommended when searching for pigtail or horizontal cable. Press Enter to search anyways.",
     },
@@ -499,7 +499,7 @@ function addNavBarFunctionality(){
     },
     focusInvalid: false
   });
-  
+
   $('#nd_location-port-search form').keypress(function(e){
     dependsFired = false;
     if (e.keyCode === 13) {
@@ -511,7 +511,7 @@ function addNavBarFunctionality(){
   $('.location-port-search-close-btn').click(function(){
      $('.nd_location-port-search-additional').slideUp();
   });
-  
+
 }
 function addPortInfoFunctionality(){
   $('#nd_search-results').on('click', 'li a',  function() {
@@ -522,7 +522,7 @@ function addPortInfoFunctionality(){
   $('.nd_sidebar').on('submit', '#ports_form', function() {
     addSavePortInfoButton();
   });
-  
+
   //make sure that we only do this on the right page
   if ((location.pathname.indexOf('/device') === 0 || location.pathname.indexOf('/search') === 0)
       && queryDict.tab === "ports") {
@@ -565,7 +565,7 @@ $.widget( "building.autocomplete", $.ui.autocomplete, {
         re = new RegExp( "(" + this.term + ")", "i" ),
         cls = this.options.highlightClass
         template = "<span class='"+cls+"'>$1</span>";
-    
+
     // show label
     if (item.matchingNameType === item.labelType){
       var label = document.createElement('span');
@@ -574,7 +574,7 @@ $.widget( "building.autocomplete", $.ui.autocomplete, {
     } else {
       a.appendChild(document.createTextNode(item.label));
     }
-    
+
     // show building number
     if (this.options.showBuildingNumber){
       var num = document.createElement('span');
@@ -586,9 +586,9 @@ $.widget( "building.autocomplete", $.ui.autocomplete, {
       }
       a.appendChild(num);
     }
-    
+
     // show hint that indicates the kind of match if it meets the condition
-    if (item.matchingNameType !== item.labelType 
+    if (item.matchingNameType !== item.labelType
         && !(item.matchingNameType === "BUILDING_NUMBER" && this.options.showBuildingNumber))
     {
       var hint = document.createElement('div');
@@ -607,7 +607,7 @@ $.widget( "building.autocomplete", $.ui.autocomplete, {
                         + item.matchingName.replace(re, template);
       a.appendChild(hint);
     }
-    
+
     var li = document.createElement('li');
     li.setAttribute('class', 'nd_suggest-item');
     li.appendChild(a);
