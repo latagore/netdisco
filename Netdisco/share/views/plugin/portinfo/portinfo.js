@@ -362,42 +362,69 @@ function setBuildingLabel(b){
                   );
 }
 function buildingAutocompleteSource (request, response) {
-    var r = new RegExp(request.term, 'i'); // use regexs for fast testing
-    var suggests = [];
-    for (var i = 0, l = buildings.length; i < l; i++) {
-      var b = buildings[i];
-      var suggest = {
-        label: b.label,
-        labelType: b.labelType,
-        buildingNumber: b.buildingNumber
-      };
-
-      if (r.test(b.official)) {
-        suggest.matchingName = b.official;
-        suggest.matchingNameType = "OFFICIAL";
-        suggests.push(suggest);
-      } else if (r.test(b.short)) {
-        suggest.matchingName = b.short;
-        suggest.matchingNameType = "SHORT";
-        suggests.push(suggest);
-      } else if (r.test(b.uit)) {
-        suggest.matchingName = b.uit;
-        suggest.matchingNameType = "UIT";
-        suggests.push(suggest);
-      } else if (b.other.length > 0) {
-        for (var j = 0, ol = b.other.length; j < ol; j++){
-          var other = b.other[j];
-          if (r.test(other)) {
-            suggest.matchingName = other;
-            suggest.matchingNameType = "OTHER";
-            suggests.push(suggest);
-            break;
+    // use regexs for fast testing
+    var br = new RegExp('^' + request.term, 'i');  // matches strings that begin with term
+    var wr = new RegExp('\\b' + request.term, 'i');  // matches strings that have a word beginning term
+    var r  = new RegExp(request.term, 'i'); // matches anywhere in the string
+    
+    var suggests = []; // suggestions
+    var possible = buildings.slice(); // remaining possibilities for building matches 
+    
+    var regexOrder = [br, wr, r];
+    var nameTypeOrder =  ['official', 'short', 'uit', 'other', 'buildingNumber' ];
+    
+    // cache array lengths for crappy performance on firefox
+    var tl = nameTypeOrder.length;
+    var rl = regexOrder.length;
+    var pl = possible.length;
+    
+    for (var i = 0; i < tl; i++){
+      var nameType = nameTypeOrder[i];
+      for (var j = 0; j < rl; j++){
+        var regex = regexOrder[j];
+        for (var k = 0; k < pl; k++){
+          var b = possible[k];
+          var suggest = {
+            label: b.label,
+            labelType: b.labelType,
+            buildingNumber: b.buildingNumber
+          };
+          
+          if (!b[nameType]){
+            continue;
+          }
+          
+          if (nameType === "other") {
+            for (var l = 0, ol = b.other.length; l < ol; l++){
+              var other = b.other[l];
+              if (regex.test(other)) {
+                suggest.matchingName = other;
+                suggest.matchingNameType = "OTHER";
+                suggests.push(suggest);
+                break;
+              }
+            }
+          } else if (nameType === "buildingNumber") {
+            if (regex.test(b[nameType])){
+              
+              suggest.matchingName = b[nameType];
+              suggest.matchingNameType = "BUILDING_NUMBER";
+              suggests.push(suggest);
+            }
+          } else {      
+            if (regex.test(b[nameType])){
+              suggest.matchingName = b[nameType];
+              suggest.matchingNameType = nameType.toUpperCase();
+              suggests.push(suggest);
+            }
+          }
+          // if the nameType matched a building, remove it from possibilities
+          if (suggest.matchingNameType){
+            possible.splice(k, 1);
+            k = k - 1;
+            pl = pl - 1;
           }
         }
-      } else if (r.test(b.buildingNumber)) {
-        suggest.matchingName = b.buildingNumber;
-        suggest.matchingNameType = "BUILDING_NUMBER";
-        suggests.push(suggest);
       }
     }
     response(suggests);
