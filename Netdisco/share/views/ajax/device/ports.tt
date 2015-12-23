@@ -201,7 +201,6 @@
         [% END %]
         [% output %]
         [% END %]
-      [% ELSE %]
       </td>
       [% END %]
       
@@ -429,9 +428,9 @@ $(document).ready(function() {
             { "type": 'portsort', "targets": [ 'portsort' ] }
         ],
         [% IF params.c_up %]
-        "order": [[ 2, 'asc' ]],
+        "order": [[ 2, 'asc' ], [ 3, 'asc' ]],
         [% ELSE %]
-        "order": [[ 1, 'asc' ]],
+        "order": [[ 1, 'asc' ], [ 2, 'asc' ]],
         [% END %]
         deferRender: true,
 [% INCLUDE 'ajax/datatabledefaults.tt' -%]
