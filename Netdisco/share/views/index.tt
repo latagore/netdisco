@@ -53,10 +53,19 @@
             <a href="http://netinfo.yorku.ca/">Old Netinfo</a>
           </p>
           <span id="nd_changelog-toggle" data-toggle="collapse" data-target="#changelog">
-            <a>Changelog (Last Updated: December 22, 2015)
+            <a>Changelog (Last Updated: February 2, 2016)
             <i class="icon-chevron-up nd_chevron"></i></a>
           </span>
           <div id="changelog" class="collapse">
+          <div class="log">
+            <h4>February 2, 2016</h4>
+            <ul>
+              <li>Fixed column order in CSV exports.</li>
+              <li>Renamed Computer Science and Engineering Building to Lassonde Building.</li>
+              <li>Renamed Accolade Building West/East to Accolade West/East Building respectively.</li>
+              <li>Fixed hidden tooltips issue for enabling and disabling ports buttons.</li>
+            </ul>
+          </div>
           <div class="log">
             <h4>December 22, 2015</h4>
             <ul>
