@@ -2,9 +2,14 @@
 
 [% SET headers = [] %]
 [% SET c_nodes_pos = -1 %]
+[% IF params.c_up %]
+    [% headers.push('Port Setting') %]
+    [% headers.push('Port Status') %]
+[% END %]
 [% headers.push('Device') %]
 [% FOREACH item IN vars.port_columns %]
   [% NEXT IF item.name == 'c_admin' %]
+  [% NEXT IF item.name == 'c_up' %]
   [% NEXT UNLESS params.${item.name} %]
 
   [% IF item.name == 'c_nodes' %]
@@ -24,9 +29,6 @@
   [% ELSIF item.name == 'c_neighbors' %]
     [% headers.push('Neighbor IP') %]
     [% headers.push('Neighbor DNS') %]
-  [% ELSIF item.name == 'c_up' %]
-    [% headers.push('Port Setting') %]
-    [% headers.push('Port Status') %]
   [% ELSE %]
     [% headers.push(item.label) %]
   [% END %]
@@ -36,15 +38,11 @@
 [% FOREACH row IN results %]
   [% SET myport = [] %]
 
-  [% FOREACH config IN settings._extra_device_port_cols %]
-    [% NEXT UNLESS config.position == 'left' AND params.${config.name} %]
-    [% TRY %]
-    [% PROCESS "plugin/${config.name}/device_port_column_csv.tt" %]
-    [% CATCH %]
-    [% myport.push('') %]
-    [% END %]
+  [% IF params.c_up %]
+    [% myport.push( row.up_admin.ucfirst ) %]
+    [% myport.push( row.up.ucfirst ) %]
   [% END %]
-  
+
   [% myport.push(row.device.dns.remove(settings.domain_suffix) || row.device.ip) %]
 
   [% IF params.c_port %]
@@ -52,7 +50,7 @@
   [% END %]
 
   [% FOREACH config IN settings._extra_device_port_cols %]
-    [% NEXT UNLESS config.position == 'mid' AND params.${config.name} %]
+    [% NEXT UNLESS config.position == 'left' AND params.${config.name} %]
     [% TRY %]
     [% PROCESS "plugin/${config.name}/device_port_column_csv.tt" %]
     [% CATCH %]
@@ -62,10 +60,6 @@
 
   [% IF params.c_descr %]
     [% myport.push(row.descr) %]
-  [% END %]
-
-  [% IF params.c_comment %]
-    [% myport.push(row.last_comment) %]
   [% END %]
 
   [% IF params.c_type %]
@@ -80,10 +74,6 @@
       [% myport.push('') %]
       [% myport.push('') %]
     [% END %]
-  [% END %]
-
-  [% IF params.c_lastchange %]
-    [% myport.push(row.lastchange_stamp) %]
   [% END %]
 
   [% IF params.c_name %]
@@ -121,6 +111,10 @@
     [% END %]
   [% END %]
 
+  [% IF params.c_stp %]
+    [% myport.push(row.stp) %]
+  [% END %]
+
   [% IF params.c_power %]
     [% IF row.power AND row.power.admin == 'true' %]
       [% myport.push( row.power.status ) %]
@@ -128,6 +122,19 @@
     [% ELSE %]
       [% myport.push('') %]
       [% myport.push('') %]
+    [% END %]
+  [% END %]
+
+  [% IF params.c_ssid %]
+    [% myport.push(row.ssid.ssid) %]
+  [% END %]
+
+  [% FOREACH config IN settings._extra_device_port_cols %]
+    [% NEXT UNLESS config.position == 'mid' AND params.${config.name} %]
+    [% TRY %]
+    [% PROCESS "plugin/${config.name}/device_port_column_csv.tt" %]
+    [% CATCH %]
+    [% myport.push('') %]
     [% END %]
   [% END %]
 
@@ -158,15 +165,6 @@
     [% END %]
   [% END %]
 
-  [% IF params.c_stp %]
-    [% myport.push(row.stp) %]
-  [% END %]
-
-  [% IF params.c_up %]
-    [% myport.push( row.up_admin.ucfirst ) %]
-    [% myport.push( row.up.ucfirst ) %]
-  [% END %]
-
   [% FOREACH config IN settings._extra_device_port_cols %]
     [% NEXT UNLESS config.position == 'right' AND params.${config.name} %]
     [% TRY %]
@@ -174,6 +172,14 @@
     [% CATCH %]
     [% myport.push('') %]
     [% END %]
+  [% END %]
+
+  [% IF params.c_comment %]
+    [% myport.push(row.last_comment) %]
+  [% END %]
+
+  [% IF params.c_lastchange %]
+    [% myport.push(row.lastchange_stamp) %]
   [% END %]
 
   [% SET has_nodes = 0 %]
