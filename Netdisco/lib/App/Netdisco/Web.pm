@@ -63,7 +63,7 @@ hook after_error_render => sub { setting('layout' => 'main') };
 # setup params for device ports + search ports view
 hook 'before' => sub {
   # trim whitespace
-  params->{q} =~ s/(^\s+)|(\s+$)//g;
+  params->{q} =~ s/(^\s+)|(\s+$)//g if params->{q};
 
   my @default_port_columns_left = (
     { name => 'c_up',          label => 'Status',            default => ''   },
