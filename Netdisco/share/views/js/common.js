@@ -106,9 +106,10 @@
       $.cookie('nd_ports-form', $.param(cookie) ,{ expires: 365 });
 
       // form reset icon on ports tab
-      $('#nd_sidebar-reset-link').attr('href', uri_base + '/device?tab=[% tab.tag %]&reset=on&' +
+      $('#nd_sidebar-reset-link').attr('href', uri_base + '/search?tab=[% tab.tag %]&reset=on&' +
         $('#ports_form')
-          .find('input[name="q"],input[name="f"],input[name="partial"],input[name="invert"]')
+          .find('input[name="q"],input[name="f"],input[name="partial"],input[name="invert"]'
+            + ',input[name="building"],input[name="cable"],input[name="pigtail"],input[name="riserroom"],input[name="room"],input[name="vlan"],input[name="node"]')
           .serialize());
       [% END %]
     });
