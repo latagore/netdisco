@@ -1,6 +1,0 @@
-{
-  "discoverAge": "[% result.discoverAge %]",
-  "macsuckAge": "[% result.macsuckAge %]",
-  "arpnipAge": "[% result.arpnipAge %]",
-  "ageLimit": "[% result.ageLimit %]"
-}
