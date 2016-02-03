@@ -93,12 +93,15 @@ get '/ajax/content/report/ipinventory' => require_login sub {
                 \qq/date_trunc('second', time_last) AS time_last/,
                 \qq/date_trunc('second', time_first) AS time_first/,
                 'active',
+                \'(select switch from node where node.mac = me.mac order by time_last desc limit 1) AS switch',
+                \'(select device.dns from node join device on device.ip = node.switch where node.mac = me.mac order by time_last desc limit 1) AS switchdns',
+                \'(select port from node where node.mac = me.mac order by time_last desc limit 1) AS port',
                 'node',
                 'age'
             ],
             as => [
                 'ip',     'mac',  'dns',  'time_last', 'time_first',
-                'active', 'node', 'age'
+                'active', 'switch', 'switchdns', 'port', 'node', 'age'
             ],
             order_by => [{-asc => 'ip'}, {-desc => 'active'}],
         }
@@ -113,12 +116,18 @@ get '/ajax/content/report/ipinventory' => require_login sub {
                     { time_last => undef }
                   ]
                 },
-                { from => { me => $rs_sub }, }
+                {
+                  columns   => [qw( ip mac time_first time_last dns active switch switchdns port node age)],
+                  from => { me => $rs_sub }, 
+                }
             );
     } elsif ($used eq "used") {
         $rs = $rs_union->search(
             { time_last => { '>=',  \"now() - $interval" } },
-            { from => { me => $rs_sub }, }
+            { 
+              columns   => [qw( ip mac time_first time_last dns active switch switchdns port node age)],
+              from => { me => $rs_sub }, 
+            }
         );
     } else {
         $subnet = NetAddr::IP::Lite->new('0.0.0.0/32') if ($subnet->bits ne 32);
@@ -139,7 +148,7 @@ get '/ajax/content/report/ipinventory' => require_login sub {
               ]
             },
             {   bind => [ $subnet->cidr ],
-                columns   => [qw( ip mac time_first time_last dns active)],
+                columns   => [qw( ip mac time_first time_last dns active switch switchdns port)],
                 '+select' => [ \'false AS node',
                                \qq/replace( date_trunc( 'minute', age( now(), time_last ) ) ::text, 'mon', 'month') AS age/
                              ],

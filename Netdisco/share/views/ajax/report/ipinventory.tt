@@ -3,6 +3,7 @@
     <tr>
       <th>Node</th>
       <th>MAC Address</th>
+      <th>Switch Port</th>
       <th class="nd_center-cell">DNS</th>
       <th>Last Used</th>      
     </tr>
@@ -39,6 +40,19 @@ $(document).ready(function() {
             cell_str = '<a href="[% search_node %]&q=' + encodeURIComponent(data)
               + (row.active ? '' : '&archived=on') + '">' + he.encode(data)
               + (row.active ? '' : '&nbsp;<i class="icon-book text-warning"></i>&nbsp;') + '</a>';
+          }
+          return cell_str;
+        }
+      }, {
+        "data": 'port',
+        "render": function(data, type, row, meta) {
+          var cell_str = he.encode(data || '');
+          if (type == 'display' && data && row.time_last) {
+            cell_str = '<a href="[% device_ports %]'
+              + '&q=' + encodeURIComponent(row.switch)
+              + '&f=' + encodeURIComponent(row.port) + '">'
+              + row.switchdns + ' (' + row.switch + ') - ' + row.port
+              + '</a>';
           }
           return cell_str;
         }
