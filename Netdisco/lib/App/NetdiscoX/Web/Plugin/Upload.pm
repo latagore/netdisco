@@ -10,7 +10,7 @@ use App::Netdisco::Web::Plugin;
 use Text::CSV;
 
 my %CSV_MAP = (
-  "Port" => "port",
+  "Port ID" => "port",
   "Pigtail" => "cable",
   "Cable" => "jack",
   "Pairs 1" => "pairs1",
@@ -97,6 +97,12 @@ post '/ajax/upload/ports' => require_role 'admin' => sub {
       my $linenumber = 1;
       DATA: foreach my $datarow (@$data){
         $linenumber++;
+        unless (schema('netdisco')->resultset('DevicePort')
+          ->find({ip => $ip, port => $datarow->{port}}))
+        {
+          push @warnings,  "'".$datarow->{port}."' is not a port on the device. Ignoring.";
+          next DATA;
+        } 
         my $result = schema('netdisco')->resultset('Portinfo')->find_or_new(
             {ip => $ip, port => $datarow->{port}});
             
