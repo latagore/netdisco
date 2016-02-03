@@ -1,3 +1,4 @@
+[% USE date %]
 [% SET user_can_port_control = user_has_role('port_control') %]
 <table class="table table-condensed table-striped">
   </tbody>
@@ -113,15 +114,33 @@
     </tr>
     <tr>
       <td>Last Discover</td>
-      <td>[% d.last_discover_stamp | html_entity %]</td>
+      <td>
+        [% IF d.since_last_discover / 86400 > setting('age_limit_warning') %]
+          <strong class="text-error">[% d.last_discover_stamp | html_entity %]</strong>
+        [% ELSE %]
+          [% d.last_discover_stamp | html_entity %]
+        [% END %]
+      </td>
     </tr>
     <tr>
       <td>Last Arpnip</td>
-      <td>[% d.last_arpnip_stamp | html_entity %]</td>
+      <td>
+        [% IF d.since_last_arpnip / 86400 > setting('age_limit_warning') %]
+          <strong class="text-error">[% d.last_arpnip_stamp | html_entity %]</strong>
+        [% ELSE %]
+          [% d.last_arpnip_stamp | html_entity %]
+        [% END %]
+      </td>
     </tr>
     <tr>
       <td>Last Macsuck</td>
-      <td>[% d.last_macsuck_stamp | html_entity %]</td>
+      <td>
+        [% IF d.since_last_macsuck / 86400 > setting('age_limit_warning') %]
+          <strong class="text-error">[% d.last_macsuck_stamp | html_entity %]</strong>
+        [% ELSE %]
+          [% d.last_macsuck_stamp | html_entity %]
+        [% END %]
+      </td>
     </tr>
     <tr>
       <td>Hardware Status</td>
