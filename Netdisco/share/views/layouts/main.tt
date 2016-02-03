@@ -14,6 +14,8 @@
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
 
+  <link rel="shortcut icon" href="[% uri_base %]/favicon.png" type="image/x-icon" />
+
   <script type="text/javascript" src="[% uri_base %]/javascripts/jquery-latest.min.js"></script>
 <!--  <script type="text/javascript" src="http://code.jquery.com/jquery-migrate-1.1.1.js"></script> -->
   <script type="text/javascript" src="[% uri_base %]/javascripts/jquery-ui.custom.min.js"></script>
