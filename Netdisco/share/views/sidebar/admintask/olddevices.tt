@@ -1,0 +1,19 @@
+
+            <fieldset>
+              <legend class="nd_sidebar-legend">
+                <label><em><strong>Options</strong></em></label>
+              </legend>
+              Show devices having last 
+              <select name="type" multiple="true">
+                <option value="discover" selected="selected">Discover</option>
+                <option value="arpnip" selected="selected">Arpnip</option>
+                <option value="macsuck" selected="selected">Macsuck</option>
+              </select>
+              jobs older than
+              <input class="nd_side-input" name="max_age" type="number" step="1" min="1" value="2"></input>
+              days
+            </fieldset>
+              
+            <button id="[% report.tag %]_submit" type="submit" class="btn btn-info">
+             <i class="icon-search icon-large pull-left nd_navbar-icon"></i> Search</button>
+
