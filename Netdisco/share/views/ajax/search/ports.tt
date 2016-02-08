@@ -425,7 +425,7 @@
 
 <script>
 $(document).ready(function() {
-    var table = $('#dp-data-table').dataTable({
+    var table = $('#dp-data-table').DataTable({
         "columnDefs": [
             { "sortable": false, "targets": 0 },
             { "searchable": false, "targets": 0 },
@@ -439,5 +439,31 @@ $(document).ready(function() {
         deferRender: true,
 [% INCLUDE 'ajax/datatabledefaults.tt' -%]
     } );
+    
+    // Keyboard support
+    // crap that needs to be added in the ajax return
+    // because the code is so messy
+    table.on( 'key', function ( e, datatable, key, cell, event ) {
+      var div = $(cell.node()).children('.york-port-info');
+
+      var isShift = event.which == 16; // ignore shift keypress events
+      var isEnter = event.which == 13;
+      if (isEnter && $(cell.node()).hasClass('nd_portinfo-data-dirty')){
+          changeportinfo(div.get(0));
+      } else if (div.length && div.not(':focus') && !isShift){
+        div.focus();
+        div.text('');
+        table.keys.enable( 'navigation-only' );
+
+        div.blur(function(){
+          table.keys.enable();
+        });
+      }
+    });
+    
+    table.on( 'key-blur', function ( e, datatable, cell) {
+      var div = $(cell.node()).children().addBack().has('[contenteditable]');
+      div.blur();
+    });
 } );
 </script>

@@ -33,7 +33,6 @@ function disableTabsOnAdvancedPortSearch(){
   });
 }
 
-
 // functions that add bits of features to the page
 function addSavePortInfoButton(){
   // use a mutation observer because we don't know when the data-table will be loaded
@@ -128,7 +127,12 @@ function addPortInfoInteractiveListeners (){
     var div = this,
       td = $(div).closest('td'),
       esc = event.which == 27,
-      nl = event.which == 13;
+      nl = event.which == 13,
+      tab = event.which == 9,
+      arrows = event.which == 37 ||
+               event.which == 38 ||
+               event.which == 39 ||
+               event.which == 40;
 
     if (esc) {
       $(div).blur();
@@ -139,6 +143,10 @@ function addPortInfoInteractiveListeners (){
 
       changeportinfo(div);
       $(div).blur();
+    } else if (tab) {
+      $(div).blur();
+    } else if (arrows){
+      event.stopPropagation();
     }
   });
 
