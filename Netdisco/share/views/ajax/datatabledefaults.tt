@@ -23,3 +23,4 @@
       [% END %]
     },"scrollX": true
     ,"scrollY": "800px"
+    ,"keys": true
