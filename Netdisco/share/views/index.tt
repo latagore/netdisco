@@ -53,10 +53,21 @@
             <a href="http://netinfo.yorku.ca/">Old Netinfo</a>
           </p>
           <span id="nd_changelog-toggle" data-toggle="collapse" data-target="#changelog">
-            <a>Changelog (Last Updated: February 2, 2016)
+            <a>Changelog (Last Updated: February 8, 2016)
             <i class="icon-chevron-up nd_chevron"></i></a>
           </span>
           <div id="changelog" class="collapse">
+          <div class="log">
+            <h4>February 8, 2016</h4>
+            <ul>
+              <li>Improved device ports keyboard navigation! Use the arrow keys and tab to navigate the table.</li>
+              <li>Fixed CSV upload, broken by column order changes.</li>
+              <li>Removed age warning popup. Old devices are highlighted on their device details page.</li>
+              <li>Added admin report for viewing devices that have not been discovered in a long time.</li>
+              <li>Fixed hidden tooltips issue for enabling and disabling ports buttons.</li>
+              <li>Added switch ports to IP Inventory.</li>
+            </ul>
+          </div>
           <div class="log">
             <h4>February 2, 2016</h4>
             <ul>
