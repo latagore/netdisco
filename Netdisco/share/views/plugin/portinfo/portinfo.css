@@ -71,13 +71,12 @@
   margin-right: 10px;
 }
 
-/* allow tooltips to work despite datatables plugin 
-   positioning for columns */
-#dp-data-table_wrapper .DTFC_LeftBodyWrapper,
-#dp-data-table_wrapper .DTFC_LeftBodyLiner{
+/* allow tooltips to work */
+#dp-data-table_wrapper .dataTables_scrollBody,
+#dp-data-table_wrapper .dataTables_scrollBody table
+{
   position: static !important;
 }
-
 
 /* integrate port location search with netdisco */
 #nd_location-port-search {

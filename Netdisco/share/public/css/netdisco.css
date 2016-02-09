@@ -166,6 +166,7 @@ div.content > div.tab-content table.nd_floatinghead thead {
 }
 .nd_editable-cell > .nd_port-only-first {
   margin-left: 5px;
+  display: block;
 }
 
 .nd_editable-cell > .nd_editable-cell-content {
@@ -176,6 +177,7 @@ div.content > div.tab-content table.nd_floatinghead thead {
    for log button */
 .nd_this-port-only {
   margin-right: 15px;
+  display: block;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -287,8 +289,6 @@ td > form.nd_inline-form {
 .nd_edit-icon, .nd_hand-icon {
   cursor: pointer;
   float: right;
-  position: relative;
-  z-index: 100;
   display: none;
 }
 
