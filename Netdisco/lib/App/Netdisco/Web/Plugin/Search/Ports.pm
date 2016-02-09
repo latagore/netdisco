@@ -156,15 +156,12 @@ get '/ajax/content/search/ports' => require_login sub {
     # refine by vlan if requested
     my $fvlan = param('vlan');
     if ($fvlan) {
-      if (param('include_trunked_ports') && param('include_trunked_ports') eq 'on') {
-        $set = $set->search({
-          -or => {
-            'me.vlan' => $fvlan,
-            'port_vlans.vlan' => $fvlan},
-          }, { join => 'port_vlans' });
-      } else {
-        $set = $set->search({'me.vlan' => $fvlan});
-      }
+      $set = $set->search({
+        -or => {
+          'me.vlan' => $fvlan,
+          'port_vlans.vlan' => $fvlan},
+        }, { join => 'port_vlans' }
+      );
       return unless $set->count;
     }
 
