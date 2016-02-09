@@ -21,6 +21,10 @@
       // disable sorting for custom reports
       data.order = "";
       [% END %]
+    }
+    ,"stateLoadParams": function (settings, data){
+      // don't save focused cell
+      data.keyTable = null;
     },"scrollX": true
     ,"scrollY": "800px"
     ,"keys": true
