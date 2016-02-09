@@ -119,23 +119,11 @@
   color: #FF6;
 }
 #advanced-port-search-btn {
-  /* copy appearance of port input */
-  padding: 4px 14px;
-  width: 206px;
-  height: 18px;
+  margin-top: 1px;
+  padding-left: 30px;
+  padding-right: 30px;
   border-radius: 15px;
-  
-  /* copy search button appearance */
-  background-image: linear-gradient(to bottom, #444, #222);
-  background-repeat: repeat-x;
-  border-width: 1px;
-  border-style: solid;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  color: #FFF;
-
-  user-select: none;
-  text-align: center;
-  cursor: default;
+  height: 28px;
 }
 
 /* format the form close button to the left */

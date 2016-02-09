@@ -170,7 +170,7 @@
         <li id="nd_location-port-search">
           <form class="form-search navbar-search" action="[% uri_for('/search') %]">
             <input type="hidden" name="tab" value="ports"></input>
-            <div id='advanced-port-search-btn'>Advanced Port Search</div>
+            <input id='advanced-port-search-btn' class='btn btn-inverse' type='button' value="Advanced Port Search"></input>
             <div class="nd_location-port-search-additional" hidden="true">
               <input id="port-building-input" class="search-query" type="text" title="Building" rel="tooltip" data-placement="left" name="building" placeholder="Find Ports by Building"></input>
               <input id="cable-input" class="search-query" type="text" name="cable" title="Horizontal Cable" rel="tooltip" data-placement="left" placeholder="...and Horizontal Cable"></input>

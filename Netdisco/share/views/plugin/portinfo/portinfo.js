@@ -508,12 +508,14 @@ function addNavBarFunctionality(){
     focusInvalid: false
   });
 
-  $('#nd_location-port-search form').keypress(function(e){
-    dependsFired = false;
-    if (e.keyCode === 13) {
-      $(this).submit();
-    } else {
-      warned = false;
+  $('#nd_location-port-search form input').keypress(function(e){
+    if ($(this).prop("type") === "text"){
+      dependsFired = false;
+      if (e.keyCode === 13) {
+        $(this).closest('form').submit();
+      } else {
+        warned = false;
+      }
     }
   });
   $('.location-port-search-close-btn').click(function(){
