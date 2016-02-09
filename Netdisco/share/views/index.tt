@@ -58,6 +58,18 @@
           </span>
           <div id="changelog" class="collapse">
           <div class="log">
+            <h4>February 9, 2016</h4>
+            <ul>
+              <li>Major fix where table appears broken. Caused by addition of keyboard navigation plugin.</li>
+              <li>Fixed problem where VLANs did not appear for ports.</li>
+              <li>Changed appearance of Advanced Port Search and made keyboard accessible.</li>
+              <li>Added icon for Netdisco, so it would be easier to identify Netdisco in browser tabs.</li>
+              <li>VLAN field in Advanced Port Search now searches for all vlans on a port. Trunk ports carrying this VLAN will also appear.<li>
+              <li>Fixed tooltips being cut off. </li>
+              <li>Added hint that Find Anything suggestions are devices only.</li>
+            </ul>
+          </div>
+          <div class="log">
             <h4>February 8, 2016</h4>
             <ul>
               <li>Improved device ports keyboard navigation! Use the arrow keys and tab to navigate the table.</li>
