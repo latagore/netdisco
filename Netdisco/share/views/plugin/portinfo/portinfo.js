@@ -569,6 +569,18 @@ $.widget( "building.autocomplete", $.ui.autocomplete, {
     showBuildingNumber: false,
     highlightClass: 'nd_suggest-match-highlight'
   },
+  _create: function() {
+    this._super();
+    this.widget().menu( "option", "items", "> :not(.device-suggestion)" );
+  },
+  _renderMenu: function( ul, items ) {
+    var that = this;
+    ul.append('<li class="device-suggestion">Devices</li>');
+    $.each( items, function( index, item ) {
+      var li;
+      li = that._renderItem( ul, item );
+    });
+  },
   _renderItem: function(ul, item){
     var a = document.createElement('a'),
         // regular expression for highlighting the term in the item

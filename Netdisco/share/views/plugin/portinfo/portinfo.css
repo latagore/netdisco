@@ -78,6 +78,14 @@
   position: static !important;
 }
 
+/* Find Anything hint */
+.device-suggestion {
+  padding-left: 10px;
+  font-size:75%;
+  color: #666;
+}
+
+
 /* integrate port location search with netdisco */
 #nd_location-port-search {
   margin-right: 10px;
