@@ -217,7 +217,7 @@ $(document).ready(function() {
 
   // activate jQuery autocomplete on the main search box, for device names only
   var maxSuggestions = 5; // max number of suggestions
-  $('#nq').autocomplete({
+  var nq_autocomplete = $('#nq').autocomplete({
     source: function (request, response) {
       $.ajax({ 
         url: uri_base + '/ajax/data/devicename/typeahead', 
@@ -238,8 +238,20 @@ $(document).ready(function() {
     }
     ,minLength: 3
     ,appendTo: "#nq-search"
-  });
-
+  }).data("ui-autocomplete");
+  
+  nq_autocomplete._create = function() {
+      nq_autocomplete._super();
+      nq_autocomplete.widget().menu( "option", "items", "> :not(.device-suggestion)" );
+    };
+  nq_autocomplete._renderMenu = function( ul, items ) {
+      var that = nq_autocomplete;
+      ul.append('<li class="device-suggestion">Devices</li>');
+      $.each( items, function( index, item ) {
+        var li;
+        li = that._renderItem( ul, item );
+      });
+    };
   // activate tooltips
   $("[rel=tooltip],.has-tooltip").tooltip({live: true});
 

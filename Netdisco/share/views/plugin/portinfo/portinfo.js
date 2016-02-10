@@ -188,7 +188,7 @@ function addBuildingSuggestionsToPortsTable() {
   // re-ordered with the most recent item at the top when an item is selected
 
   $('.tab-content').on('focus', '[data-column=building]', function() {
-    $(this).autocomplete({
+    $(this).buildingAutocomplete({
       source: buildingAutocompleteSource,
       minLength: 0,
       delay: 200
@@ -199,8 +199,8 @@ function addBuildingSuggestionsToPortsTable() {
 function addBuildingSuggestionsToPortsSidebar() {
   // add autocomplete to building search on sidebar
   $('#ports_form #nd_building-query').focus(function() {
-    if (!$(this).data('buildingAutocomplete')) {
-      $(this).autocomplete({
+    if (!$(this).data('customBuildingAutocomplete')) {
+      $(this).buildingAutocomplete({
         source: buildingAutocompleteSource,
         minLength: 0,
         delay: 200
@@ -450,19 +450,19 @@ function addNavBarFunctionality(){
   });
 
   // auto complete functionality for advanced ports search
-  input.autocomplete({
+  input.buildingAutocomplete({
     source: buildingAutocompleteSource,
     appendTo: ".nd_location-port-search-additional",
     minLength: 0,
     delay: 200
   });
-  input.data('buildingAutocomplete').option('showBuildingNumber', true);
+  input.data('customBuildingAutocomplete').option('showBuildingNumber', true);
 
   // listeners that provide custom widget feel
   // bring up the list of suggestions if clicking building field for the first time
   input.focus(function(){
     if (!input.val()){
-      input.autocomplete("search", "");
+      input.buildingAutocomplete("search", "");
     }
   });
 
@@ -564,22 +564,10 @@ $.ajax('/ajax/plugin/buildings', {
 });
 
 // custom autocomplete appearance
-$.widget( "building.autocomplete", $.ui.autocomplete, {
+$.widget( "custom.buildingAutocomplete", $.ui.autocomplete, {
   options: {
     showBuildingNumber: false,
     highlightClass: 'nd_suggest-match-highlight'
-  },
-  _create: function() {
-    this._super();
-    this.widget().menu( "option", "items", "> :not(.device-suggestion)" );
-  },
-  _renderMenu: function( ul, items ) {
-    var that = this;
-    ul.append('<li class="device-suggestion">Devices</li>');
-    $.each( items, function( index, item ) {
-      var li;
-      li = that._renderItem( ul, item );
-    });
   },
   _renderItem: function(ul, item){
     var a = document.createElement('a'),
