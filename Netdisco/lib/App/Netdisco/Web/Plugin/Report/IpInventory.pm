@@ -35,7 +35,6 @@ get '/ajax/content/report/ipinventory' => require_login sub {
     send_error("Invalid unit") unless grep { $_ eq $unit } qw/months days weeks/;
     send_error("Invalid registered field") unless grep { $_ eq $registered } qw/registered unregistered both/;
 
-    debug $unit;
     my $interval = "\'$num $unit\'::interval";
 
     # We need a reasonable limit to prevent a potential DoS, especially if
@@ -148,11 +147,14 @@ get '/ajax/content/report/ipinventory' => require_login sub {
               ]
             },
             {   bind => [ $subnet->cidr ],
-                columns   => [qw( ip mac time_first time_last dns active switch switchdns port)],
+                columns   => [qw( ip mac time_first time_last dns active )],
                 '+select' => [ \'false AS node',
-                               \qq/replace( date_trunc( 'minute', age( now(), time_last ) ) ::text, 'mon', 'month') AS age/
+                               \qq/replace( date_trunc( 'minute', age( now(), time_last ) ) ::text, 'mon', 'month') AS age/,
+                               \'NULL as switch',
+                               \'NULL as switchdns',
+                               \'NULL as port'
                              ],
-                '+as'     => [ 'node', 'age' ],
+                '+as'     => [ 'node', 'age', 'switch', 'switchdns', 'port' ],
                 alias => "n"
             }
         )->hri;
