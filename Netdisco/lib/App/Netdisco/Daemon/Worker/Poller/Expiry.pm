@@ -28,11 +28,24 @@ sub expire {
               (setting('expire_nodes') * 86400)],
         })->delete();
       });
+      schema('netdisco')->txn_do(sub {
+        schema('netdisco')->resultset('NodeIp')->search({
+          time_last => \[q/< (now() - ?::interval)/,
+              (setting('expire_nodes') * 86400)],
+        })->delete();
+      });
   }
 
   if (setting('expire_nodes_archive') and setting('expire_nodes_archive') > 0) {
       schema('netdisco')->txn_do(sub {
         schema('netdisco')->resultset('Node')->search({
+          -not_bool => 'active',
+          time_last => \[q/< (now() - ?::interval)/,
+              (setting('expire_nodes_archive') * 86400)],
+        })->delete();
+      });
+      schema('netdisco')->txn_do(sub {
+        schema('netdisco')->resultset('NodeIp')->search({
           -not_bool => 'active',
           time_last => \[q/< (now() - ?::interval)/,
               (setting('expire_nodes_archive') * 86400)],
