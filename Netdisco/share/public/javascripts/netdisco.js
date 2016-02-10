@@ -236,7 +236,7 @@ $(document).ready(function() {
       nq.val(ui.item.value);
       nq.closest('form').submit();
     }
-    ,minLength: 3
+    ,minLength: 1
     ,appendTo: "#nq-search"
   }).data("ui-autocomplete");
   
