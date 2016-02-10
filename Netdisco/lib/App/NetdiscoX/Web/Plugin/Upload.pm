@@ -67,7 +67,9 @@ post '/ajax/upload/ports' => require_role 'admin' => sub {
     push @errors, 'Must send only one file' if scalar @files != 1;
     push @errors, "Wrong file type." # check HTTP header for content type
       unless $files[0]->headers->{"Content-Type"} eq "text/comma-separated-values"
-          or $files[0]->headers->{"Content-Type"} eq "text/csv";
+          or $files[0]->headers->{"Content-Type"} eq "text/csv"
+          or $files[0]->headers->{"Content-Type"} eq "application/vnd.ms-excel";
+          
     status 400 if scalar @errors;
     return to_json( { errors => \@errors } ) if scalar @errors;
     
