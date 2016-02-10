@@ -528,6 +528,7 @@ function addPortInfoFunctionality(){
     addPortInfoInteractiveListeners();
     addSavePortInfoButton();
     addBuildingSuggestionsToPortsTable();
+    addBuildingSuggestionsToPortsSidebar();
   });
   $('.nd_sidebar').on('submit', '#ports_form', function() {
     addSavePortInfoButton();
@@ -537,7 +538,7 @@ function addPortInfoFunctionality(){
   if ((location.pathname.indexOf('/device') === 0 || location.pathname.indexOf('/search') === 0)
       && queryDict.tab === "ports") {
     var porttable = $('#dp-data-table').DataTable();
-
+    addBuildingSuggestionsToPortsSidebar();
     addPortInfoInteractiveListeners();
     addSavePortInfoButton();
     addBuildingSuggestionsToPortsTable();
