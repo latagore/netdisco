@@ -73,79 +73,87 @@ post '/ajax/upload/ports' => require_role 'admin' => sub {
     status 400 if scalar @errors;
     return to_json( { errors => \@errors } ) if scalar @errors;
     
-    # read the file
-    my $file = $files[0]->file_handle;
-    my $csv = Text::CSV->new ( { binary => 1 } );  # should set binary attribute.
-    my $csv_header = $csv->getline($file);
-    my $col_header;
-    foreach my $col (@$csv_header){
-      push @$col_header, ($CSV_MAP{$col} || "");
-      push @warnings, "'$col' is not a cable data column. Ignoring."
-          unless $CSV_MAP{$col};
-    }
-    $csv->column_names (@$col_header);
-    my $data = $csv->getline_hr_all($file);
     
-    # insert the data in the database
-    schema('netdisco')->txn_do(sub {
-      schema('netdisco')->resultset('UserLog')->create({
-        username => session('logged_in_user'),
-        userip => request->remote_address,
-        event => "Cable Data CSV Upload",
-        details => $ip,
-      });
+    # keep track of the line number for error reporting
+    my $linenumber = 1;
+    
+    # read the file
+    try {
+      my $file = $files[0]->file_handle;
+      my $csv = Text::CSV->new ( { binary => 1 } );  # should set binary attribute.
+      my $csv_header = $csv->getline($file);
+      my $col_header;
+      foreach my $col (@$csv_header){
+        push @$col_header, ($CSV_MAP{$col} || "");
+        push @warnings, "'$col' is not a cable data column. Ignoring."
+            unless $CSV_MAP{$col};
+      }
+      $csv->column_names (@$col_header);
+      my $data = $csv->getline_hr_all($file);
       
-      # keep track of the line number for error reporting
-      my $linenumber = 1;
-      DATA: foreach my $datarow (@$data){
-        $linenumber++;
-        unless (schema('netdisco')->resultset('DevicePort')
-          ->find({ip => $ip, port => $datarow->{port}}))
-        {
-          push @warnings,  "'".$datarow->{port}."' is not a port on the device. Ignoring.";
-          next DATA;
-        } 
-        my $result = schema('netdisco')->resultset('Portinfo')->find_or_new(
-            {ip => $ip, port => $datarow->{port}});
+      # insert the data in the database
+      schema('netdisco')->txn_do(sub {
+        schema('netdisco')->resultset('UserLog')->create({
+          username => session('logged_in_user'),
+          userip => request->remote_address,
+          event => "Cable Data CSV Upload",
+          details => $ip,
+        });
+        
+        DATA: foreach my $datarow (@$data){
+          $linenumber++;
+          unless (schema('netdisco')->resultset('DevicePort')
+            ->find({ip => $ip, port => $datarow->{port}}))
+          {
+            push @warnings,  "'".$datarow->{port}."' is not a port on the device. Ignoring.";
+            next DATA;
+          } 
+          my $result = schema('netdisco')->resultset('Portinfo')->find_or_new(
+              {ip => $ip, port => $datarow->{port}});
+              
+          # save column data into result object
+          foreach my $col (keys %$datarow){
+            next unless $col
+              and $col ne 'port';
             
-        # save column data into result object
-        foreach my $col (keys %$datarow){
-          next unless $col
-            and $col ne 'port';
-          
-          if ($DB_MAP{$col}){
-            # skip if value is blank or null, no point looking up
-            next unless defined $datarow->{$col} and $datarow->{$col} ne '';
-            my $b = $DB_MAP{$col};
-            my ($success, $pkeycols) = get_pkey($datarow->{$col}, 
-              $b->{column},
-              $b->{resultclass},
-              $b->{constraints},
-              $b->{key_columns}
-            );
-            
-            if ($success){
-              foreach my $pkeycol (keys %$pkeycols){
-                $result->set_column($b->{key_columns_as}->{$pkeycol}, $pkeycols->{$pkeycol});
+            if ($DB_MAP{$col}){
+              # skip if value is blank or null, no point looking up
+              next unless defined $datarow->{$col} and $datarow->{$col} ne '';
+              my $b = $DB_MAP{$col};
+              my ($success, $pkeycols) = get_pkey($datarow->{$col}, 
+                $b->{column},
+                $b->{resultclass},
+                $b->{constraints},
+                $b->{key_columns}
+              );
+              
+              if ($success){
+                foreach my $pkeycol (keys %$pkeycols){
+                  $result->set_column($b->{key_columns_as}->{$pkeycol}, $pkeycols->{$pkeycol});
+                }
+              } else {
+                push @errors, "Failed to get $col \"$datarow->{$col}\" for line $linenumber";
+                last DATA;
               }
             } else {
-              push @errors, "Failed to get $col \"$datarow->{$col}\" for line $linenumber";
-              last DATA;
+              $result->set_column($col, $datarow->{$col});
             }
-          } else {
-            $result->set_column($col, $datarow->{$col});
+            
           }
-          
+          try {
+            $result->update_or_insert;
+          } catch {
+            push @errors, "Failed to update or insert line $linenumber: ".$_;
+            last DATA;
+          }
         }
-        try {
-          $result->update_or_insert;
-        } catch {
-          push @errors, "Failed to update or insert line $linenumber: ".$_;
-          last DATA;
-        }
-      }
-    });
-
+      });
+    }
+    catch {
+      send_error("Something's wrong with the file you uploaded", 400);
+    };
+    push @warnings, "No rows uploaded!" if $linenumber == 1;
+    
     status 400 if scalar @errors;
     return to_json(
         {   errors      => \@errors,
