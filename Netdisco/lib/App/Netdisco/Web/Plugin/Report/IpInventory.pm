@@ -134,7 +134,12 @@ get '/ajax/content/report/ipinventory' => require_login sub {
         # check if subnet ip doesn't exist in DB
         
         $rs_union = $rs_union->search(
-          { "me.ip" => { "=" => \"n.ip"} },
+          { "-and" =>
+            [
+              { "me.ip" => { "=" => \"n.ip"} },
+              { "me.ip" => {'<<' => $subnet->cidr} }
+            ]
+          },
           { 
             columns => 'ip',
           });
