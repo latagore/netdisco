@@ -238,6 +238,7 @@ $(document).ready(function() {
     }
     ,minLength: 1
     ,appendTo: "#nq-search"
+    ,highlightClass: 'nd_suggest-match-highlight'
   }).data("ui-autocomplete");
   
   nq_autocomplete._create = function() {
@@ -252,8 +253,28 @@ $(document).ready(function() {
         li = that._renderItem( ul, item );
       });
     };
-  // activate tooltips
-  $("[rel=tooltip],.has-tooltip").tooltip({live: true});
+  nq_autocomplete._renderItem = function(ul, item){
+      var a = document.createElement('a'),
+          // regular expression for highlighting the term in the item
+          re = new RegExp( "(" + this.term + ")", "i" ),
+          cls = nq_autocomplete.options.highlightClass
+          template = "<span class='"+cls+"'>$1</span>";
+
+      var label = document.createElement('span');
+      label.innerHTML = item.label.replace(re, template);
+      a.appendChild(label);
+      
+      var li = document.createElement('li');
+      li.setAttribute('class', 'nd_suggest-item');
+      li.appendChild(a);
+      // apparently you need to store the item object in the li element
+      // even though it's not in the documentation..
+      li = $(li).data('ui-autocomplete-item', item);
+
+      // ul is jquery object, append elements differently
+      ul.append(li);
+      return ul;
+    };
 
   // bind submission to the navbar go icon
   $('#navsearchgo').click(function() {
