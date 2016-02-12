@@ -247,8 +247,16 @@ get '/ajax/content/search/ports' => require_login sub {
         join => "port_info"
       });
     }
-
-
+    # filter by port description
+    my $descr = param('descr');
+    if ($descr){
+      $set = $set->search(
+      {
+        # port description is name in the database
+        "me.name" =>  {-ilike => scalar sql_match($descr)}
+      });
+    }
+    
     # filter for port status if asked
     my %port_state = map {$_ => 1}
       (ref [] eq ref param('port_state') ? @{param('port_state')}

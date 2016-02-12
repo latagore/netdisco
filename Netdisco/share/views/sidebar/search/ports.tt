@@ -64,6 +64,13 @@
                 rel="tooltip" data-placement="left" data-offset="5" data-title="Filter by Port"/>
             </div>
             <div class="clearfix">
+              <i class="nd_field-clear-icon icon-trash icon-large"
+                 id="port_clear_btn" data-btn-for="descr"></i>
+              <input id="nd_descr-query" class="nd_side-input" placeholder="Description"
+                name="descr" value="[% params.descr | html_entity %]" type="text"
+                rel="tooltip" data-placement="left" data-offset="5" data-title="Filter by Description"/>
+            </div>
+            <div class="clearfix">
               <span data-toggle="collapse" data-target="#nd_legend">
                 <label class="nd_collapser">Legend
                 <i class="nd_arrow-up-down-right icon-chevron-up icon-large"></i>

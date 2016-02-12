@@ -184,6 +184,7 @@
                 Include Archived Nodes
               </label>
               <input id="port-input" class="search-query" type="text" name="port" title="Port" rel="tooltip" data-placement="left" placeholder="...and Port"></input>
+              <input id="descr-input" class="search-query" type="text" name="descr" title="Port Description" rel="tooltip" data-placement="left" placeholder="...and Port Description"></input>
               <button type="button" class="btn btn-inverse location-port-search-close-btn" data-placement="left"
                   title="Hide Additional Fields" rel="tooltip">
                 <i class="icon-remove"></i>

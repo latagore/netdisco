@@ -142,20 +142,6 @@ sub store_device {
   my $hostname = hostname_from_ip($device->ip);
   $device->set_column( dns => $hostname ) if $hostname;
 
-  # check if the device was reset and log it if it was
-  my $logstring = _check_device_reset($device, $snmp);
-  
-  # check if the device os version changed
-  $logstring .= _check_device_os_version($device, $snmp);
-
-  my $log;
-  
-  $log = schema('netdisco')->resultset('DeviceLog')->
-              new({ip => $device->ip,
-              dns => $device->dns,
-              log => $logstring}) if $logstring ne "";
-           
-  
   my @properties = qw/
     snmp_ver
     description uptime contact name location
@@ -183,50 +169,7 @@ sub store_device {
     $device->device_ips->populate($resolved_aliases);
     debug sprintf ' [%s] device - added %d new aliases',
       $device->ip, scalar @aliases;
-    $log->insert if $log;
   });
-}
-
-# compare with the existing entry in the database
-sub _check_device_reset {
-  my ($device, $snmp) = @_;
-  
-  return "" unless (defined $device->uptime); #don't log anything if this is a new device
-  return "" unless (defined $snmp->uptime); #don't log anything if snmp returns undef
-
-  my $olduptime = $device->uptime/100;
-  my $uptime = $snmp->uptime/100;
-
-  # if the previous uptime is greater than the current, log a reset
-  if ($olduptime > $uptime){
-    # uptime_age from DBIC is old since it is cached
-    # format our own uptime age to a human readable format
-    my $olduptimeage = sprintf("%d days %02d:%02d:%02d",
-                       int($olduptime/(24*60*60)), # days
-                       ($olduptime/(60*60))%24,    # hours
-                       ($olduptime/60)%60,         # minutes
-                       $olduptime%60);             # seconds
-    my $uptimeage = sprintf("%d days %02d:%02d:%02d",
-                       int($uptime/(24*60*60)), # days
-                       ($uptime/(60*60))%24,    # hours
-                       ($uptime/60)%60,         # minutes
-                       $uptime%60);             # seconds
-    return "device reset: uptime decreased from ".$olduptimeage
-                    ." to ". $uptimeage;
-  }
-
-  return ""
-}
-
-sub _check_device_os_version {
-  my ($device, $snmp) = @_;
-  my $oldosver = $device->os_ver ? $device->os_ver : "";
-  my $newosver = $snmp->os_ver ? $snmp->os_ver : "";
-  if ($oldosver ne $newosver){
-    return "os version changed from " . $oldosver
-           . " to " . $newosver;
-  }
-  return "";
 }
 
 =head2 store_interfaces( $device, $snmp )
@@ -473,6 +416,7 @@ sub store_vlans {
   my @devicevlans;
   foreach my $entry (keys %$v_name) {
       my $vlan = $v_index->{$entry};
+      next unless defined $vlan and $vlan;
       ++$v_seen{$vlan};
 
       push @devicevlans, {
@@ -497,6 +441,7 @@ sub store_vlans {
       my $type = $i_vlan_type->{$entry};
 
       foreach my $vlan (@{ $i_vlan_membership->{$entry} }) {
+          next unless defined $vlan and $vlan;
           next if ++$port_vseen{$vlan} > 1;
 
           my $native = ((defined $i_vlan->{$entry}) and ($vlan eq $i_vlan->{$entry})) ? "t" : "f";
@@ -693,12 +638,6 @@ sub store_modules {
           last_discover => \'now()',
       };
   }
-  my @oldmodules = $device->modules->all;
-  my $logstring = _check_modules_change(\@oldmodules, \@modules);
-  my $log = $device->logs->new({
-    dns => $device->dns,
-    username => "auto update",
-    log => $logstring}) if $logstring;
 
   schema('netdisco')->txn_do(sub {
     my $gone = $device->modules->delete;
@@ -707,123 +646,7 @@ sub store_modules {
     $device->modules->populate(\@modules);
     debug sprintf ' [%s] modules - added %d new chassis modules',
       $device->ip, scalar @modules;
-    $log->insert if $logstring;
   });
-}
-
-sub _check_modules_change {
-  my ($arg1, $arg2) = @_;
-  # create hash with single key combining description and name 
-  # to uniquely identify modules
-  my $sep = "~~"; #separates the description and name in the key
-  my %oldmodules;
-  foreach (@$arg1){
-      my $desc = $_->description ? $_->description : "";
-      my $name = $_->name ? $_->name : "";
-      $oldmodules{$desc.$sep.$name} = $_;
-  }
-  my %newmodules;
-  foreach (@$arg2){
-      # have to call desc and name differently than oldmodules
-      # because arg1 comes from DB and arg2 comes from SNMP
-      $newmodules{$_->{description}.$sep.$_->{name}} = $_;
-  }
-  my @logs;
-  
-  # check for changes in slots where modules are changed or removed
-  # process them in the order of the index
-  my @present; 
-  my @added;
-  my @removed;
-  foreach (
-      sort {$oldmodules{$a}->index <=> $oldmodules{$b}->index} 
-      keys %oldmodules){
-    push (@present, $_) if exists $newmodules{$_};
-    push (@removed, $_) unless exists $newmodules{$_};
-  }
-  foreach (sort 
-      {$newmodules{$a}->{index} <=> $newmodules{$b}->{index}} 
-      keys %newmodules){
-    push (@added, $_) unless exists $oldmodules{$_};
-  }
-  
-  my @properties = qw/
-      type name class hw_ver fw_ver sw_ver
-      model serial fru
-    /;
-    
-  foreach my $key(@added){
-    my $addedmodule = $newmodules{$key};
-    my $log = "Module ("
-           ."class="   . $addedmodule->{class}
-           .", name="  . $addedmodule->{name}
-           .", desc="  . $addedmodule->{description}
-           .") added: <ul>";
-    #log all the properties of the module
-    foreach my $property(@properties){
-      $log .= "<li>$property: " . $addedmodule->{$property} . "</li>"
-        if $addedmodule->{$property};
-    }
-    $log .= "</ul>";
-    push @logs, $log if $log;
-  }
-  
-  foreach my $key(@removed){
-    my $removedmodule = $oldmodules{$key};
-    my $log = "Module ("
-           ."class="   . $removedmodule->class
-           .", name="  . $removedmodule->name
-           .", desc="  . $removedmodule->description
-           .") added: <ul>";
-    #log all the properties of the module
-    foreach my $property(@properties){
-      $log .= "<li>$property: " . $removedmodule->$property . "</li>"
-        if $removedmodule->$property;
-    }
-    $log .= "</ul>";
-    push @logs, $log if $log;
-  }
-
-  foreach my $key(@present){
-    my $log = "";
-
-    my $oldmodule = $oldmodules{$key};
-    my $newmodule = $newmodules{$key}; 
-    
-    # check if any of the properties changed
-    foreach my $property(@properties){
-
-      # have to get $property differently because $oldmodule comes from
-      # DB while $newmodule comes from SNMP
-      
-      # need special processing because SNMP and DB represent boolean differently
-      if ($property eq "fru"){
-        my $oldmodulefru = $oldmodule->fru ? "true" : "false";
-        my $newmodulefru = ($newmodule->{fru} && ($newmodule->{fru} eq "true")) ? "true" : "false";
-        if ($oldmodulefru ne $newmodulefru){
-          $log .= "<li>$property: "
-            . $oldmodulefru . " => " . $newmodulefru
-            ."</li>";
-        }
-      } else {
-        my $oldprop = defined $oldmodule->$property ? $oldmodule->$property : "";
-        my $newprop = defined $newmodule->{$property} ? $newmodule->{$property} : "";
-        if ($oldprop ne $newprop){
-         $log .= "<li>$property: "
-           . $oldprop . " => " . $newprop
-           ."</li>";
-        }
-      }
-    }
-    $log = "Module ("
-           ."class=, ".$oldmodule->class
-           . defined $oldmodule->name ? ", name=".$oldmodule->name : ""
-           . defined $oldmodule->description ? ", desc=".$oldmodule->description : ""
-           .") changed: <ul>$log</ul>" if $log;
-    push @logs, $log if $log;
-  }
-  
-  return join("\n", @logs);     
 }
 
 =head2 store_neighbors( $device, $snmp )
