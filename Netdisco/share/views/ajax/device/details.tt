@@ -115,7 +115,7 @@
     <tr>
       <td>Last Discover</td>
       <td>
-        [% IF d.since_last_discover / 86400 > settings.age_limit_warning %]
+        [% IF d.since_last_discover and (d.since_last_discover / 86400 > settings.age_limit_warning) %]
           <strong class="text-error">[% d.last_discover_stamp | html_entity %]</strong>
         [% ELSE %]
           [% d.last_discover_stamp | html_entity %]
@@ -125,7 +125,7 @@
     <tr>
       <td>Last Arpnip</td>
       <td>
-        [% IF d.since_last_arpnip / 86400 > settings.age_limit_warning %]
+        [% IF d.since_last_arpnip and (d.since_last_arpnip / 86400 > settings.age_limit_warning) %]
           <strong class="text-error">[% d.last_arpnip_stamp | html_entity %]</strong>
         [% ELSE %]
           [% d.last_arpnip_stamp | html_entity %]
@@ -135,7 +135,7 @@
     <tr>
       <td>Last Macsuck</td>
       <td>
-        [% IF d.since_last_macsuck / 86400 > settings.age_limit_warning %]
+        [% IF d.since_last_macsuck and (d.since_last_macsuck / 86400 > settings.age_limit_warning) %]
           <strong class="text-error">[% d.last_macsuck_stamp | html_entity %]</strong>
         [% ELSE %]
           [% d.last_macsuck_stamp | html_entity %]
