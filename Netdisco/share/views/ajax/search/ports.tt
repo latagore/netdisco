@@ -3,8 +3,12 @@
   <thead>
     <tr>
       <th></th>
+      [% IF params.c_up %]
+      <th>Status</th>
+      [% END %]
       <th>Device</th>
       [% FOREACH item IN vars.port_columns %]
+      [% NEXT IF item.name == 'c_up' %]
       [% NEXT IF item.name == 'c_admin' %]
       [% NEXT IF item.name == 'c_nodes' AND params.c_nodes AND params.c_neighbors %]
         [% NEXT UNLESS params.${item.name} %]
