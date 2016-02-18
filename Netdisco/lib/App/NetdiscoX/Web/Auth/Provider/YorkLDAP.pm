@@ -131,7 +131,8 @@ sub get_user_roles {
         # match york ldap flags to roles
         push @$roles, "port_control" if $flaghash{'NETDISCO_PORTCONTROL'};
         push @$roles, "admin" if $flaghash{'NETDISCO_ADMIN'};
-        
+        push @$roles, "ldap"; #indicate password can't be changed from netdisco because
+                              # user is authenticated by remote ldap server
         
         # cache the results
         my %user_roles_cache = ();
