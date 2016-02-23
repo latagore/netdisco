@@ -129,9 +129,20 @@ if (window.History && window.History.enabled) {
     if (is_from_history_plugin == 0) {
       is_from_state_event = 1;
       var State = History.getState();
-      // History.log(State.data.name, State.title, State.url);
-      $('#'+ State.data.name + '_form').deserialize(State.data.fields);
-      $('#'+ State.data.name + '_link').click();
+
+      var form = $('#'+ State.data.name + '_form');
+      form.deserialize(State.data.fields);
+      form.find(".clearfix input, #ports_form .clearfix input")
+        .not('[type="checkbox"]')
+        .add("#device_form .clearfix select")
+        .each(function() {device_form_state($(this))});
+        
+      var tab_link = $('#'+ State.data.name + '_link');
+      if (tab_link.parent().hasClass('active')){
+        form.submit();
+      } else {
+        tab_link.click();
+      }
       is_from_state_event = 0;
     }
   });

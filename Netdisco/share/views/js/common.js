@@ -25,6 +25,15 @@
     }
     return pgtitle;
   }
+  
+  // flag to add to browser history if the search field values change
+  var sidebar_fields_changed = false;
+  function listen_for_search_field_change(tab) {
+    var form = '#' + tab + '_form';
+    $(form).on('change', 'input[type="text"]', function() {
+      sidebar_fields_changed = true;
+    });
+  }
 
   // update browser search history with the new query.
   // support history add (push) or replace via push parameter
@@ -72,10 +81,16 @@
     [% IF search %]
     // search tabs
     [% FOREACH tab IN settings._search_tabs %]
+    listen_for_search_field_change('[% tab.tag %]');
     copy_navbar_to_sidebar('[% tab.tag %]');
     $('[% "#${tab.tag}_form" %]').submit(function (event) {
       var pgtitle = update_page_title('[% tab.tag %]');
-      update_browser_history('[% tab.tag %]', pgtitle, '');
+      if (sidebar_fields_changed) {
+        update_browser_history('[% tab.tag %]', pgtitle, '1');
+        sidebar_fields_changed = false;
+      } else {
+        update_browser_history('[% tab.tag %]', pgtitle, '');
+      }
       update_csv_download_link('search', '[% tab.tag %]', '[% tab.provides_csv %]');
       do_search(event, '[% tab.tag %]');
 
