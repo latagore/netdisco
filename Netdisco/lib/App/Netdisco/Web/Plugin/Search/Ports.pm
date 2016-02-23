@@ -161,9 +161,7 @@ get '/ajax/content/search/ports' => require_login sub {
       my @macmatches;
       my @ipmatches;
       my @hostnamematches;
-      debug $macregex;
-      debug $ipregex;
-      debug $hostnameregex;
+      
       for my $match (@matches){
         if ($match =~ /^$macregex$/gx) {
           push @macmatches, $match; 
@@ -181,8 +179,6 @@ get '/ajax/content/search/ports' => require_login sub {
         my $mac = NetAddr::MAC->new($match);
         push @nodewhere, {"nodes.mac" => $mac->as_ieee};
       }
-      use Data::Dumper;
-      debug Dumper(\@ipmatches);
       for my $match (@ipmatches){
         my $ip = NetAddr::IP->new($match);
         push @nodeipwhere, {"ips.ip" => $ip->addr};
