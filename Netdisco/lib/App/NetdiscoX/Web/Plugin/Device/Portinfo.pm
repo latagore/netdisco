@@ -156,9 +156,18 @@ ajax '/ajax/portinfocontrol' => require_role port_control => sub {
 };
 
 get '/ajax/plugin/buildings' => require_login sub {
-  my @results = schema('netdisco')->resultset('Building')->
-    search(undef,
+  my @results = schema('netdisco')->resultset('Building')
+    ->search({},
       {
+        
+        join => qw/portinfos/,
+        '+select' => [ { count => 'port' }],
+        '+as' => [ qw /count/ ],
+        group_by => [qw/campus num/],
+        having => \'count(port) > 0'
+      })
+    ->search({},
+      {    
         prefetch => [qw/official_name short_name uit_name other_names/],
         order_by => "official_name.name"
       })->hri->all;
