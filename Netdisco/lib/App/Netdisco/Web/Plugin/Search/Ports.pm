@@ -6,7 +6,6 @@ use Dancer::Plugin::Auth::Extensible;
 
 use App::Netdisco::Web::Plugin;
 use App::Netdisco::Util::Web 'sql_match';
-use Data::Dumper;
 register_search_tab( { tag => 'ports', label => 'Port', provides_csv => 1 } );
 
 sub sql_match_leading_zeros {
@@ -116,40 +115,125 @@ get '/ajax/content/search/ports' => require_login sub {
     # refine by node if requested
     my $fnode = param('node');
     if ($fnode) {
-      my $match = '^'
-          . quotemeta($fnode)
-          . "(\\..+)*";
-      if (index($q, setting('domain_suffix')) == -1){
-        $match .= setting('domain_suffix')
-                           .'$';
-      } else {
-        $match .= '$';
-      }
+      # godly regex for matching MAC addresses of IEEE, Microsoft, Cisco and SUN formats.
+      my $hex = '[0-9a-fA-F]';
+      my $alnum = '[a-zA-Z0-9]';
+      my $seg4 = '(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])';# octet for ipv4
+      my $seg6 = "${hex}{1,4}"; #equivalent for ipv6
 
-      #define DBI where clauses
-      my $nodemac = NetAddr::MAC->new(mac => $fnode);
-      my $nodeip = NetAddr::IP->new($fnode);
-      my @where;
-      if (defined $nodemac and !$nodemac->errstr) {
-        @where = ('nodes.mac' => $nodemac->as_ieee);
-      } elsif (defined $nodeip and defined $nodeip->addr) {
-        @where = ('ips.ip' => $nodeip->addr);
-      } else {
-        @where = ('ips.dns' => { '~*' => $match });
+      my $macregex = "((?:(?:(?:${hex}{1,2}([-:]))(?:${hex}{1,2}\\g{-1}){4}${hex}{1,2}))
+      |(?:(?:(?:${hex}{4}(\\.))(?:${hex}{4}\\g{-1})${hex}{4})))";
+      my $ipv4regex = "(${seg4}\\.){3,3}${seg4}";
+      # even more godly regex for matching IPV4 and IPV6 addresses
+      my $ipregex = "
+      (
+      (${seg6}:){7,7}${seg6}|
+      (${seg6}:){1,7}:|
+      (${seg6}:){1,6}:${seg6}|
+      (${seg6}:){1,5}(:${seg6}){1,2}|
+      (${seg6}:){1,4}(:${seg6}){1,3}|
+      (${seg6}:){1,3}(:${seg6}){1,4}|
+      (${seg6}:){1,2}(:${seg6}){1,5}|
+      ${seg6}:((:${seg6}){1,6})|
+      :((:${seg6}){1,7}|:)|
+      fe08:(:${seg6}){2,2}%${alnum}{1,}|
+      ::(ffff(:0{1,4}){0,1}:){0,1}$ipv4regex|
+      (${seg6}:){1,4}$ipv4regex:|
+      $ipv4regex
+      )";
+      my $hostnameregex = 
+      "((${alnum}|${alnum}[a-zA-Z0-9\\-]{0,61}${alnum})
+      (\\.(${alnum}|${alnum}[a-zA-Z0-9\\-]{0,61}${alnum}))*)";
+      
+      my $begin_regex = '(?<![a-zA-Z0-9:.\\-])';
+      my $end_regex='(?![a-zA-Z0-9:.\\-%])';
+      
+      # get a list of all valid entries and classify them after to preserve order
+      my @matches;
+      while ($fnode =~ /
+          ${begin_regex}
+          (${macregex}|${ipregex}|${hostnameregex})
+          ${end_regex}/gx)
+      {
+        push @matches, $1;
       }
       
+      my @macmatches;
+      my @ipmatches;
+      my @hostnamematches;
+      debug $macregex;
+      debug $ipregex;
+      debug $hostnameregex;
+      for my $match (@matches){
+        if ($match =~ /^$macregex$/gx) {
+          push @macmatches, $match; 
+        } elsif ($match =~ /^$ipregex$/gx) {
+          push @ipmatches, $match;
+        } elsif ($match =~ /^$hostnameregex$/gx){
+          push @hostnamematches, $match;
+        }
+      }
+      
+      
+      my @nodewhere;
+      my @nodeipwhere;
+      for my $match (@macmatches){
+        my $mac = NetAddr::MAC->new($match);
+        push @nodewhere, {"nodes.mac" => $mac->as_ieee};
+      }
+      use Data::Dumper;
+      debug Dumper(\@ipmatches);
+      for my $match (@ipmatches){
+        my $ip = NetAddr::IP->new($match);
+        push @nodeipwhere, {"ips.ip" => $ip->addr};
+      }
+      for my $match (@hostnamematches){
+        my $uc_match = uc $match; # upper case
+        push @nodeipwhere, 
+          \["upper(ips.dns) like ?", "${uc_match}%"];
+      }
+
+      my %where;
       my $search_archived = param('f_node_archived');
       if (defined $search_archived and $search_archived eq 'on'){
         params->{n_archived} = 'checked';
       } else {
         delete params->{n_archived};
-        push @where, 'nodes.active', 'true'; 
+          $where{'nodes.active'} = 'true'; 
       }
 
-      $set = $set->search({@where}, 
-        { 
-          join => { 'nodes' => 'ips' }
-        });
+      my $node_rs = schema('netdisco')->resultset('Node')->search(
+          {
+            -and => [
+                {"-or" => \@nodewhere},
+                \%where
+              ]
+          },
+          {
+            columns => [qw/switch port/],
+            alias => "nodes"
+          }
+        );
+      my $node_ip_rs = schema('netdisco')->resultset('Node')->search(
+          {
+            -and => [
+                {"-or" => \@nodeipwhere},
+                \%where
+              ]
+          },
+          {
+            columns => [qw/switch port/],
+            alias => "nodes",
+            join => "ips"
+          }
+        );
+      
+      $set = $set->search(
+          {
+            "(me.ip, me.port)" => 
+                { "-in" => $node_rs->union([$node_ip_rs])->as_query }
+          }
+        );
       return unless $set->count;
     }
     
