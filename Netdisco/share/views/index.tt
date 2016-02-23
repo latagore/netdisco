@@ -53,10 +53,18 @@
             <a href="http://netinfo.yorku.ca/">Old Netinfo</a>
           </p>
           <span id="nd_changelog-toggle" data-toggle="collapse" data-target="#changelog">
-            <a>Changelog (Last Updated: February 11, 2016)
+            <a>Changelog (Last Updated: February 23, 2016)
             <i class="icon-chevron-up nd_chevron"></i></a>
           </span>
           <div id="changelog" class="collapse">
+          <div class="log">
+            <h4>February 23, 2016</h4>
+            <ul>
+              <li>Real back button on advanced port search!</li>
+              <li>Allow searching for port description (often, this is the port configuration template).</li>
+              <li>Fix bug where device and status columns didn't line up with their content when performing Advanced Port Search.</li>
+            </ul>
+          </div>
           <div class="log">
             <h4>February 11, 2016</h4>
             <ul>
