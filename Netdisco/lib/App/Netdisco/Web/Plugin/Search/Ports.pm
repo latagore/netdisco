@@ -202,6 +202,7 @@ get '/ajax/content/search/ports' => require_login sub {
           $where{'nodes.active'} = 'true'; 
       }
 
+
       my $node_rs = schema('netdisco')->resultset('Node')->search(
           {
             -and => [
@@ -228,10 +229,18 @@ get '/ajax/content/search/ports' => require_login sub {
           }
         );
       
+      my $node_port_rs;
+      if (scalar @nodewhere and scalar @nodeipwhere){
+        $node_port_rs = $node_rs->union($node_ip_rs);
+      } elsif (scalar @nodewhere) {
+        $node_port_rs = $node_rs;
+      } elsif (scalar @nodeipwhere) {
+        $node_port_rs = $node_ip_rs;
+      }
       $set = $set->search(
           {
             "(me.ip, me.port)" => 
-                { "-in" => $node_rs->union([$node_ip_rs])->as_query }
+                { "-in" => $node_port_rs->as_query }
           }
         );
       return unless $set->count;
