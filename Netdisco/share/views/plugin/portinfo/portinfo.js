@@ -371,9 +371,9 @@ function setBuildingLabel(b){
 }
 function buildingAutocompleteSource (request, response) {
     // use regexs for fast testing
-    var br = new RegExp('^' + request.term, 'i');  // matches strings that begin with term
-    var wr = new RegExp('\\b' + request.term, 'i');  // matches strings that have a word beginning term
-    var r  = new RegExp(request.term, 'i'); // matches anywhere in the string
+    var br = new RegExp('^(' + request.term + ')', 'i');  // matches strings that begin with term
+    var wr = new RegExp('\\b(' + request.term + ')', 'i');  // matches strings that have a word beginning term
+    var r  = new RegExp('(' + request.term + ')', 'i'); // matches anywhere in the string
     
     var suggests = []; // suggestions
     var possible = buildings.slice(); // remaining possibilities for building matches 
@@ -391,6 +391,7 @@ function buildingAutocompleteSource (request, response) {
       for (var j = 0; j < rl; j++){
         var regex = regexOrder[j];
         for (var k = 0; k < pl; k++){
+          regex.lastIndex = 0;
           var b = possible[k];
           var suggest = {
             label: b.label,
@@ -428,6 +429,7 @@ function buildingAutocompleteSource (request, response) {
           }
           // if the nameType matched a building, remove it from possibilities
           if (suggest.matchingNameType){
+            suggest.regexMatchType = regex;
             possible.splice(k, 1);
             k = k - 1;
             pl = pl - 1;
@@ -573,10 +575,10 @@ $.widget( "custom.buildingAutocomplete", $.ui.autocomplete, {
   _renderItem: function(ul, item){
     var a = document.createElement('a'),
         // regular expression for highlighting the term in the item
-        re = new RegExp( "(" + this.term + ")", "i" ),
-        cls = this.options.highlightClass
+        
+        re = item.regexMatchType,
+        cls = this.options.highlightClass,
         template = "<span class='"+cls+"'>$1</span>";
-
     // show label
     if (item.matchingNameType === item.labelType){
       var label = document.createElement('span');
@@ -618,14 +620,15 @@ $.widget( "custom.buildingAutocomplete", $.ui.autocomplete, {
                         + item.matchingName.replace(re, template);
       a.appendChild(hint);
     }
+    
 
     var li = document.createElement('li');
     li.setAttribute('class', 'nd_suggest-item');
     li.appendChild(a);
     // apparently you need to store the item object in the li element
     // even though it's not in the documentation..
-    li = $(li).data('ui-autocomplete-item', item);
-
+    $(li).data('ui-autocomplete-item', item);
+    
     // ul is jquery object, append elements differently
     ul.append(li);
     return ul;
