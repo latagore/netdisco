@@ -286,7 +286,10 @@ $(document).ready(function() {
       ul.append(li);
       return ul;
     };
-
+  
+  // activate tooltips
+  $("[rel=tooltip],.has-tooltip").tooltip({live: true});
+  
   // bind submission to the navbar go icon
   $('#navsearchgo').click(function() {
     $('#navsearchgo').parents('form').submit();
