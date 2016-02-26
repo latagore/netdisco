@@ -90,7 +90,7 @@ function addPortInfoInteractiveListeners (){
     function(event) {
       var children = $(this).children('.york-port-info[contenteditable]');
       if (children.length) {
-        children.focus();
+        children.get(0).focus();
       }
     }
   );

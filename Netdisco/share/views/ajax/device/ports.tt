@@ -455,7 +455,7 @@ $(document).ready(function() {
       var isEnter = event.which == 13;
       if (isEnter && $(cell.node()).hasClass('nd_portinfo-data-dirty')){
           changeportinfo(div.get(0));
-      } else if (div.not(':focus').length && !isShift){
+      } else if (div.get(0) !== document.activeElement && !isShift){
         div.focus();
         div.text('');
         table.keys.enable( 'navigation-only' );
