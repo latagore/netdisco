@@ -429,20 +429,35 @@
 
 <script>
 $(document).ready(function() {
+    [% fixedColumns = 2 #at least  status icon and device columns %]
+    [% IF params.c_up %]   [% fixedColumns = fixedColumns + 1 %] [% END %]
+    [% IF params.c_port or params.c_name %] [% fixedColumns = fixedColumns + 1 %] [% END %]
+    var fixedColumns = [% fixedColumns %]; // calculated server side
+    [% IF params.c_port or params.c_name %]
+    var order = [[fixedColumns - 2, 'asc' ], [ fixedColumns - 1, 'asc' ]]; //order by device and port name
+    [% ELSE %]
+    var order = [[fixedColumns - 2, 'asc' ]]; // order by device
+    [% END %]
     var table = $('#dp-data-table').DataTable({
         "columnDefs": [
             { "sortable": false, "targets": 0 },
             { "searchable": false, "targets": 0 },
             { "type": 'portsort', "targets": [ 'portsort' ] }
         ],
-        [% IF params.c_up %]
-        "order": [[ 2, 'asc' ]],
-        [% ELSE %]
-        "order": [[ 1, 'asc' ]],
-        [% END %]
+        // sort by device and whatever port name is available (ID, name, description)
+        "order": order,
+        "fixedColumns": {
+          leftColumns: fixedColumns
+        },
         deferRender: true,
 [% INCLUDE 'ajax/datatabledefaults.tt' -%]
+        ,
+        colReorder: {
+          realtime: false,
+          fixedColumnsLeft: fixedColumns
+        }
     } );
+    table.draw(); // work around for bad appearance of fixed columns
     
     // Keyboard support
     // crap that needs to be added in the ajax return

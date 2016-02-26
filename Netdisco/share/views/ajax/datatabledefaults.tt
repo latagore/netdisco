@@ -28,3 +28,6 @@
     },"scrollX": true
     ,"scrollY": "800px"
     ,"keys": true
+    ,colReorder: {
+      realtime: false
+    }
