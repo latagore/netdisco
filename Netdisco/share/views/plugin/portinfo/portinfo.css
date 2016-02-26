@@ -71,13 +71,6 @@
   margin-right: 10px;
 }
 
-/* allow tooltips to work */
-#dp-data-table_wrapper .dataTables_scrollBody,
-#dp-data-table_wrapper .dataTables_scrollBody table
-{
-  position: static !important;
-}
-
 /* Find Anything hint */
 .device-suggestion {
   padding-left: 10px;

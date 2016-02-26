@@ -22,17 +22,17 @@
     <tr>
       <td class="nd_center-cell nd_devport-icon nd_nowrap">
         [% IF row.up_admin != 'up' %]
-        <i class="icon-remove" title="Shutdown" rel="tooltip" data-animation=""></i>
+        <i class="icon-remove" data-container="body" data-title="Shutdown" rel="tooltip" data-animation=""></i>
         [% ELSIF row.up == 'up' AND row.stp == 'blocking' AND row.search_related_rs('all_port_vlans').count < 2 %]
-        <i class="icon-fullscreen text-info" title="STP Blocking" rel="tooltip" data-animation=""></i>
+        <i class="icon-fullscreen text-info" data-container="body" data-title="STP Blocking" rel="tooltip" data-animation=""></i>
         [% ELSIF row.up_admin == 'up' AND (row.up != 'up' AND row.up != 'dormant') %]
-        <i class="icon-arrow-down text-error" title="Not Connected" rel="tooltip" data-animation=""></i>
+        <i class="icon-arrow-down text-error" data-container="body" data-title="Not Connected" rel="tooltip" data-animation=""></i>
         [% ELSE %]
-        <i class="icon-angle-up text-success" title="Connected"  rel="tooltip" data-animation=""></i>
+        <i class="icon-angle-up text-success" data-container="body" data-title="Connected"  rel="tooltip" data-animation=""></i>
         [% END %]
 
         [% IF row.has_column_loaded('is_free') AND row.is_free %]
-        <i class="icon-undo text-success" title="Free Port" rel="tooltip" data-animation=""></i>
+        <i class="icon-undo text-success" data-container="body" data-title="Free Port" rel="tooltip" data-animation=""></i>
         [% END %]
       </td>
 
@@ -60,45 +60,45 @@
           href="[% uri_for('/report/portlog') %]?q=[% device.ip | uri %]&f=[% row.port | uri %]">
           <i class="icon-file-text-alt"
             rel="tooltip" data-placement="top" data-offset="3"
-            data-animation="" data-title="View Port Log"></i>
+            data-animation="" data-container="body" data-title="View Port Log"></i>
         </a>
       [% IF user_can_port_control AND params.c_admin %]
       [% IF row.up_admin == 'up' %]
         <span class="nd_hand-icon">
           <i class="icon-bullseye" data-action="bounce"
             rel="tooltip" data-placement="top" data-offset="3"
-            data-animation="" data-title="Bounce Port"></i>
+            data-animation="" data-container="body" data-title="Bounce Port"></i>
           <i class="icon-hand-down"
             rel="tooltip" data-placement="top" data-offset="3"
-            data-animation="" data-title="Disable Port"></i>
+            data-animation="" data-container="body" data-title="Disable Port"></i>
         </span>
       [% ELSE %]
         <span class="nd_hand-icon">
           <i class="icon-bullseye" data-action="bounce" style="display: none"
             rel="tooltip" data-placement="top" data-offset="3"
-            data-animation="" data-title="Bounce Port"></i>
+            data-animation="" data-container="body" data-title="Bounce Port"></i>
           <i class="icon-hand-up"
             rel="tooltip" data-placement="top" data-offset="3"
-            data-animation="" data-title="Enable Port"></i>
+            data-animation="" data-container="body" data-title="Enable Port"></i>
         </span>
       [% END %]
       [% END %]
         [% IF row.slave_of %]
-           <small><i class="icon-user muted" title="Aggregrate Link Slave" rel="tooltip" data-animation=""></i></small>
+           <small><i class="icon-user muted" data-container="body" data-title="Aggregrate Link Slave" rel="tooltip" data-animation=""></i></small>
         [% END %]
         [% IF row.is_master %]
-          <small><i class="icon-group muted" title="Aggregate Link Master" rel="tooltip" data-animation=""></i></small>
+          <small><i class="icon-group muted" data-container="body" data-title="Aggregate Link Master" rel="tooltip" data-animation=""></i></small>
           <a class="nd_this-port-only nd_port-only-first">[% row.port | html_entity %]</a>
         [% ELSE %]
           <span class="nd_this-port-only nd_port-only-first">[% row.port | html_entity %]</span>
         [% END %]
         [% IF row.slave_of %]<br/>
           [% IF row.get_column('agg_master_up_admin') != 'up' %]
-            <small><i class="icon-group muted" title="Aggregate Link Master, Admin Down" rel="tooltip" data-animation=""></i></small>
+            <small><i class="icon-group muted" data-container="body" data-title="Aggregate Link Master, Admin Down" rel="tooltip" data-animation=""></i></small>
           [% ELSIF row.get_column('agg_master_up') == 'up' %]
-            <small><i class="icon-group text-success" title="Aggregate Link Master, Admin Up, Link Up" rel="tooltip" data-animation="" ></i></small>
+            <small><i class="icon-group text-success" data-container="body" data-title="Aggregate Link Master, Admin Up, Link Up" rel="tooltip" data-animation="" ></i></small>
           [% ELSE %]
-            <small><i class="icon-group text-error" title="Agggregate Link Master: Admin Up, Link Down" rel="tooltip" data-animation=""></i></small>
+            <small><i class="icon-group text-error" data-container="body" data-title="Agggregate Link Master: Admin Up, Link Down" rel="tooltip" data-animation=""></i></small>
           [% END %]
           <a class="nd_this-port-only" href="[% uri_for('/device',
               self_options) %]&q=[% params.q | uri %]&f=[% row.slave_of | uri %]&prefer=port">
@@ -218,7 +218,7 @@
 
                 <i class="icon-off nd_power-icon nd_power-on"
                   rel="tooltip" data-placement="top" data-offset="3"
-                  data-animation="" data-title="Disable Power"></i>
+                  data-animation="" data-container="body" data-title="Disable Power"></i>
             [% ELSE %]
               <td nowrap>
                 <i class="icon-off nd_power-on"></i>
@@ -238,7 +238,7 @@
 
                 <i class="icon-off nd_power-icon"
                   rel="tooltip" data-placement="top" data-offset="3"
-                  data-animation="" data-title="Enable Power"></i>
+                  data-animation="" data-container="body" data-title="Enable Power"></i>
             [% ELSE %]
               <td>
                 <i class="icon-off"></i>
@@ -362,7 +362,7 @@
           [% END %]
           [% IF params.n_netbios %]
             [% FOREACH nbt IN node.netbios %]
-            <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\<a href="[% uri_for('/report/netbios') %]?domain=[% nbt.domain | uri %]" title="Nodes in this Domain">[% nbt.domain | html_entity %]</a>\<a href="[% search_node %]&q=[% nbt.nbname | uri %]">[% nbt.nbname | html_entity %]</a>
+            <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\<a href="[% uri_for('/report/netbios') %]?domain=[% nbt.domain | uri %]" data-container="body" data-title="Nodes in this Domain">[% nbt.domain | html_entity %]</a>\<a href="[% search_node %]&q=[% nbt.nbname | uri %]">[% nbt.nbname | html_entity %]</a>
             <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% nbt.nbuser || '[No User]' | html_entity %]@<a href="[% search_node %]&q=[% nbt.ip | uri %]">[% nbt.ip | html_entity %]</a>
             [% END %]
           [% END %]
