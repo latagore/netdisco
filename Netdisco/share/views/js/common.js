@@ -45,15 +45,19 @@
     if (window.History && window.History.enabled) {
       is_from_history_plugin = 1;
 
-      if (push.length) {
+      if (path === "report") {
         var target = uri_base + '/' + path + '/' + tab + query;
         if (location.pathname == target) { return };
+      } else {
+        var target = uri_base + '/' + path + query;
+      }
+      
+      if (push.length) {
         window.History.pushState(
           {name: tab, fields: $(form).serializeArray()}, pgtitle, target
         );
       }
       else {
-        var target = uri_base + '/' + path + query;
         window.History.replaceState(
           {name: tab, fields: $(form).serializeArray()}, pgtitle, target
         );
