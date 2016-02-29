@@ -58,6 +58,16 @@
           </span>
           <div id="changelog" class="collapse">
           <div class="log">
+            <h4>February 29, 2016</h4>
+            <ul>
+              <li>Added nice things to ports tables! You can reorder columns and always see the port name now.</li>
+              <li>Fixed broken tooltips on Advanced Port Search.</li>
+              <li>Deleting devices doesn't take forever now.</li>
+              <li>Fix bug where refreshing search pages gives error</li>
+              <li>Fix bug where typing in a port cell deletes cell content.</li>
+            </ul>
+          </div>
+          <div class="log">
             <h4>February 23, 2016</h4>
             <ul>
               <li>Real back button on advanced port search!</li>
