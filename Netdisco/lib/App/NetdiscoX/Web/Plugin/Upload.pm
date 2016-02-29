@@ -140,6 +140,8 @@ post '/ajax/upload/ports' => require_role 'admin' => sub {
             }
             
           }
+          $result->last_modified(\"now()");
+          $result->last_modified_by(session('logged_in_user'));
           try {
             $result->update_or_insert;
           } catch {
@@ -150,7 +152,7 @@ post '/ajax/upload/ports' => require_role 'admin' => sub {
       });
     }
     catch {
-      send_error("Something's wrong with the file you uploaded", 400);
+      push @errors, "Something's wrong with the file you uploaded";
     };
     push @warnings, "No rows uploaded!" if $linenumber == 1;
     
