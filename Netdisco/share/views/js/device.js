@@ -77,12 +77,18 @@
       port = $.trim(port);
       portfilter.val(port);
       $('.nd_field-clear-icon').show();
+      
+      // disable partial match and invert
+      var partial_checkbox = $('.nd_port-partial-label input').prop('checked', false);
+      var invert_checkbox = $('.nd_port-invert-label input').prop('checked', false);
 
       // make sure we're preferring a port filter
       $('#nd_ports-form-prefer-field').attr('value', 'port');
 
       $('#ports_form').trigger('submit');
       device_form_state(portfilter); // will hide copy icons
+      device_form_state(partial_checkbox); // will hide green background
+      device_form_state(invert_checkbox); // will hide green background
     });
 
     // VLANs column list collapser trigger
