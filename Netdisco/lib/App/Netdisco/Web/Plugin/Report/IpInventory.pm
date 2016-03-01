@@ -61,11 +61,14 @@ get '/ajax/content/report/ipinventory' => require_login sub {
 
     my $rs2 = schema('netdisco')->resultset('NodeIp')->search(
         undef,
-        {   columns   => [qw( ip mac time_first time_last dns active)],
-            '+select' => [ \'true AS node',
+        {   columns   => [qw( ip mac time_first time_last)],
+            '+select' => [ 
+                           \'gethostbyaddr(ip) as dns',
+                           'active',
+                           \'true AS node',
                            \qq/replace( date_trunc( 'minute', age( now(), time_last ) ) ::text, 'mon', 'month') AS age/
                          ],
-            '+as'     => [ 'node', 'age' ],
+            '+as'     => [ 'dns', 'active', 'node', 'age' ],
         }
     )->hri;
 
