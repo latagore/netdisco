@@ -58,6 +58,16 @@
           </span>
           <div id="changelog" class="collapse">
           <div class="log">
+            <h4>March 1, 2016</h4>
+            <ul>
+              <li>Allow building search to search on any of the historical names for buildings.</li>
+              <li>Fixed CSV Upload where last modified and last modified by are missing.</li>
+              <li>Fix field that was too wide on device ports page.</li>
+              <li>Enable partial match on Device Port by default.</li>
+              <li>Decrease auto-suggestion size.</li>
+            </ul>
+          </div>
+          <div class="log">
             <h4>February 29, 2016</h4>
             <ul>
               <li>Added nice things to ports tables! You can reorder columns and always see the port name now.</li>
