@@ -131,7 +131,9 @@ get '/ajax/content/report/ipinventory' => require_login sub {
               from => { me => $rs_sub }, 
             }
         );
-    } else {
+    }
+    
+    if ( $used eq "unused" or $used eq "never") {
         $subnet = NetAddr::IP::Lite->new('0.0.0.0/32') if ($subnet->bits ne 32);
 
         # check if subnet ip doesn't exist in DB
@@ -147,7 +149,7 @@ get '/ajax/content/report/ipinventory' => require_login sub {
             columns => 'ip',
           });
           
-        $rs = schema('netdisco')->resultset('Virtual::CidrIps')->search(
+        $rs_union = schema('netdisco')->resultset('Virtual::CidrIps')->search(
             { -and =>
               [
                 { ip => { '<<' => $subnet->cidr }},
@@ -156,16 +158,24 @@ get '/ajax/content/report/ipinventory' => require_login sub {
             },
             {   bind => [ $subnet->cidr ],
                 columns   => [qw( ip mac time_first time_last dns active )],
-                '+select' => [ \'false AS node',
-                               \qq/replace( date_trunc( 'minute', age( now(), time_last ) ) ::text, 'mon', 'month') AS age/,
+                '+select' => [ 
                                \'NULL as switch',
-                               \'NULL as switchdns',
-                               \'NULL as port'
+                               \'NULL as switchdns', 
+                               \'NULL as port',
+                               \'false AS node',
+                               \qq/replace( date_trunc( 'minute', age( now(), time_last ) ) ::text, 'mon', 'month') AS age/
+                               
                              ],
-                '+as'     => [ 'node', 'age', 'switch', 'switchdns', 'port' ],
+                '+as'     => [ 'switch', 'switchdns', 'port', 'node', 'age' ],
                 alias => "n"
             }
         )->hri;
+        
+        if ($used eq "unused"){
+          $rs = $rs_union->union([$rs]);
+        } else {
+          $rs = $rs_union->hri;
+        }
 
     }
 
