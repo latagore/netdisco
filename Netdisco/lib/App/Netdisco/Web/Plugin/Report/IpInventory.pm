@@ -157,8 +157,10 @@ get '/ajax/content/report/ipinventory' => require_login sub {
               ]
             },
             {   bind => [ $subnet->cidr ],
-                columns   => [qw( ip mac time_first time_last dns active )],
+                columns   => [qw( ip mac time_first time_last )],
                 '+select' => [ 
+                               \'gethostbyaddr(ip) as dns',
+                               'active',
                                \'NULL as switch',
                                \'NULL as switchdns', 
                                \'NULL as port',
@@ -166,7 +168,7 @@ get '/ajax/content/report/ipinventory' => require_login sub {
                                \qq/replace( date_trunc( 'minute', age( now(), time_last ) ) ::text, 'mon', 'month') AS age/
                                
                              ],
-                '+as'     => [ 'switch', 'switchdns', 'port', 'node', 'age' ],
+                '+as'     => [ 'dns', 'active', 'switch', 'switchdns', 'port', 'node', 'age' ],
                 alias => "n"
             }
         )->hri;
@@ -174,19 +176,21 @@ get '/ajax/content/report/ipinventory' => require_login sub {
         if ($used eq "unused"){
           $rs = $rs_union->union([$rs]);
         } else {
-          $rs = $rs_union->hri;
+          $rs = $rs_union;
         }
-
+        debug scalar $rs->all;
     }
 
-    if ($registered eq "registered") {      
+    if ($registered eq "registered") {
+      my $alias = $rs->current_source_alias;
       $rs = $rs->search(
-        { dns => { '!=' => undef } }
+        \'gethostbyaddr(ip) IS NOT NULL'
       );
 
     } elsif ($registered eq "unregistered") {
+       my $alias = $rs->current_source_alias;
       $rs = $rs->search(
-        {dns => undef}
+        \'gethostbyaddr(ip) IS NULL'
       );
     }
 
