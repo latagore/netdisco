@@ -1,0 +1,417 @@
+<table id="dp-data-table" class="table table-striped table-bordered" width="100%" cellspacing="0">
+  <thead>
+    <tr>
+      <th></th>
+      [% IF params.c_up %]
+      <th>Status</th>
+      [% END %]
+      <th>Device</th>
+      [% FOREACH item IN vars.port_columns %]
+      [% NEXT IF item.name == 'c_up' %]
+      [% NEXT IF item.name == 'c_admin' %]
+      [% NEXT IF item.name == 'c_nodes' AND params.c_nodes AND params.c_neighbors %]
+        [% NEXT UNLESS params.${item.name} %]
+        [% SET th_class = '' %]
+        [% IF (item.name == 'c_port' OR item.name == 'c_descr' OR item.name == 'c_name') %]
+          [% th_class = ' class="portsort"' %]
+        [% END %]
+        <th[% th_class %]>
+          [% item.label | html_entity %]
+        </th>
+      [% END %]        
+    </tr>
+  </thead>
+  <script type="text/javascript">
+  //<![CDATA[
+  $(document).ready(function() {
+    function ucfirst (string) { // upper cases first letter
+      if (string != null && string.length){
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      } else {
+      }
+        return string;
+    }
+    function formatValue(string) {
+        if (string == null) { return "" };
+        return he.encode(string.toString());
+    }
+    
+    var table = $('#dp-data-table').DataTable({
+      "deferRender": true,
+      "data": [% results %],
+      "columns": [
+        { // status icon column
+          searchable: false,
+          sortable: false,
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.up_admin)
+              + " / "
+              + formatValue(row.up);
+              
+            if (type === 'display') {
+              if (row.up_admin !== 'up'){
+                cell_str = '<i class="icon-remove" data-container="body" data-title="Shutdown" rel="tooltip" data-animation=""></i>';
+              } else if (row.up === 'up' && row.stp == 'blocking' && row.vlan && row.vlan.length > 2) { // FIXME vlans
+                cell_str = '<i class="icon-fullscreen text-info" data-container="body" data-title="STP Blocking" rel="tooltip" data-animation=""></i>';
+              } else if (row.up_admin === 'up' && row.up != 'up' && row.up !== 'dormant') {
+                cell_str = '<i class="icon-arrow-down text-error" data-container="body" data-title="Not Connected" rel="tooltip" data-animation=""></i>';
+              } else {
+                cell_str = '<i class="icon-angle-up text-success" data-container="body" data-title="Connected"  rel="tooltip" data-animation=""></i>';
+              }
+
+              if (row.is_free) {
+                cell_str += '<i class="icon-undo text-success" data-container="body" data-title="Free Port" rel="tooltip" data-animation=""></i>';
+              }
+            }
+            return cell_str;
+          }
+        }
+        [% IF params.c_up %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.up_admin)
+              + " / "
+              + formatValue(row.up);
+            return cell_str;
+          }
+        }
+        [% END %]
+        ,{ 
+          data: null,
+          render : function(data, type, row, meta) {
+            var name; // name to be displayed in the table
+            if (row.device && row.device.dns) { 
+              name = row.device.dns.replace(/[% settings.domain_suffix %]$/, '');
+            } else {
+              name = row.ip;
+            }
+            
+            if (type === 'display') {
+              // render in createdCell function
+              return '';
+            }
+            return name;
+          },
+          createdCell: function (td, cellData, rowData, row, col) {
+            var name;
+            if (rowData.device && rowData.device.dns) { 
+              name = rowData.device.dns.replace(/[% settings.domain_suffix %]$/, '');
+            } else {
+              name = rowData.ip;
+            }
+            console.log(name);
+            var a = document.createElement('a');
+            a.appendChild(document.createTextNode(name));
+            a.href = '[% uri_for("/device") %]?q=' + rowData.ip;
+            td.appendChild(a);
+          }
+        }
+        [% IF params.c_port %]
+        ,{ // port id column
+          data: 'port',
+          type: 'portsort',
+          "render": function(data, type, row, meta) {
+            return formatValue(row.port);
+          },
+        }
+        [% END %]
+
+
+        [% FOREACH config IN settings._extra_device_port_cols %]
+        [% NEXT UNLESS config.position == 'left' AND params.${config.name} %]
+        [%   TRY %]
+        [%     INCLUDE "plugin/${config.name}/device_port_column-json.tt" %]
+        [%   CATCH %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            
+            return "MISSING";
+          }
+        }
+        [%   END %]
+        [% END %]
+
+
+        [% IF params.c_descr %]
+        ,{ // status text column
+          data: null,
+          type: 'portsort',
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.descr);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF params.c_type %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.type);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF params.c_duplex %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.duplex);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF params.c_name %]
+        ,{ // status text column
+          data: null,
+          type: 'portsort',
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.name);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF params.c_speed %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.speed);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF params.c_mac %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.mac);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF params.c_mtu %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.mtu);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF params.c_pvid %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            // FIXME 
+            var cell_str = formatValue(row.vlan);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF params.c_vmember %]
+        ,{ // status text column
+          data: 'all_port_vlans',
+          "render": function(data, type, row, meta) {
+            if (type === 'filter' && data) {
+              var array = [];
+              data.forEach(function(el,i){
+                 array[i]=el.vlan; 
+              });
+              return array.join(',');
+            }
+            return "";
+          },
+          createdCell: function (td, cellData, rowData, row, col) {
+            if (rowData.all_port_vlans != null){
+              var vlans = rowData.all_port_vlans;
+              if (vlans.length){
+                // the element where the VLANs should go
+                var target = td;
+                
+                // create a collapse element that hides the VLANs
+                if (vlans.length > 10){
+                  var count = document.createElement('div');
+                    count.className = 'nd_vlan-total';
+                    count.appendChild(document.createTextNode('(' + vlans.length + ')'));
+                    td.appendChild(count);
+                    
+                  var collapse = document.createElement('span');
+                    collapse.className = 'nd_linkcell nd_collapse-vlans';
+                    var collapseArrow = document.createElement('div');
+                      collapseArrow.className = 'nd_arrow-up-down-left icon-chevron-up icon-large';
+                      collapse.appendChild(collapseArrow);
+                    collapse.appendChild(document.createTextNode('Show VLANs'));
+                    td.appendChild(collapse);
+                  
+                  var collapseBody = document.createElement('div');
+                    collapseBody.className = 'nd_collapsing nd_collapse-pre-hidden';
+                    td.appendChild(collapseBody); 
+                  
+                  target = collapseBody;
+                }
+                
+                // list the vlans
+                vlans.forEach(function(el, i, array){
+                  var a = document.createElement('a');
+                  a.appendChild(document.createTextNode(el.vlan));
+                  
+                  if (i !== 0){ // append comma if this isn't the first element
+                    var comma = document.createTextNode(', ');
+                    target.appendChild(comma);
+                  }
+                  target.appendChild(a);
+                });
+              }
+            }
+          }
+        }
+        [% END %]
+        [% IF params.c_stp %]
+        ,{ // STP status column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.stp);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF params.c_power %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            // FIXME
+            var cell_str = "power";
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF params.c_ssid %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = (row.ssid != null) ? formatValue(row.ssid.ssid) : ""; 
+            return cell_str;
+          }
+        }
+        [% END %]
+        
+        [% FOREACH config IN settings._extra_device_port_cols %]
+        [% NEXT UNLESS config.position == 'mid' AND params.${config.name} %]
+        [%   TRY %]
+        [%     INCLUDE "plugin/${config.name}/device_port_column-json.tt" %]
+        [%   CATCH %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            
+            return "MISSING";
+          }
+        }
+        [%   END %]
+        [% END %]
+        
+        [% IF params.c_nodes or params.c_neighbors %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            // FIXME
+            /*var cell_str = '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+                        cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+                        cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+                        cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+                        cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
+            return cell_str;
+            */
+            return "";
+          }
+        }
+        [% END %]
+        [% IF params.c_comment %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.last_comment);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF params.c_lastchange %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.lastchange_stamp);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% FOREACH config IN settings._extra_device_port_cols %]
+        [% NEXT UNLESS config.position == 'right' AND params.${config.name} %]
+        [%   TRY %]
+        [%     INCLUDE "plugin/${config.name}/device_port_column-json.tt" %]
+        [%   CATCH %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            
+            return "MISSING";
+          }
+        }
+        [%   END %]
+        [% END %]
+      ],
+  [% INCLUDE 'ajax/datatabledefaults.tt' -%]
+    });
+  });
+  //]]>
+  </script>
+</table>
+
+

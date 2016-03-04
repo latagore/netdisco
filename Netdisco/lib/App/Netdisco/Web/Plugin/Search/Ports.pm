@@ -417,21 +417,43 @@ get '/ajax/content/search/ports' => require_login sub {
     # put in the York specific port information
     $set = $set->with_york_port_info;
 
+    # get the one-to-many information like VLANs and some nodes
+    my @extra_rs;
+    if (param('c_vmember')){
+      my $vlans = $set->search(undef, 
+        {
+          columns => ['me.ip', 'me.port'],
+          prefetch => 'all_port_vlans' 
+        });
+      push @extra_rs, $vlans;
+    }
+    
+    if (param('c_nodes')){
+      #my $nodes = $set->$nodes_name;
+      #push @extra_rs, $nodes;
+    }
+    
+    debug "### SORT";
+
     # sort ports (empty set would be a 'no records' msg)
-    my $results = [ sort { &App::Netdisco::Util::Web::sort_port($a->port, $b->port) } $set->all ];
-    return unless scalar @$results;
+    my @results = sort { &App::Netdisco::Util::Web::sort_port($a->{port}, $b->{port}) } $set->merge_rs(\@extra_rs);
+    #my @results = $set->hri->all;
+    return unless scalar @results;
+    debug (scalar @results);
+    debug "### DONE SORT, START JSON RENDER";
     
-    
+    my $json =  to_json(\@results);
+    debug length $json;
     if (request->is_ajax) {
-        template 'ajax/search/ports.tt', {
-          results => $results,
+        template 'ajax/search/ports-json.tt', {
+          results => $json,
           nodes_name => $nodes_name
         }, { layout => undef };
     }
     else {
         header( 'Content-Type' => 'text/comma-separated-values' );
         template 'ajax/search/ports_csv.tt', {
-          results => $results,
+          results => @results,
           nodes_name => $nodes_name
         }, { layout => undef };
     }

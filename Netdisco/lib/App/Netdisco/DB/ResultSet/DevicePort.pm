@@ -144,6 +144,78 @@ sub with_vlan_count {
       });
 }
 
+=head2 merge_rs
+
+This is a utility which merges the information from other device
+port result sets. For example, $rs->merge_rs($ports_rs->all_port_vlans)
+adds the all_port_vlans information to $rs.
+
+=over 4
+
+=item TODO
+
+=back
+
+=cut
+
+sub merge_rs {
+  my ($rs, $others) = @_;
+  
+  die 'undefined $others result set' 
+    unless defined $others;
+  
+  if (!ref($others) eq 'array'){
+    $others = [$others];
+  }
+  
+  my @hri = $rs->hri->all;
+  
+    use Data::Dumper;
+  
+  
+  # get the information from other result sets and
+  # store them in hashrefs for quick lookup;
+  # this way, we only have to iterate through each result
+  # set at most a constant number of times.
+  my @other_hrs;
+  for my $other (@$others) {
+    my @other_hri = $other->hri->all;
+    
+    my %other_hr;
+    for my $row (@other_hri){
+      my $ip = $row->{ip};
+      my $port = $row->{port};
+      die 'no ip column in $other result set' 
+        unless defined $ip;
+      die 'no port column in $other result set'
+        unless defined $port;
+      $other_hr{$ip}{$port} = $row;
+    }
+    push @other_hrs, \%other_hr;
+  }
+  
+  # iterate through all the entries in $rs
+  for my $row (@hri){
+    my $ip = $row->{ip};
+    my $port = $row->{port};
+    
+    # add additional information other result sets
+    for my $other_hr (@other_hrs){
+      if (exists $other_hr->{$ip}{$port}){
+        my $entry = $other_hr->{$ip}{$port};
+        # go through each piece of information that the row 
+        # has that isn't in the original set and add it
+        for my $key (keys $entry){ 
+          unless (exists $row->{$key}){
+            $row->{$key} = $entry->{$key};
+          }
+        }
+      }
+    }
+  }
+  return @hri;
+}
+
 =head2 with_york_port_info
 
 This is a modifier for any C<search()> which adds the York port info that

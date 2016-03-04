@@ -1,0 +1,28 @@
+        ,{ 
+          data: "port_info.room",
+          render : function(data, type, row, meta) {
+            if (type === 'display') {
+              // render in createdCell function
+              return '';
+            }
+            return formatValue(data);
+          },
+          createdCell: function (td, cellData, rowData, row, col) {
+            var t = document.createTextNode((cellData != null) ? cellData : '');
+            [% IF user_can_port_control AND params.c_admin %]
+            // create content editable element
+            var div = document.createElement('div'); 
+              div.className = "york-port-info";
+              div.contentEditable = "true";
+              var ds = div.dataset;
+              ds.column = "room";
+              ds.forDevice = row.ip;
+              ds.forPort = row.port;
+            
+            div.appendChild(t);
+            td.appendChild(div);
+            [% ELSE %]
+            td.appendChild(t);
+            [% END %]
+          }
+        }
