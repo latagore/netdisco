@@ -298,12 +298,31 @@
         }
         [% END %]
         [% IF item.name == 'c_power' %]
-        ,{ // status text column
-          data: null,
+        ,{ // power column
+          data: 'power',
           "render": function(data, type, row, meta) {
-            // FIXME
-            var cell_str = "power";
-            return cell_str;
+            return "";
+          },
+          createdCell: function (td, cellData, rowData, row, col) {
+            td.className += ' nd_nowrap';
+            if (cellData != null){
+              var powerIcon = document.createElement('i');
+                powerIcon.className = 'icon-off';
+                if (cellData.admin){
+                  powerIcon.className += ' nd_power-on';
+                } 
+                td.appendChild(powerIcon);
+
+              var powerText;
+                if (cellData.power > 0){
+                  powerText = document.createTextNode(' ' + cellData.power + ' mW');
+                } else {
+                  powerText = document.createTextNode(' (' + cellData.status + ')');
+                }
+                var span = document.createElement('span');
+                span.appendChild(powerText);
+                td.appendChild(span);
+            }
           }
         }
         [% END %]
