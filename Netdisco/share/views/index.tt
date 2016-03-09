@@ -58,6 +58,14 @@
           </span>
           <div id="changelog" class="collapse">
           <div class="log">
+            <h4>March 9, 2016</h4>
+            <ul>
+              <li>Find Anything only searches for VLAN if it's not 12 characters long.</li>
+              <li>Add Node Location report. Provide a file with a list of MAC/IP addresses/host names 
+              and the report provides the last physical location, switch port and time it was last active.</li>
+            </ul>
+          </div>
+          <div class="log">
             <h4>March 1, 2016</h4>
             <ul>
               <li>Allow building search to search on any of the historical names for buildings.</li>

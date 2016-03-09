@@ -75,13 +75,13 @@ get '/search' => require_login sub {
         }
 
         # pick most likely tab for initial results
-        if ($q =~ m/^\d+$/) {
+        my $mac = NetAddr::MAC->new($q);
+        if ($q =~ m/^\d+$/ and $NetAddr::MAC::errstr) {
             params->{'tab'} = 'vlan';
         }
         else {
             my $nd = $s->resultset('Device')->search_fuzzy($q);
             my ($likeval, $likeclause) = sql_match($q);
-            my $mac = NetAddr::MAC->new($q);
 
             if ($nd and $nd->count) {
                 if ($nd->count == 1) {

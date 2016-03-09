@@ -1,0 +1,13 @@
+
+
+            Upload List of Nodes
+            <input name="file" type="file"  required="true"  accept=".txt,.csv,text/*" />
+            
+            
+            <label for="show_archived">
+              <input id="show_archived" name="n_archived" type="checkbox">
+              Show Archived Nodes 
+            </input></label>
+            
+            <button id="nodelocation_submit" type="submit" class="btn btn-info">
+            <i class="icon-search icon-large pull-left nd_navbar-icon"></i> Search</button>

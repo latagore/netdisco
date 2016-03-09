@@ -35,7 +35,7 @@ function do_search (event, tab) {
   if (search_xhr) {
     search_xhr.abort();
   }
-
+  
   // submit the query and put results into the tab pane
   search_xhr = $.ajax( uri_base + '/ajax/content/' + path + '/' + tab + '?' + query,
     {
