@@ -89,37 +89,26 @@
           }
         }
         [% END %]
-        ,{ 
+        ,{ // device column
           data: null,
           [%# IF params.c_port %]
           orderData: [ [% colIndex.device %], [% colIndex.c_port %] ],
           [%# END %]
-          render : function(data, type, row, meta) {
+          render: function(data, type, row, meta) {
             var name; // name to be displayed in the table
             if (row.device && row.device.dns) { 
               name = row.device.dns.replace(/[% settings.domain_suffix %]$/, '');
             } else {
               name = row.ip;
             }
+            if (type !== 'display'){
+              return name;
+            }
+            var cellContent = '<a href="[% uri_for("/device") %]?q=' + formatValue(row.ip) + '">'
+              + formatValue(name)
+              + '</a>';
             
-            if (type === 'display') {
-              // render in createdCell function
-              return '';
-            }
-            return name;
-          },
-          createdCell: function (td, cellData, rowData, row, col) {
-            var name;
-            if (rowData.device && rowData.device.dns) { 
-              name = rowData.device.dns.replace(/[% settings.domain_suffix %]$/, '');
-            } else {
-              name = rowData.ip;
-            }
-            console.log(name);
-            var a = document.createElement('a');
-            a.appendChild(document.createTextNode(name));
-            a.href = '[% uri_for("/device") %]?q=' + rowData.ip;
-            td.appendChild(a);
+            return cellContent;
           }
         }
         [% FOREACH item IN vars.port_columns %]
@@ -234,56 +223,35 @@
         ,{ // status text column
           data: 'all_port_vlans',
           "render": function(data, type, row, meta) {
-            if (type === 'filter' && data) {
+            if (type !== 'display' && data) {
               var array = [];
               data.forEach(function(el,i){
                  array[i]=el.vlan; 
               });
               return array.join(',');
-            }
-            return "";
-          },
-          createdCell: function (td, cellData, rowData, row, col) {
-            if (rowData.all_port_vlans != null){
-              var vlans = rowData.all_port_vlans;
-              if (vlans.length){
-                // the element where the VLANs should go
-                var target = td;
-                
-                // create a collapse element that hides the VLANs
-                if (vlans.length > 10){
-                  var count = document.createElement('div');
-                    count.className = 'nd_vlan-total';
-                    count.appendChild(document.createTextNode('(' + vlans.length + ')'));
-                    td.appendChild(count);
-                    
-                  var collapse = document.createElement('span');
-                    collapse.className = 'nd_linkcell nd_collapse-vlans';
-                    var collapseArrow = document.createElement('div');
-                      collapseArrow.className = 'nd_arrow-up-down-left icon-chevron-up icon-large';
-                      collapse.appendChild(collapseArrow);
-                    collapse.appendChild(document.createTextNode('Show VLANs'));
-                    td.appendChild(collapse);
-                  
-                  var collapseBody = document.createElement('div');
-                    collapseBody.className = 'nd_collapsing nd_collapse-pre-hidden';
-                    td.appendChild(collapseBody); 
-                  
-                  target = collapseBody;
-                }
-                
-                // list the vlans
-                vlans.forEach(function(el, i, array){
-                  var a = document.createElement('a');
-                  a.appendChild(document.createTextNode(el.vlan));
-                  
-                  if (i !== 0){ // append comma if this isn't the first element
-                    var comma = document.createTextNode(', ');
-                    target.appendChild(comma);
+            } else {
+              var cellContent = ''; 
+              var vlans = row.all_port_vlans;
+              if (vlans != null && vlans.length){
+                var vlanshtml = '';
+                vlans.forEach(function(el, i){
+                  if (i != 0){ 
+                    vlanshtml += ', '; // add comma if not first vlan
                   }
-                  target.appendChild(a);
+                  vlanshtml +=  '<a href="[% uri_for("/search") %]?tab=vlan&q=' + el.vlan + '">' + el.vlan + '</a>';
                 });
+                if (vlans.length > 10){
+                  cellContent = '<div class="nd_vlan-total">(' + vlans.length
+                    + ')</div><span class="nd_linkcell nd_collapse-vlans">'
+                    + '<div class="nd_arrow-up-down-left icon-chevron-up icon-large"></div>Show VLANs</span>'
+                    + '<div class="nd_collapsing nd_collapse-pre-hidden">'
+                    + vlanshtml
+                    + '</div>';
+                } else {
+                  cellContent = vlanshtml;
+                }
               }
+              return cellContent;
             }
           }
         }
@@ -300,29 +268,31 @@
         [% IF item.name == 'c_power' %]
         ,{ // power column
           data: 'power',
+          class: 'nd_nowrap',
           "render": function(data, type, row, meta) {
-            return "";
-          },
-          createdCell: function (td, cellData, rowData, row, col) {
-            td.className += ' nd_nowrap';
-            if (cellData != null){
-              var powerIcon = document.createElement('i');
-                powerIcon.className = 'icon-off';
-                if (cellData.admin){
-                  powerIcon.className += ' nd_power-on';
-                } 
-                td.appendChild(powerIcon);
-
-              var powerText;
-                if (cellData.power > 0){
-                  powerText = document.createTextNode(' ' + cellData.power + ' mW');
+            var cellContent = '';
+            if (data != null){
+              if (type === 'display') {
+                if (data.admin){
+                  cellContent += '<i class="icon-off nd_power-on" />'
                 } else {
-                  powerText = document.createTextNode(' (' + cellData.status + ')');
+                  cellContent += '<i class="icon-off" />'
                 }
-                var span = document.createElement('span');
-                span.appendChild(powerText);
-                td.appendChild(span);
+              } else { // sorting + filtering
+                if (data.admin){
+                  cellContent += 'on';
+                } else {
+                  cellContent += 'off';
+                }
+              }
+              
+              if (data.power > 0) {
+                cellContent += ' ' + data.power + ' mW';
+              } else {
+                cellContent += ' (' + data.status + ')';
+              }
             }
+            return cellContent;
           }
         }
         [% END %]
