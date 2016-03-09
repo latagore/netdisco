@@ -20,7 +20,7 @@ register_template_path
   dist_dir( 'App-NetdiscoX-Web-Plugin-Report-NodeLocation' );
   
 sub get_nodes {
-  my $query = shift;
+  my ($query, $n_archived) = @_;
 
   # godly regex for matching MAC addresses of IEEE, Microsoft, Cisco and SUN formats.
   my $hex = '[0-9a-fA-F]';
@@ -98,13 +98,9 @@ sub get_nodes {
   }
 
   my %where;
-  my $search_archived = param('f_node_archived');
-  # if (defined $search_archived and $search_archived eq 'on'){
-    # params->{n_archived} = 'checked';
-  # } else {
-    # delete params->{n_archived};
-      # $where{'nodes.active'} = 'true'; 
-  # }
+  unless (defined $n_archived and $n_archived eq 'on'){
+      $where{'nodes.active'} = 'true'; 
+  }
 
 
   my $node_rs_sub = schema('netdisco')->resultset('Node')->search(
@@ -124,14 +120,15 @@ sub get_nodes {
     );
   my $node_rs = schema('netdisco')->resultset('Node')->search(
       {
-        '(me.mac, me.time_last)' => {-in => $node_rs_sub->as_query}
+        '(nodes.mac, nodes.time_last)' => {-in => $node_rs_sub->as_query}
       },
       {
-        columns => [qw/mac switch port time_last/],
-        select => \'me.mac as ident',
+        columns => [qw/nodes.mac nodes.switch nodes.port nodes.vlan nodes.time_last nodes.active/],
+        select => \'nodes.mac as ident',
         as => 'ident',
-        group_by => [qw/mac switch port time_last/],
-        order_by => 'me.mac',
+        group_by => [qw/nodes.mac nodes.switch nodes.port nodes.vlan nodes.time_last nodes.active/],
+        order_by => 'nodes.mac',
+        alias => 'nodes'
       }
     );
     
@@ -156,10 +153,10 @@ sub get_nodes {
         '(nodes.mac, nodes.time_last)' => {-in => $node_ip_rs->as_query}
       },
       {
-        columns => [qw/nodes.mac nodes.switch nodes.port nodes.time_last/],
+        columns => [qw/nodes.mac nodes.switch nodes.port nodes.vlan nodes.time_last active/],
         select => \'ips.ip as ident',
         as => 'ident',
-        group_by => [qw/nodes.mac nodes.switch nodes.port nodes.time_last/],
+        group_by => [qw/nodes.mac nodes.switch nodes.port nodes.vlan nodes.time_last active/],
         order_by => 'nodes.mac',
         alias => 'nodes'
       }
@@ -175,9 +172,9 @@ sub get_nodes {
   }
   $node_port_rs = $node_port_rs->search(undef, {
       '+select'  => 
-        \qq/replace( date_trunc( 'minute', age( now(), time_last ) ) ::text, 'mon', 'month') AS age/
+        \qq/replace( date_trunc( 'minute', age( now(), nodes.time_last ) ) ::text, 'mon', 'month') AS age/
       ,
-      '+as' => 'age'
+      '+as' => 'age',
     });
   return $node_port_rs;
 }
@@ -194,10 +191,11 @@ post '/ajax/content/report/nodelocation' => require_role admin => sub {
     }
 
     
-    my $node_rs = get_nodes($q)
+    my $node_rs = get_nodes($q, param('n_archived'))
       ->search_rs(undef,
         {
-          prefetch => {
+          prefetch => [
+            {
               'device_port' => [
                 {'port_info' => 
                   {'building' => 'official_name'}
@@ -206,7 +204,7 @@ post '/ajax/content/report/nodelocation' => require_role admin => sub {
               ]
             },
             'ips'
-          }
+          ]
         }
       );
     

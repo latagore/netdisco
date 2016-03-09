@@ -36,8 +36,6 @@ function do_search (event, tab) {
     search_xhr.abort();
   }
   
-  var formData = new FormData($(form)[0]);
-  
   // submit the query and put results into the tab pane
   search_xhr = $.ajax( uri_base + '/ajax/content/' + path + '/' + tab + '?' + query,
     {
@@ -71,8 +69,6 @@ function do_search (event, tab) {
         });
         inner_view_processing(tab);
       },
-      type: 'POST',
-      data: formData,
       dataType: "text"
     }
   );
