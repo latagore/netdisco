@@ -1,7 +1,7 @@
 
 
             Upload List of Nodes
-            <input name="file" type="file"  required="true"  accept="text/*" />
+            <input name="file" type="file"  required="true"  accept=".txt,.csv,text/*" />
             
             
             <label for="show_archived">
