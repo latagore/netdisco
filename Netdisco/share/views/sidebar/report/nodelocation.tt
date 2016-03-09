@@ -1,0 +1,6 @@
+
+
+            Upload List of Nodes
+            <input name="file" type="file"  required="true"  accept="text/*" />
+            <button id="nodelocation_submit" type="submit" class="btn btn-info">
+            <i class="icon-search icon-large pull-left nd_navbar-icon"></i> Search</button>
