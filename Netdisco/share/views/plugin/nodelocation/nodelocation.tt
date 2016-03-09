@@ -2,7 +2,6 @@
   <thead>
     <tr>
       <th>Node</th>
-      <th>IPs</th>
       <th>Switch Port</th>     
       <th>Horizontal Cable</th>
       <th>Destination Room</th>
@@ -21,12 +20,6 @@ $(document).ready(function() {
     "deferRender": true,
     "data": [% results %],
     "columns": [
-      {
-        "data": 'mac',
-        "render": function(data, type, row, meta) {
-           return formatValue(data);
-        }
-      },
       {
         "data": 'ips',
         "render": function(data, type, row, meta) {

@@ -124,10 +124,7 @@ sub get_nodes {
       },
       {
         columns => [qw/nodes.mac nodes.switch nodes.port nodes.vlan nodes.time_last nodes.active/],
-        select => \'nodes.mac as ident',
-        as => 'ident',
         group_by => [qw/nodes.mac nodes.switch nodes.port nodes.vlan nodes.time_last nodes.active/],
-        order_by => 'nodes.mac',
         alias => 'nodes'
       }
     );
@@ -153,11 +150,8 @@ sub get_nodes {
         '(nodes.mac, nodes.time_last)' => {-in => $node_ip_rs->as_query}
       },
       {
-        columns => [qw/nodes.mac nodes.switch nodes.port nodes.vlan nodes.time_last active/],
-        select => \'ips.ip as ident',
-        as => 'ident',
-        group_by => [qw/nodes.mac nodes.switch nodes.port nodes.vlan nodes.time_last active/],
-        order_by => 'nodes.mac',
+        columns => [qw/nodes.mac nodes.switch nodes.port nodes.vlan nodes.time_last nodes.active/],
+        group_by => [qw/nodes.mac nodes.switch nodes.port nodes.vlan nodes.time_last nodes.active/],
         alias => 'nodes'
       }
     );
