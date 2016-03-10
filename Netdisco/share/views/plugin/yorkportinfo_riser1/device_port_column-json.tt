@@ -1,28 +1,20 @@
         ,{ 
           data: "port_info.riser1",
           render : function(data, type, row, meta) {
-            if (type === 'display') {
-              // render in createdCell function
-              return '';
-            }
-            return formatValue(data);
-          },
-          createdCell: function (td, cellData, rowData, row, col) {
-            var t = document.createTextNode((cellData != null) ? cellData : '');
+            var column = 'riser1';
             [% IF user_can_port_control AND params.c_admin %]
-            // create content editable element
-            var div = document.createElement('div'); 
-              div.className = "york-port-info";
-              div.contentEditable = "true";
-              var ds = div.dataset;
-              ds.column = "riser1";
-              ds.forDevice = row.ip;
-              ds.forPort = row.port;
-            
-            div.appendChild(t);
-            td.appendChild(div);
-            [% ELSE %]
-            td.appendChild(t);
+            if (type === 'display') {
+              var cellContent = '<div class="york-port-info" contenteditable="true"'
+                + ' data-column="' + column
+                + '" data-for-device="' + row.ip
+                + '" data-for-port="' + row.port
+                + '">'
+                + formatValue(data);
+                + '</div>';
+                
+                return cellContent;
+            }
             [% END %]
+            return formatValue(data);
           }
         }
