@@ -139,7 +139,7 @@ sub get_nodes {
       {
         join => 'ips',
         columns => 'nodes.mac',
-        '+select' => {max => 'nodes.time_last'},
+        '+select' => {max => 'ips.time_last'},
         '+as' => 'time_last',
         alias => "nodes",
         group_by => [qw/nodes.mac/]
