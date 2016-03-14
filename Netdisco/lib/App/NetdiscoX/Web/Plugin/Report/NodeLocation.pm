@@ -174,7 +174,7 @@ sub get_nodes {
   return $node_port_rs;
 }
 
-post '/ajax/content/report/nodelocation' => require_role admin => sub {
+post '/ajax/content/report/nodelocation' => require_login sub {
 
     my $q;
     my $file = request->upload('file');
