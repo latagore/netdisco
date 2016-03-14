@@ -169,6 +169,7 @@ sub get_nodes {
         \qq/replace( date_trunc( 'minute', age( now(), nodes.time_last ) ) ::text, 'mon', 'month') AS age/
       ,
       '+as' => 'age',
+      alias => 'nodes'
     });
   return $node_port_rs;
 }
@@ -186,7 +187,8 @@ post '/ajax/content/report/nodelocation' => require_role admin => sub {
 
     
     my $node_rs = get_nodes($q, param('n_archived'))
-      ->search_rs(undef,
+      ->search_rs(
+        undef,
         {
           prefetch => [
             {
@@ -197,7 +199,7 @@ post '/ajax/content/report/nodelocation' => require_role admin => sub {
                 'device'
               ]
             },
-            'ips'
+            'current_ips'
           ]
         }
       );

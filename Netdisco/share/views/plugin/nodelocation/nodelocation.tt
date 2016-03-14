@@ -21,14 +21,14 @@ $(document).ready(function() {
     "data": [% results %],
     "columns": [
       {
-        "data": 'ips',
+        "data": 'current_ips',
         "render": function(data, type, row, meta) {
           var cellContent = '';
           if (type === 'display') {
             cellContent += '<a href="[% uri_for("/search") %]?tab=node&&deviceports=on&stamps=on&q='
                 + formatValue(row.mac) + '">' + formatValue(row.mac)
                 + '</a><ul>';
-            row.ips.forEach(function (el, i){
+            data.forEach(function (el, i){
               cellContent += '<li><a href="[% uri_for("/search") %]?tab=node&deviceports=on&stamps=on&q='
                 + formatValue(el.ip) + '">'
               if (el.dns != null){
@@ -41,7 +41,7 @@ $(document).ready(function() {
             });
             cellContent += "</ul>";
           } else if (type === 'filter'){
-            var entries = row.ips.slice();
+            var entries = data.slice();
             entries.unshift(formatValue(row.mac));
             cellContent = entries.join(', ');
           } else {
