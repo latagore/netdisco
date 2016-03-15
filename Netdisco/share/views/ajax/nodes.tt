@@ -2,19 +2,19 @@
 [% FOREACH node IN results %]
   <li >
   [% '<i class="icon-book"></i>&nbsp; ' IF NOT node.active %]
-  [% IF row.remote_type AND row.remote_type.match('(?i)ip.phone') %]
+  [% IF params.remote_type AND params.remote_type.match('(?i)ip.phone') %]
     <i class="icon-li icon-phone"></i>
   [% ELSIF node.wireless.defined
-           OR (row.remote_type AND row.remote_type.match('^AP:\s')) %]
+           OR (params.remote_type AND params.remote_type.match('^AP:\s')) %]
     <i class="icon-li icon-signal"></i>
   [% ELSE %]
     <i class="icon-li icon-hdd"></i>
   [% END %]
   <a href="[% search_node %]&q=[% node.net_mac.$mac_format_call | uri %]">
     [% node.net_mac.$mac_format_call | html_entity %]</a>
-  [% IF (node.vlan > 0) && (node.vlan != row.vlan) %]
+  [% IF (node.vlan > 0) && (node.vlan != params.vlan) %]
     (on vlan [% node.vlan | html_entity %])
-  [% END %]            
+  [% END %]
   [% IF params.n_ssid AND node.wireless.defined %]
     (SSID:
     [% FOREACH wlan IN node.wireless %]

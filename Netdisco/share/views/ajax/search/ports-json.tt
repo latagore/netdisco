@@ -446,6 +446,13 @@
                 [% IF params.n_vendor   %]+ '&n_vendor=on'[% END %]
                 [% IF params.n_archived %]+ '&n_archived=on'[% END %]
                 ;
+              if (row.vlan) {
+                url += '&vlan=' + formatURI(row.vlan);
+              }
+              if (row.remote_type) {
+                url += '&remote_type=' + formatURI(row.remote_type);
+              }
+                
               $(td).load(url);
               table.cell(td).data(td.innerHTML).invalidate().draw();
             });
