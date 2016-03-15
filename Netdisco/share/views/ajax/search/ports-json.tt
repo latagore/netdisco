@@ -128,14 +128,13 @@
             } else {
               name = row.ip;
             }
-            if (type !== 'display'){
-              return name;
+            if (type === 'display'){
+              var cellContent = '<a href="[% uri_for("/device") | html_entity %]?q=' + formatURI(row.ip) + '">'
+                + formatValue(name)
+                + '</a>';
+              return cellContent;
             }
-            var cellContent = '<a href="[% uri_for("/device") %]?q=' + formatValue(row.ip) + '">'
-              + formatValue(name)
-              + '</a>';
-            
-            return cellContent;
+            return name;
           }
         }
         [% FOREACH item IN vars.port_columns %]
