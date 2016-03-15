@@ -421,63 +421,34 @@
         
         [% IF item.name == 'c_nodes' or item.name == 'c_neighbors' %]
         ,{ // status text column
-          data: null,
+          data: undefined,
+          defaultContent: "",
           "render": function(data, type, row, meta) {
-            // FIXME
-            /*var cell_str = '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-                        cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-                        cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-                        cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-                        cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            cell_str += '<a href="[% uri_for("/device") %]?q=' + row.ip + '">' + row.ip + '</a>';
-            return cell_str;
-            */
-            return "";
+            if (data != null) {
+              console.log (data);
+              return data;
+            } else {
+              var cellContent = '<a href="#" class="show_nodes">Show Nodes</a>';
+              return cellContent;
+            }
+          }, 
+          createdCell: function(td, cell, row){
+            console.log('register');
+            $(td).on('click', '.show_nodes', function() {
+              var url = '[% uri_for("ajax/content/nodes")%]?q='
+                + formatURI(row.ip)
+                + '&f=' + formatURI(row.port)
+                [% IF params.n_ip       %]+ '&n_ip=on'[% END %]
+                [% IF params.mac_format %]+ '&mac_format=[% params.mac_format %]'[% END %]
+                [% IF params.n_age      %]+ '&n_age=on'[% END %]
+                [% IF params.n_netbios  %]+ '&n_netbios=on'[% END %]
+                [% IF params.n_ssid     %]+ '&n_ssid=on'[% END %]
+                [% IF params.n_vendor   %]+ '&n_vendor=on'[% END %]
+                [% IF params.n_archived %]+ '&n_archived=on'[% END %]
+                ;
+              $(td).load(url);
+              table.cell(td).data(td.innerHTML).invalidate().draw();
+            });
           }
         }
         [% END %]

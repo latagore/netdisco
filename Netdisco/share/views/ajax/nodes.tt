@@ -1,0 +1,60 @@
+<ul class="nd_node-list icons-ul">
+[% FOREACH node IN results %]
+  <li >
+  [% '<i class="icon-book"></i>&nbsp; ' IF NOT node.active %]
+  [% IF row.remote_type AND row.remote_type.match('(?i)ip.phone') %]
+    <i class="icon-li icon-phone"></i>
+  [% ELSIF node.wireless.defined
+           OR (row.remote_type AND row.remote_type.match('^AP:\s')) %]
+    <i class="icon-li icon-signal"></i>
+  [% ELSE %]
+    <i class="icon-li icon-hdd"></i>
+  [% END %]
+  <a href="[% search_node %]&q=[% node.net_mac.$mac_format_call | uri %]">
+    [% node.net_mac.$mac_format_call | html_entity %]</a>
+  [% IF (node.vlan > 0) && (node.vlan != row.vlan) %]
+    (on vlan [% node.vlan | html_entity %])
+  [% END %]            
+  [% IF params.n_ssid AND node.wireless.defined %]
+    (SSID:
+    [% FOREACH wlan IN node.wireless %]
+      <a href="[%+ uri_for('/report/portssid') %]?ssid=[% wlan.ssid | uri %]">[% wlan.ssid | html_entity %]</a>
+    [% END %]
+    )
+  [% END %]
+  [% IF params.n_vendor AND node.oui.defined %]
+    (Vendor:
+    [% FOREACH oui IN node.oui %]
+      <a href="[%+ uri_for('/report/nodevendor') %]?vendor=[% oui.abbrev | uri %]">[% oui.abbrev | html_entity %]</a>
+    [% END %]
+    )
+  [% END %]
+  [% '<br />(' _ node.time_last_age _ ')' IF params.n_age %]
+  [% IF params.n_ip AND node.ips %]
+    <ul class="nd_node-ip-list">
+    [% FOREACH ip IN node.ips %]
+      <li>
+      [% '<i class="icon-book"></i>&nbsp; ' IF NOT node.active %]
+      [% SET dns = ip.dns %]
+      [% IF dns %]
+      <a href="[% search_node %]&q=[% ip.ip | uri %]">
+        [% dns %]<br />([% ip.ip | html_entity %])
+      </a>
+      [% ELSE %]
+      <a href="[% search_node %]&q=[% ip.ip | uri %]">
+        [% ip.ip | html_entity %]
+      </a>
+      [% END %]
+      </li>
+    [% END %]
+    </ul>
+  [% END %]
+  [% IF params.n_netbios %]
+    [% FOREACH nbt IN node.netbios %]
+    <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\<a href="[% uri_for('/report/netbios') %]?domain=[% nbt.domain | uri %]" data-container="body" data-title="Nodes in this Domain">[% nbt.domain | html_entity %]</a>\<a href="[% search_node %]&q=[% nbt.nbname | uri %]">[% nbt.nbname | html_entity %]</a>
+    <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% nbt.nbuser || '[No User]' | html_entity %]@<a href="[% search_node %]&q=[% nbt.ip | uri %]">[% nbt.ip | html_entity %]</a>
+    [% END %]
+  [% END %]
+  </li>
+[% END %]
+</ul>
