@@ -27,6 +27,28 @@
       [% END %]        
     </tr>
   </thead>
+  [% IF user_can_port_control %]
+  <div id="nd_portlog" class="nd_modal nd_deep-horizon modal hide fade" tabindex="-1"
+      role="dialog" aria-hidden="true">
+    <div class="modal-body">
+      <blockquote>
+        <ul><li><p>Please provide a reason for changing the Port Configuration</p></li></ul>
+      </blockquote>
+      <select id="nd_portlog-reason" class="input-block-level" name="reason">
+        [% FOREACH pair IN settings.port_control_reasons.pairs %]
+          <option[% ' selected="selected"' IF pair.key == 'other' %] value="[% pair.key | html_entity %]">
+            [% pair.value | html_entity %]</option>
+        [% END %]
+      </select>
+      <textarea id="nd_portlog-log" class="input-block-level" rows="2" name="log"
+        placeholder="Enter a log message"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+      <button id="nd_portlog-submit" class="btn btn-info" data-dismiss="modal">Continue</button>
+    </div>
+  </div>
+  [% END %]
   <script type="text/javascript">
   //<![CDATA[
   $(document).ready(function() {
@@ -40,6 +62,10 @@
     function formatValue(string) {
         if (string == null) { return "" };
         return he.encode(string.toString());
+    }
+    function formatURI(string) {
+        if (string == null) { return "" };
+        return encodeURI(string.toString());
     }
     
     var table = $('#dp-data-table').DataTable({
@@ -121,10 +147,82 @@
         [% IF item.name == 'c_port' %]
         ,{ // port id column
           data: 'port',
+          className: 'nd_nowrap',
           type: 'portsort',
           "render": function(data, type, row, meta) {
+            if (type === 'display'){
+              var cellContent = 
+                '<a class="nd_log-icon"'
+                + ' href="[% uri_for("/report/portlog") %]?q=' + formatURI(row.ip)
+                + '&f=' + formatURI(row.port) + '">'
+                + '<i class="icon-file-text-alt" rel="tooltip" data-placement="top" data-offset="3"'
+                + ' data-animation="" data-container="body" data-title="View Port Log"></i>'
+                + '</a>';
+              [% IF user_can_port_control AND params.c_admin %]
+              // port control buttons
+              if (row.up_admin === 'up'){
+                cellContent += '<span class="nd_hand-icon">'
+                  + '<i class="icon-bullseye" data-action="bounce"'
+                  + '  rel="tooltip" data-placement="top" data-offset="3"'
+                  + '  data-animation="" data-container="body" data-title="Bounce Port"></i>'
+                  + '<i class="icon-hand-down"'
+                  + '  rel="tooltip" data-placement="top" data-offset="3"'
+                  + '  data-animation="" data-container="body" data-title="Disable Port"></i>'
+                  + '</span>';
+              } else {
+                cellContent += '<span class="nd_hand-icon">'
+                  + '<i class="icon-bullseye" data-action="bounce" style="display: none"'
+                  + '  rel="tooltip" data-placement="top" data-offset="3"'
+                  + '  data-animation="" data-container="body" data-title="Bounce Port"></i>'
+                  + '<i class="icon-hand-up"'
+                  + '  rel="tooltip" data-placement="top" data-offset="3"'
+                  + '  data-animation="" data-container="body" data-title="Enable Port"></i>'
+                  + '</span>';
+              }
+              [% END %]
+              if (row.slave_of){
+                cellContent += '<small><i class="icon-user muted" data-container="body" data-title="Aggregrate Link Slave" rel="tooltip" data-animation=""></i></small>';
+              }
+              if (row.is_master){
+                cellContent += '<small><i class="icon-group muted" data-container="body" data-title="Aggregate Link Master" rel="tooltip" data-animation=""></i></small>'
+                  + '<a class="nd_this-port-only nd_port-only-first">' + formatValue(row.port) + '</a>';
+              } else {
+                cellContent += '<span class="nd_this-port-only nd_port-only-first">' + formatValue(row.port) + '</span>';
+              }
+              if (row.slave_of){
+                cellContent += '<br/>';
+                if (row.agg_master_up_admin !== 'up') {
+                  cellContent += '<small><i class="icon-group muted" data-container="body" data-title="Aggregate Link Master, Admin Down" rel="tooltip" data-animation=""></i></small>';
+                } else if (row.agg_master_up === 'up') {
+                  cellContent += '<small><i class="icon-group text-success" data-container="body" data-title="Aggregate Link Master, Admin Up, Link Up" rel="tooltip" data-animation="" ></i></small>';
+                } else {
+                  cellContent += '<small><i class="icon-group text-error" data-container="body" data-title="Agggregate Link Master: Admin Up, Link Down" rel="tooltip" data-animation=""></i></small>';
+                }
+                cellContent += '<a class="nd_this-port-only" href="[% uri_for("/device") %]'
+                  + '&q=' + formatURI(row.ip) 
+                  + '&f=' + formatURI(row.port)
+                  + '&prefer=port">'
+                  + formatValue(row.slave_of)
+                  + '</a>';
+              }
+              return cellContent;
+            }
             return formatValue(row.port);
-          },
+          }
+          [% IF user_can_port_control AND params.c_admin %]
+          ,createdCell: function(td, cell, row, r, c){
+            var t = $(td);
+            if (row.up_admin === 'up'){
+              td.dataset.action = "down";
+            } else {
+              td.dataset.action = "up";
+            }          
+            td.dataset.field = "c_port";
+            td.dataset.forDevice = formatValue(row.ip);
+            td.dataset.forPort = formatValue(row.port);
+            td.className += " nd_editable-cell";
+          }
+          [% END %]
         }
         [% END %]
 
