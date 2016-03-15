@@ -164,7 +164,7 @@
                   + '<i class="icon-bullseye" data-action="bounce"'
                   + '  rel="tooltip" data-placement="top" data-offset="3"'
                   + '  data-animation="" data-container="body" data-title="Bounce Port"></i>'
-                  + '<i class="icon-hand-down"'
+                  + '  <i class="icon-hand-down"'
                   + '  rel="tooltip" data-placement="top" data-offset="3"'
                   + '  data-animation="" data-container="body" data-title="Disable Port"></i>'
                   + '</span>';
@@ -173,7 +173,7 @@
                   + '<i class="icon-bullseye" data-action="bounce" style="display: none"'
                   + '  rel="tooltip" data-placement="top" data-offset="3"'
                   + '  data-animation="" data-container="body" data-title="Bounce Port"></i>'
-                  + '<i class="icon-hand-up"'
+                  + '  <i class="icon-hand-up"'
                   + '  rel="tooltip" data-placement="top" data-offset="3"'
                   + '  data-animation="" data-container="body" data-title="Enable Port"></i>'
                   + '</span>';
