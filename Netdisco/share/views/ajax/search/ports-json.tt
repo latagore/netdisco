@@ -422,18 +422,23 @@
         [% IF item.name == 'c_nodes' or item.name == 'c_neighbors' %]
         ,{ // status text column
           data: undefined,
+          sortable: false,
           defaultContent: "",
           "render": function(data, type, row, meta) {
-            if (data != null) {
-              console.log (data);
-              return data;
-            } else {
-              var cellContent = '<a href="#" class="show_nodes">Show Nodes</a>';
-              return cellContent;
+            if (row.n_loaded === true) { // did we already create the HTML data for this cell?
+              return row.node_html_data;
+            } else if (row.node_count == null){ // is there json data available from the server?
+              return "no node count";
+            } else { // no data available
+              if (row.node_count > 0) {
+                var cellContent = '<a href="#" class="show_nodes">Show ' + row.node_count + ' nodes</a>';
+                return cellContent;
+              } else {
+                return ''; 
+              }
             }
           }, 
           createdCell: function(td, cell, row){
-            console.log('register');
             $(td).on('click', '.show_nodes', function() {
               var url = '[% uri_for("ajax/content/nodes")%]?q='
                 + formatURI(row.ip)
@@ -453,8 +458,13 @@
                 url += '&remote_type=' + formatURI(row.remote_type);
               }
                 
-              $(td).load(url);
-              table.cell(td).data(td.innerHTML).invalidate().draw();
+              html = $(td).load(url, function(responseText, textStatus, jqXHR ){
+                var r = table.row(td.parentNode);
+                var data = r.data();
+                data.n_loaded = true;
+                data.node_html_data = responseText;
+                r.data(data).invalidate().draw('page');
+              });
             });
           }
         }

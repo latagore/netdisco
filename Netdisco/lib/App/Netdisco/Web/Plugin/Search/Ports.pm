@@ -414,6 +414,10 @@ get '/ajax/content/search/ports' => require_login sub {
     $set = $set->search_rs({}, { prefetch => [{neighbor_alias => 'device'}] })
       if param('c_neighbors');
 
+    # retrieve node count if asked for
+    $set = $set->with_node_count if param('c_nodes') and param('n_archived');
+    $set = $set->with_active_node_count if param('c_nodes') and not param('n_archived');
+    
     # put in the York specific port information
     $set = $set->with_york_port_info;
 

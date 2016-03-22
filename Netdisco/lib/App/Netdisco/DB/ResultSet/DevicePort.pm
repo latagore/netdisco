@@ -144,6 +144,58 @@ sub with_vlan_count {
       });
 }
 
+=head2 with_node_count
+
+This is a modifier for any C<search()> (including the helpers below) which
+will add the following additional synthesized columns to the result set:
+
+=over 4
+
+=item node_count
+
+=back
+
+=cut
+
+sub with_node_count {
+  my ($rs, $cond, $attrs) = @_;
+  
+  my $alias = $rs->current_source_alias;
+  return $rs
+    ->search_rs($cond, $attrs)
+    ->search({},
+      {
+        '+select' => \"(select count(*) from node where node.switch = ${alias}.ip and node.port = ${alias}.port) as node_count",
+        '+as' => 'node_count'
+      });
+}
+
+=head2 with_active_node_count
+
+This is a modifier for any C<search()> (including the helpers below) which
+will add the following additional synthesized columns to the result set:
+
+=over 4
+
+=item node_count
+
+=back
+
+=cut
+
+sub with_active_node_count {
+  my ($rs, $cond, $attrs) = @_;
+  
+  my $alias = $rs->current_source_alias;
+  return $rs
+    ->search_rs($cond, $attrs)
+    ->search({},
+      {
+        '+select' => \"(select count(*) from node where node.switch = ${alias}.ip and node.port = ${alias}.port and active) as node_count",
+        '+as' => 'node_count'
+      });
+}
+
 =head2 merge_rs
 
 This is a utility which merges the information from other device

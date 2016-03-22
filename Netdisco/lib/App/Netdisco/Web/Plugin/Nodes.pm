@@ -32,8 +32,12 @@ get '/ajax/content/nodes' => require_login sub {
     
     # don't show archived nodes unless requested
     unless (param('n_archived')){
-      $rs = $rs->search({-bool => 'active'});
+      $rs = $rs->search({-bool => 'me.active'});
     }
+    
+    $rs = $rs->search(undef, {
+      prefetch => [qw/ ips wireless netbios /]
+    });
         
     my @results = $rs->all;
     return unless scalar @results;
