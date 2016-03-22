@@ -323,29 +323,6 @@ ID assigned to untagged frames received on the port).
 
 sub native { return (shift)->vlan }
 
-=head2 vlan_count
-
-Returns the number of VLANs active on this device port. Enable this column by
-applying the C<with_vlan_count()> modifier to C<search()>.
-
-=cut
-
-sub vlan_count { return (shift)->get_column('vlan_count') }
-
-=head2 vlan_stats
-
-Returns the virtual VLAN stats entry corrsponding to this device port. 
-
-=cut
-
-__PACKAGE__->might_have(
-    vlan_stats => 'App::Netdisco::DB::Result::Virtual::DevicePortStats',
-    {   'foreign.ip'   => 'self.ip',
-        'foreign.port' => 'self.port',
-    }
-);
-
-
 =head2 lastchange_stamp
 
 Formatted version of the C<lastchange> field, accurate to the minute. Enable

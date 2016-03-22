@@ -119,31 +119,6 @@ sub only_free_ports {
     );
 }
 
-=head2 with_vlan_count
-
-This is a modifier for any C<search()> (including the helpers below) which
-will add the following additional synthesized columns to the result set:
-
-=over 4
-
-=item vlan_count
-
-=back
-
-=cut
-
-sub with_vlan_count {
-  my ($rs, $cond, $attrs) = @_;
-
-  return $rs
-    ->search_rs($cond, $attrs)
-    ->search({},
-      {
-        prefetch => "vlan_stats",
-        '+columns' => {"me.vlan_count" => "vlan_stats.vlan_count" }
-      });
-}
-
 =head2 with_node_count
 
 This is a modifier for any C<search()> (including the helpers below) which
