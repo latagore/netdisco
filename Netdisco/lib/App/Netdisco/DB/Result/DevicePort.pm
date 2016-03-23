@@ -295,21 +295,6 @@ __PACKAGE__->might_have(
 	},
 );
 
-=head2 recent_nodes
-
-Returns the C<RecentNodeNodeIp> table entries associated with this port, 
-which displays a few of the most recent, active or archived, nodes on the port.
-
-=cut
-
-__PACKAGE__->has_many(
-	recent_nodes => 'App::Netdisco::DB::Result::RecentNodeNodeIp',
-	{ 
-		'foreign.switch' => 'self.ip',
-		'foreign.port' => 'self.port'
-	},
-);
-
 =head1 ADDITIONAL METHODS
 
 =head2 neighbor

@@ -294,32 +294,6 @@ sub with_york_port_info {
     );
 }
 
-=head2 with_recent_nodes
-
-This is a modifier for any C<search()> which adds the most recent,
-active and archived, nodes.
-
-=over 4
-
-=item TODO
-
-=back
-
-=cut
-
-sub with_recent_nodes {
-  my ($rs, $cond, $attrs) = @_;
-
-  return $rs
-    ->search_rs($cond, $attrs)
-    ->search(
-      {},
-      {
-	      prefetch => [ 'recent_nodes' ]
-      }
-    );
-}
-
 
 =head1 SPECIAL METHODS
 
