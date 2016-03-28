@@ -79,12 +79,6 @@
     
     var table = $('#dp-data-table').DataTable({
       "deferRender": true,
-      [% IF params.c_port %]
-      order: [ [[% colIndex.device %],'desc'], [[% colIndex.c_port %],'desc'] ],
-      [% ELSE %]
-      order: [ [[% colIndex.device %],'desc'] ],
-      [% END %]
-      // order: null,
       "data": [% results %],
       "columns": [
         { // status icon column
@@ -434,11 +428,19 @@
           sortable: false,
           defaultContent: "",
           "render": function(data, type, row, meta) {
+            
+            [
+            
+            [% IF params.c_nodes %]
             if (data != null) {
+              var NODE_LIST_LENGTH = 3; 
+              var shown_ips_length = 0;
               var cellContent = '';
               cellContent += '<ul class="nd_node-list icons-ul">';
               
               data.forEach(function(node, i){
+                if (i >= NODE_LIST_LENGTH && !row.show_all_nodes) { return; }
+                
                 cellContent += '<li>';
                 if (!node.active){
                   cellContent += '<i class="icon-book"></i>&nbsp; ';
@@ -496,7 +498,7 @@
                 [% IF params.n_ip %]
                 if (node.ips != null){
                   cellContent += '<ul class="nd_node-ip-list">';
-                  
+                  shown_ips_length += node.ips.length;
                   node.ips.forEach(function(ip) {
                     cellContent += '<li>';
                     if (!node.active) {
@@ -544,38 +546,36 @@
                 
                 cellContent += '</li>';
                 });
-              
+              var nodes = (data != null) ? data.length : 0;
+              [% IF NOT params.n_archived %]
+              var remaining_node_count = nodes - NODE_LIST_LENGTH;
+              if (remaining_node_count < 0) { remaining_node_count = 0; }
+              [% ELSE %]
+              var remaining_node_count = nodes - NODE_LIST_LENGTH;
+              if (remaining_node_count < 0) { remaining_node_count = 0; }
+              [% END %]
+              if (!row.show_all_nodes && remaining_node_count > 0) {
+                var remaining 
+                cellContent += '<li>'
+                  + '<i class="icon-li icon-ellipsis-vertical"></i>'
+                  + '<a href="" class="show_nodes">Show '
+                  + remaining_node_count + ' more nodes'
+                  + '</a></li>';
+              }
               cellContent += '</ul>';
             }
+            [% END %]
             return cellContent;
           }, 
           createdCell: function(td, cell, row){
-            $(td).on('click', '.show_nodes', function() {
-              var url = '[% uri_for("ajax/content/nodes")%]?q='
-                + formatURI(row.ip)
-                + '&f=' + formatURI(row.port)
-                [% IF params.n_ip       %]+ '&n_ip=on'[% END %]
-                [% IF params.mac_format %]+ '&mac_format=[% params.mac_format %]'[% END %]
-                [% IF params.n_age      %]+ '&n_age=on'[% END %]
-                [% IF params.n_netbios  %]+ '&n_netbios=on'[% END %]
-                [% IF params.n_ssid     %]+ '&n_ssid=on'[% END %]
-                [% IF params.n_vendor   %]+ '&n_vendor=on'[% END %]
-                [% IF params.n_archived %]+ '&n_archived=on'[% END %]
-                ;
-              if (row.vlan) {
-                url += '&vlan=' + formatURI(row.vlan);
-              }
-              if (row.remote_type) {
-                url += '&remote_type=' + formatURI(row.remote_type);
-              }
-                
-              html = $(td).load(url, function(responseText, textStatus, jqXHR ){
-                var r = table.row(td.parentNode);
-                var data = r.data();
-                data.n_loaded = true;
-                data.node_html_data = responseText;
-                r.data(data).invalidate().draw('page');
-              });
+            $(td).on('click', '.show_nodes', function(event) {
+              event.preventDefault();
+              event.stopPropagation();
+              
+              var r = table.row(td.parentNode);
+              var data = r.data();
+              data.show_all_nodes = true;
+              r.data(data).invalidate().draw('page');
             });
           }
         }
