@@ -24,7 +24,7 @@
           [% item.label | html_entity %]
         </th>
       [% currentIndex = currentIndex + 1 %]
-      [% END %]        
+      [% END %]
     </tr>
   </thead>
   [% IF user_can_port_control %]
@@ -59,13 +59,22 @@
       }
         return string;
     }
+    
+    // formats a string to be usable with HTML
     function formatValue(string) {
         if (string == null) { return "" };
         return he.encode(string.toString());
     }
+    
+    // formats a string for use in URIs
     function formatURI(string) {
         if (string == null) { return "" };
         return encodeURI(string.toString());
+    }
+    
+    function formatMac(string) {
+        // TODO actually format mac addresses into the various formats
+        return formatValue(string);
     }
     
     var table = $('#dp-data-table').DataTable({
@@ -421,22 +430,124 @@
         
         [% IF item.name == 'c_nodes' or item.name == 'c_neighbors' %]
         ,{ // status text column
-          data: undefined,
+          data: '[% nodes_name %]',
           sortable: false,
           defaultContent: "",
           "render": function(data, type, row, meta) {
-            if (row.n_loaded === true) { // did we already create the HTML data for this cell?
-              return row.node_html_data;
-            } else if (row.node_count == null){ // is there json data available from the server?
-              return "no node count";
-            } else { // no data available
-              if (row.node_count > 0) {
-                var cellContent = '<a href="#" class="show_nodes">Show ' + row.node_count + ' nodes</a>';
-                return cellContent;
-              } else {
-                return ''; 
-              }
+            if (data != null) {
+              var cellContent = '';
+              cellContent += '<ul class="nd_node-list icons-ul">';
+              
+              data.forEach(function(node, i){
+                cellContent += '<li>';
+                if (!node.active){
+                  cellContent += '<i class="icon-book"></i>&nbsp; ';
+                }
+                
+                // node icon
+                if (row.remote_type && row.remote_type.match(/ip.phone/i)) {
+                  cellContent += '<i class="icon-li icon-phone"></i>';
+                } else if ((node.wireless != null)
+                    || (row.remote_type && row.remote_type.match(/^AP:\s/))) {
+                  cellContent += '<i class="icon-li icon-signal"></i>';
+                } else {
+                  cellContent += '<i class="icon-li icon-hdd"></i>';
+                }
+                
+                // mac address
+                cellContent += '<a href="[% search_node %]&q=' + formatURI(node.mac) + '">'
+                  + formatMac(node.mac) + '</a>';
+                if (node.vlan > 0 && (node.vlan != row.vlan)) {
+                  cellContent += ' (on vlan ' + formatValue(node.vlan) + ')';
+                }
+                
+                // wireless
+                [% IF params.n_ssid %]
+                if (node.wireless != null && node.wireless.length){
+                  cellContent += ' (SSID: ';
+                  node.wireless.forEach(function(wlan){
+                    cellContent += '<a href="[% uri_for("/report/portssid") %]?ssid=' 
+                      + formatURI(wlan.ssid) + '">'
+                      + formatValue(wlan.ssid) + '</a> ';
+                  });
+                  cellContent += ')';
+                }
+                [% END %]
+                
+                // OUI info
+                [% IF params.n_vendor %]
+                if (node.oui != null 
+                    && node.oui.abbrev != null 
+                    && node.oui.abbrev.trim()){
+                  cellContent += '('
+                    + '<a href="[% uri_for("/report/nodevendor") %]?vendor=' 
+                    + formatURI(node.oui.abbrev) + '">'
+                    + formatValue(node.oui.abbrev) + '</a> '
+                    + ')';
+                }
+                [% END %]
+                
+                // Age
+                [% IF params.n_age %]
+                cellContent += '<br />(' + formatValue(node.time_last_age) + ')';
+                [% END %]
+
+                // ips of node
+                [% IF params.n_ip %]
+                if (node.ips != null){
+                  cellContent += '<ul class="nd_node-ip-list">';
+                  
+                  node.ips.forEach(function(ip) {
+                    cellContent += '<li>';
+                    if (!node.active) {
+                      cellContent += '<i class="icon-book"></i>&nbsp; ';
+                    }
+                    if (ip.dns) {
+                      cellContent +=  '<a href="[% search_node %]&q=' + formatURI(ip.ip) + '">'
+                        + formatValue(ip.dns) 
+                        + '<br />(' + formatValue(ip.ip) + ')'
+                        + '</a>';
+                    } else {
+                      cellContent +=  '<a href="[% search_node %]&q=' + formatURI(ip.ip) + '">'
+                        + formatValue(ip.ip)
+                        + '</a>';
+                    }
+                    cellContent += '</li>';
+                  });
+                  
+                  cellContent += '</ul>';
+                }
+                [% END %]
+                [% IF params.n_netbios %]
+                if (node.netbios) {
+                  node.netbios.forEach(function(nbt, i) {
+                    cellContent += '<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\'
+                      + '<a href="[% uri_for("/report/netbios") %]?domain='
+                      + formatURI(nbt.domain) 
+                      + '" data-container="body" data-title="Nodes in this Domain">'
+                      + formatValue(nbt.domain)
+                      + '</a>'
+                      + '\\<a href="[% search_node %]&q='
+                      + formatURI(nbt.nbname)
+                      + '">'
+                      + formatValue(nbt.nbname) 
+                      + '</a>';
+                      
+                    cellContent += '<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                      + formatValue((nbt.nbuser) ? nbt.nbuser : '[No User]')
+                      + '@<a href="[% search_node %]&q=' + formatURI(nbt.ip) + '">'
+                      + formatValue(nbt.ip)
+                      + '</a>';
+                  });
+                }
+                [% END %]
+                
+                cellContent += '</li>';
+                });
+              
+              cellContent += '</ul>';
             }
+            return cellContent;
           }, 
           createdCell: function(td, cell, row){
             $(td).on('click', '.show_nodes', function() {

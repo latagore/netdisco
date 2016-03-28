@@ -432,9 +432,21 @@ get '/ajax/content/search/ports' => require_login sub {
       push @extra_rs, $vlans;
     }
     
-    if (param('c_nodes')){
-      #my $nodes = $set->$nodes_name;
-      #push @extra_rs, $nodes;
+    if (param('c_nodes')) {
+      my $nodes = $set;
+      if (param('n_archived')) {
+        $nodes = $nodes->search(undef,
+        {
+          prefetch => { 'nodes_with_age' => [ 'ips', 'oui' ] }
+        });
+      } else {
+        $nodes = $nodes->search(undef,
+        {
+          prefetch => { 'active_nodes_with_age' => [ 'ips', 'oui' ] }
+        });
+      }
+
+      push @extra_rs, $nodes;
     }
     
     debug "### SORT";
