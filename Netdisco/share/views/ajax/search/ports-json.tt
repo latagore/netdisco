@@ -434,12 +434,12 @@
             [% IF params.c_neighbors %]
             // neighbor device
             if (row.remote_ip != null || row.is_uplink) {
-              if (row.neighbor != null) {
+              if (row.neighbor_alias.device != null) {
                 // icons
                 if (row.manual_topo){
-                  cellContent += '<i class="icon-link text-warning"></i>';
+                  cellContent += '<i class="icon-link text-warning"></i> ';
                 } else {
-                  cellContent += '<i class="icon-link"></i>';
+                  cellContent += '<i class="icon-link"></i> ';
                 }
                 if (row.remote_type && row.remote_type.match(/ip.phone/i)){
                   cellContent += '<i class="icon-phone"></i>&nbsp;';
@@ -448,22 +448,22 @@
                 }
                 
                 // neighbor link
-                if (row.neighbor.dns){
+                if (row.neighbor_alias.device.dns){
                   cellContent += '<a href="[% uri_for("/device", self_options) %]&q='
-                    + formatURI(row.neighbor.ip) + '">'
-                    + formatValue(row.neighbor.dns.replace(/[% settings.domain_suffix %]$/, ''))
+                    + formatURI(row.neighbor_alias.device.ip) + '">'
+                    + formatValue(row.neighbor_alias.device.dns.replace(/[% settings.domain_suffix %]$/, ''))
                     + '</a>';
                 } else {
                   cellContent += '<a href="[% uri_for("/device", self_options) %]&q='
-                    + formatURI(row.neighbor.ip) + '">'
-                    + formatValue(row.neighbor.ip)
+                    + formatURI(row.neighbor_alias.device.ip) + '">'
+                    + formatValue(row.neighbor_alias.device.ip)
                     + '</a>';
                 }
                 
                 // neighbor port link
                 if (row.remote_port != null) {
                     cellContent += ' - <a href="[% uri_for("/device", self_options) %]&q='
-                      + formatURI (row.neighbor.ip)
+                      + formatURI (row.neighbor_alias.device.ip)
                       + '&f=' + formatURI(row.remote_port)
                       + '&prefer=port">'
                       + formatValue(row.remote_port)
