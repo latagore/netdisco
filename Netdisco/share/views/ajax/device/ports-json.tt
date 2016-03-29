@@ -409,7 +409,7 @@
             [% IF params.c_neighbors %]
             // neighbor device
             if (row.remote_ip != null || row.is_uplink) {
-              if (row.neighbor_alias.device != null) {
+              if (row.neighbor_alias != null && row.neighbor_alias.device != null) {
                 // icons
                 if (row.manual_topo){
                   cellContent += '<i class="icon-link text-warning"></i> ';
