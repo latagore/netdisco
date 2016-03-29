@@ -437,12 +437,14 @@ get '/ajax/content/search/ports' => require_login sub {
       if (param('n_archived')) {
         $nodes = $nodes->search(undef,
         {
-          prefetch => { 'nodes_with_age' => [ 'ips', 'oui' ] }
+          prefetch => { 'nodes_with_age' => [ 'ips', 'oui' ] },
+          order_by => { -desc => 'nodes_with_age.time_last' }
         });
       } else {
         $nodes = $nodes->search(undef,
         {
-          prefetch => { 'active_nodes_with_age' => [ 'ips', 'oui' ] }
+          prefetch => { 'active_nodes_with_age' => [ 'ips', 'oui' ] },
+          order_by => { -desc => 'active_nodes_with_age.time_last' }
         });
       }
 
