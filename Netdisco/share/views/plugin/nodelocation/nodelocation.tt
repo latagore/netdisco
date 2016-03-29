@@ -3,8 +3,8 @@
     <tr>
       <th>Node</th>
       <th>Switch Port</th>     
-      <th>Horizontal Cable</th>
-      <th>Destination Room</th>
+      <th>Cable</th>
+      <th>Room</th>
       <th>Building</th> 
       <th>Age</th>      
     </tr>
