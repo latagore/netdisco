@@ -428,14 +428,101 @@
           sortable: false,
           defaultContent: "",
           "render": function(data, type, row, meta) {
-            
-            [
+            var cellContent = '';
+
+            [% IF params.c_neighbors %]
+            // neighbor device
+            if (row.remote_ip != null || row.is_uplink) {
+              if (row.neighbor != null) {
+                // icons
+                if (row.manual_topo){
+                  cellContent += '<i class="icon-link text-warning"></i>';
+                } else {
+                  cellContent += '<i class="icon-link"></i>';
+                }
+                if (row.remote_type && row.remote_type.match(/ip.phone/i)){
+                  cellContent += '<i class="icon-phone"></i>&nbsp;';
+                } else if (row.remote_type && row.remote_type.match(/^AP:\s/)) {
+                  cellContent += '<i class="icon-signal"></i>&nbsp;';
+                }
+                
+                // neighbor link
+                if (row.neighbor.dns){
+                  cellContent += '<a href="[% uri_for("/device", self_options) %]&q='
+                    + formatURI(row.neighbor.ip) + '">'
+                    + formatValue(row.neighbor.dns.remove(settings.domain_suffix))
+                    + '</a>';
+                } else {
+                  cellContent += '<a href="[% uri_for("/device", self_options) %]&q='
+                    + formatURI(row.neighbor.ip) + '">'
+                    + formatValue(row.neighbor.ip)
+                    + '</a>';
+                }
+                
+                // neighbor port link
+                if (row.remote_port != null) {
+                    cellContent += ' - <a href="[% uri_for("/device", self_options) %]&q='
+                      + formatURI (row.neighbor.ip)
+                      + '&f=' + formatURI(row.remote_port)
+                      + '&prefer=port">'
+                      + formatValue(row.remote_port)
+                      + '</a>';
+                }
+                cellContent += '<br/>';
+                
+                [% IF params.neigh_id %]
+                // additional neighbor info
+                if (row.remote_id || row.remote_type) {
+                  cellContent += '(';
+                  if (row.remote_id) { cellContent += 'id: ' + row.remote_id; }
+                  if (row.remote_type) { cellContent += ' type: ' + row.remote_type; }
+                  cellContent += ')';
+                }
+                [% END %]
+              } else if (row.remote_ip) {
+                // icons
+                if (row.remote_type && row.remote_type.match(/ip.phone/i)){
+                  cellContent += '<i class="icon-phone"></i>&nbsp;';
+                } else if (row.remote_type && row.remote_type.match(/^AP:\s/)) {
+                  cellContent += '<i class="icon-signal"></i>&nbsp;';
+                }
+                cellContent += '<i class="icon-unlink text-error"></i>&nbsp;';
+                
+                // remote device link
+                cellContent += '<a href="[% search_node %]&q='
+                  + formatURI(row.remote_ip) + '">'
+                  + formatValue(row.remote_ip);
+                if (row.remote_port != null) { 
+                  cellContent += ' - '
+                    + formatValue(row.remote_port);
+                }  
+                cellContent += '</a><br/>';
+                
+                [% IF params.neigh_id %]
+                // additional neighbor info
+                if (row.remote_id || row.remote_type) {
+                  cellContent += '(';
+                  if (row.remote_id) { cellContent += 'id: ' + row.remote_id; }
+                  if (row.remote_type) { cellContent += ' type: ' + row.remote_type; }
+                  cellContent += ')';
+                }
+                [% END %]
+              } else {
+                cellContent += '<i class="icon-unlink text-error"></i>&nbsp; (possible uplink)';
+              }
+              [% IF params.c_nodes %]
+              if (data != null ){
+                cellContent += '<hr />';
+              }
+              [% END %]
+            }
+            [% END %]
             
             [% IF params.c_nodes %]
+            // nodes
             if (data != null) {
               var NODE_LIST_LENGTH = 3; 
               var shown_ips_length = 0;
-              var cellContent = '';
               cellContent += '<ul class="nd_node-list icons-ul">';
               
               data.forEach(function(node, i){
