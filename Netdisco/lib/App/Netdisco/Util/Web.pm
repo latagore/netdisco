@@ -54,6 +54,34 @@ sub sql_match {
   return ( wantarray ? ($text, {-ilike => $text}) : $text );
 }
 
+=head2 sort_device_and_port( $a, $b )
+
+Sort by device name, then port names of various types used by device vendors. Interface is as
+Perl's own C<sort> - two input args and an integer return value.
+
+=cut
+
+sub sort_device_and_port {
+    my ($aval, $bval) = @_;
+    my $aname;
+    my $bname;
+    if ($aval->{device}->{dns}) {
+      $aname = $aval->{device}->{dns};
+    } else {
+      $aname = $aval->{ip};
+    }
+    if ($bval->{device}->{dns}) {
+      $bname = $bval->{device}->{dns};
+    } else {
+      $bname = $bval->{ip};
+    }
+    if (($aname cmp $bname) != 0) {
+      return $aname cmp $bname;
+    } else {
+      return sort_port($aval->{port}, $bval->{port});
+    }
+}
+
 =head2 sort_port( $a, $b )
 
 Sort port names of various types used by device vendors. Interface is as
@@ -70,7 +98,7 @@ sub sort_port {
 
     my $numbers        = qr{^(\d+)$};
     my $numeric        = qr{^([\d\.]+)$};
-    my $dotted_numeric = qr{^(\d+)[:.](\d+)$};
+    my $dotted_numeric = qr{^(\d+)[:./](\d+)$};
     my $letter_number  = qr{^([a-zA-Z]+)(\d+)$};
     my $wordcharword   = qr{^([^:\/.]+)[-\ :\/\.]+([^:\/.0-9]+)(\d+)?$}; #port-channel45
     my $netgear        = qr{^Slot: (\d+) Port: (\d+) }; # "Slot: 0 Port: 15 Gigabit - Level"

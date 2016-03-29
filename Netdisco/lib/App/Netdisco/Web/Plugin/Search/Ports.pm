@@ -452,7 +452,7 @@ get '/ajax/content/search/ports' => require_login sub {
     debug "### SORT";
 
     # sort ports (empty set would be a 'no records' msg)
-    my @results = sort { &App::Netdisco::Util::Web::sort_port($a->{port}, $b->{port}) } $set->merge_rs(\@extra_rs);
+    my @results = sort { &App::Netdisco::Util::Web::sort_device_and_port($a, $b) } $set->merge_rs(\@extra_rs);
     #my @results = $set->hri->all;
     return unless scalar @results;
     debug (scalar @results);
