@@ -80,10 +80,11 @@
     var table = $('#dp-data-table').DataTable({
       "deferRender": true,
       "data": [% results %],
+      "order": [],
       "columns": [
         { // status icon column
           searchable: false,
-          sortable: false,
+          orderable: false,
           data: null,
           "render": function(data, type, row, meta) {
             var cell_str = formatValue(row.up_admin)
@@ -425,7 +426,7 @@
         [% IF item.name == 'c_nodes' or item.name == 'c_neighbors' %]
         ,{ // status text column
           data: '[% nodes_name %]',
-          sortable: false,
+          orderable: false,
           defaultContent: "",
           "render": function(data, type, row, meta) {
             var cellContent = '';
