@@ -292,6 +292,9 @@ td > form.nd_inline-form {
 
 .nd_hand-icon {
   margin-right: 4px;
+  /* position the hand icons so it's not blocked by the port text */
+  z-index: 1;
+  position: relative;
 }
 
 /* port admin log view */
