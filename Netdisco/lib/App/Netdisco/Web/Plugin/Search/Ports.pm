@@ -448,18 +448,13 @@ get '/ajax/content/search/ports' => require_login sub {
 
       push @extra_rs, $nodes;
     }
-    
-    debug "### SORT";
 
     # sort ports (empty set would be a 'no records' msg)
     my @results = sort { &App::Netdisco::Util::Web::sort_device_and_port($a, $b) } $set->merge_rs(\@extra_rs);
     #my @results = $set->hri->all;
     return unless scalar @results;
-    debug (scalar @results);
-    debug "### DONE SORT, START JSON RENDER";
     
     my $json =  to_json(\@results);
-    debug length $json;
     if (request->is_ajax) {
         template 'ajax/search/ports-json.tt', {
           results => $json,
