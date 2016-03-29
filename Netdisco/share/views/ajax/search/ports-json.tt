@@ -451,7 +451,7 @@
                 if (row.neighbor.dns){
                   cellContent += '<a href="[% uri_for("/device", self_options) %]&q='
                     + formatURI(row.neighbor.ip) + '">'
-                    + formatValue(row.neighbor.dns.remove(settings.domain_suffix))
+                    + formatValue(row.neighbor.dns.replace(/[% settings.domain_suffix %]$/, ''))
                     + '</a>';
                 } else {
                   cellContent += '<a href="[% uri_for("/device", self_options) %]&q='
