@@ -512,7 +512,7 @@
                 cellContent += '<i class="icon-unlink text-error"></i>&nbsp; (possible uplink)';
               }
               [% IF params.c_nodes %]
-              if (data != null ){
+              if (data != null && data.length){
                 cellContent += '<hr />';
               }
               [% END %]
