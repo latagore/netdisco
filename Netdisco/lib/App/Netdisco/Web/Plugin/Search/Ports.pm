@@ -414,24 +414,59 @@ get '/ajax/content/search/ports' => require_login sub {
     $set = $set->search_rs({}, { prefetch => [{neighbor_alias => 'device'}] })
       if param('c_neighbors');
 
+    # retrieve node count if asked for
+    $set = $set->with_node_count if param('c_nodes') and param('n_archived');
+    $set = $set->with_active_node_count if param('c_nodes') and not param('n_archived');
+    
     # put in the York specific port information
     $set = $set->with_york_port_info;
 
+    # get the one-to-many information like VLANs and some nodes
+    my @extra_rs;
+    if (param('c_vmember')){
+      my $vlans = $set->search(undef, 
+        {
+          columns => ['me.ip', 'me.port'],
+          prefetch => 'all_port_vlans' 
+        });
+      push @extra_rs, $vlans;
+    }
+    
+    if (param('c_nodes')) {
+      my $nodes = $set;
+      if (param('n_archived')) {
+        $nodes = $nodes->search(undef,
+        {
+          prefetch => { 'nodes_with_age' => [ 'ips', 'oui' ] },
+          order_by => { -desc => 'nodes_with_age.time_last' }
+        });
+      } else {
+        $nodes = $nodes->search(undef,
+        {
+          prefetch => { 'active_nodes_with_age' => [ 'ips', 'oui' ] },
+          order_by => { -desc => 'active_nodes_with_age.time_last' }
+        });
+      }
+
+      push @extra_rs, $nodes;
+    }
+
     # sort ports (empty set would be a 'no records' msg)
-    my $results = [ sort { &App::Netdisco::Util::Web::sort_port($a->port, $b->port) } $set->all ];
-    return unless scalar @$results;
+    my @results = sort { &App::Netdisco::Util::Web::sort_device_and_port($a, $b) } $set->merge_rs(\@extra_rs);
+    #my @results = $set->hri->all;
+    return unless scalar @results;
     
-    
+    my $json =  to_json(\@results);
     if (request->is_ajax) {
-        template 'ajax/search/ports.tt', {
-          results => $results,
+        template 'ajax/search/ports-json.tt', {
+          results => $json,
           nodes_name => $nodes_name
         }, { layout => undef };
     }
     else {
         header( 'Content-Type' => 'text/comma-separated-values' );
         template 'ajax/search/ports_csv.tt', {
-          results => $results,
+          results => @results,
           nodes_name => $nodes_name
         }, { layout => undef };
     }

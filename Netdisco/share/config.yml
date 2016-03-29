@@ -36,6 +36,7 @@ trust_x_remote_user: false
 path: '/'
 web_plugins:
   - Inventory
+  - Nodes
   - Report::PortAdminDown
   - Report::PortBlocking
   - Report::PortMultiNodes

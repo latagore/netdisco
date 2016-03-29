@@ -1,0 +1,20 @@
+        ,{ 
+          data: "port_info.riser2",
+          render : function(data, type, row, meta) {
+            var column = 'riser2';
+            [% IF user_can_port_control AND params.c_admin %]
+            if (type === 'display') {
+              var cellContent = '<div class="york-port-info" contenteditable="true"'
+                + ' data-column="' + column
+                + '" data-for-device="' + row.ip
+                + '" data-for-port="' + row.port
+                + '">'
+                + formatValue(data);
+                + '</div>';
+                
+                return cellContent;
+            }
+            [% END %]
+            return formatValue(data);
+          }
+        }

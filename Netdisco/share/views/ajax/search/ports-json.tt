@@ -1,0 +1,713 @@
+[% SET user_can_port_control = user_has_role('port_control') %]
+<table id="dp-data-table" class="table table-striped table-bordered" width="100%" cellspacing="0">
+  <thead>
+    <tr>
+      [% SET colIndex.device = 1 %]
+      <th></th>
+      [% IF params.c_up %]
+      [% SET colIndex.device = colIndex.device + 1 %]
+      <th>Status</th>
+      [% END %]
+      <th>Device</th>
+      [% SET currentIndex = colIndex.device + 1 %]
+      [% FOREACH item IN vars.port_columns %]
+      [% NEXT IF item.name == 'c_up' %]
+      [% NEXT IF item.name == 'c_admin' %]
+      [% NEXT IF item.name == 'c_nodes' AND params.c_nodes AND params.c_neighbors %]
+        [% NEXT UNLESS params.${item.name} %]
+        [% colIndex.${item.name} = currentIndex %]
+        [% SET th_class = '' %]
+        [% IF (item.name == 'c_port' OR item.name == 'c_descr' OR item.name == 'c_name') %]
+          [% th_class = ' class="portsort"' %]
+        [% END %]
+        <th[% th_class %]>
+          [% item.label | html_entity %]
+        </th>
+      [% currentIndex = currentIndex + 1 %]
+      [% END %]
+    </tr>
+  </thead>
+  [% IF user_can_port_control %]
+  <div id="nd_portlog" class="nd_modal nd_deep-horizon modal hide fade" tabindex="-1"
+      role="dialog" aria-hidden="true">
+    <div class="modal-body">
+      <blockquote>
+        <ul><li><p>Please provide a reason for changing the Port Configuration</p></li></ul>
+      </blockquote>
+      <select id="nd_portlog-reason" class="input-block-level" name="reason">
+        [% FOREACH pair IN settings.port_control_reasons.pairs %]
+          <option[% ' selected="selected"' IF pair.key == 'other' %] value="[% pair.key | html_entity %]">
+            [% pair.value | html_entity %]</option>
+        [% END %]
+      </select>
+      <textarea id="nd_portlog-log" class="input-block-level" rows="2" name="log"
+        placeholder="Enter a log message"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+      <button id="nd_portlog-submit" class="btn btn-info" data-dismiss="modal">Continue</button>
+    </div>
+  </div>
+  [% END %]
+  <script type="text/javascript">
+  //<![CDATA[
+  $(document).ready(function() {
+    function ucfirst (string) { // upper cases first letter
+      if (string != null && string.length){
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      } else {
+      }
+        return string;
+    }
+    
+    // formats a string to be usable with HTML
+    function formatValue(string) {
+        if (string == null) { return "" };
+        return he.encode(string.toString());
+    }
+    
+    // formats a string for use in URIs
+    function formatURI(string) {
+        if (string == null) { return "" };
+        return encodeURI(string.toString());
+    }
+    
+    function formatMac(string) {
+        // TODO actually format mac addresses into the various formats
+        return formatValue(string);
+    }
+    
+    var table = $('#dp-data-table').DataTable({
+      "deferRender": true,
+      "data": [% results %],
+      "order": [],
+      "columns": [
+        { // status icon column
+          searchable: false,
+          orderable: false,
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.up_admin)
+              + " / "
+              + formatValue(row.up);
+              
+            if (type === 'display') {
+              if (row.up_admin !== 'up'){
+                cell_str = '<i class="icon-remove" data-container="body" data-title="Shutdown" rel="tooltip" data-animation=""></i>';
+              } else if (row.up === 'up' && row.stp == 'blocking' && row.vlan && row.vlan.length > 2) { // FIXME vlans
+                cell_str = '<i class="icon-fullscreen text-info" data-container="body" data-title="STP Blocking" rel="tooltip" data-animation=""></i>';
+              } else if (row.up_admin === 'up' && row.up != 'up' && row.up !== 'dormant') {
+                cell_str = '<i class="icon-arrow-down text-error" data-container="body" data-title="Not Connected" rel="tooltip" data-animation=""></i>';
+              } else {
+                cell_str = '<i class="icon-angle-up text-success" data-container="body" data-title="Connected"  rel="tooltip" data-animation=""></i>';
+              }
+
+              if (row.is_free) {
+                cell_str += '<i class="icon-undo text-success" data-container="body" data-title="Free Port" rel="tooltip" data-animation=""></i>';
+              }
+            }
+            return cell_str;
+          }
+        }
+        [% IF params.c_up %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.up_admin)
+              + " / "
+              + formatValue(row.up);
+            return cell_str;
+          }
+        }
+        [% END %]
+        ,{ // device column
+          data: null,
+          [%# IF params.c_port %]
+          orderData: [ [% colIndex.device %], [% colIndex.c_port %] ],
+          [%# END %]
+          render: function(data, type, row, meta) {
+            var name; // name to be displayed in the table
+            if (row.device && row.device.dns) { 
+              name = row.device.dns.replace(/[% settings.domain_suffix %]$/, '');
+            } else {
+              name = row.ip;
+            }
+            if (type === 'display'){
+              var cellContent = '<a href="[% uri_for("/device") | html_entity %]?q=' + formatURI(row.ip) + '">'
+                + formatValue(name)
+                + '</a>';
+              return cellContent;
+            }
+            return name;
+          }
+        }
+        [% FOREACH item IN vars.port_columns %]
+          [% NEXT IF item.name == 'c_up' %]
+          [% NEXT IF item.name == 'c_admin' %]
+          [% NEXT IF item.name == 'c_nodes' AND params.c_nodes AND params.c_neighbors %]
+          [% NEXT UNLESS params.${item.name} %]
+          
+        [% IF item.name == 'c_port' %]
+        ,{ // port id column
+          data: 'port',
+          className: 'nd_nowrap',
+          type: 'portsort',
+          "render": function(data, type, row, meta) {
+            if (type === 'display'){
+              var cellContent = 
+                '<a class="nd_log-icon"'
+                + ' href="[% uri_for("/report/portlog") %]?q=' + formatURI(row.ip)
+                + '&f=' + formatURI(row.port) + '">'
+                + '<i class="icon-file-text-alt" rel="tooltip" data-placement="top" data-offset="3"'
+                + ' data-animation="" data-container="body" data-title="View Port Log"></i>'
+                + '</a>';
+              [% IF user_can_port_control AND params.c_admin %]
+              // port control buttons
+              if (row.up_admin === 'up'){
+                cellContent += '<span class="nd_hand-icon">'
+                  + '<i class="icon-bullseye" data-action="bounce"'
+                  + '  rel="tooltip" data-placement="top" data-offset="3"'
+                  + '  data-animation="" data-container="body" data-title="Bounce Port"></i>'
+                  + '  <i class="icon-hand-down"'
+                  + '  rel="tooltip" data-placement="top" data-offset="3"'
+                  + '  data-animation="" data-container="body" data-title="Disable Port"></i>'
+                  + '</span>';
+              } else {
+                cellContent += '<span class="nd_hand-icon">'
+                  + '<i class="icon-bullseye" data-action="bounce" style="display: none"'
+                  + '  rel="tooltip" data-placement="top" data-offset="3"'
+                  + '  data-animation="" data-container="body" data-title="Bounce Port"></i>'
+                  + '  <i class="icon-hand-up"'
+                  + '  rel="tooltip" data-placement="top" data-offset="3"'
+                  + '  data-animation="" data-container="body" data-title="Enable Port"></i>'
+                  + '</span>';
+              }
+              [% END %]
+              if (row.slave_of){
+                cellContent += '<small><i class="icon-user muted" data-container="body" data-title="Aggregrate Link Slave" rel="tooltip" data-animation=""></i></small>';
+              }
+              if (row.is_master){
+                cellContent += '<small><i class="icon-group muted" data-container="body" data-title="Aggregate Link Master" rel="tooltip" data-animation=""></i></small>'
+                  + '<a class="nd_this-port-only nd_port-only-first">' + formatValue(row.port) + '</a>';
+              } else {
+                cellContent += '<span class="nd_this-port-only nd_port-only-first">' + formatValue(row.port) + '</span>';
+              }
+              if (row.slave_of){
+                cellContent += '<br/>';
+                if (row.agg_master_up_admin !== 'up') {
+                  cellContent += '<small><i class="icon-group muted" data-container="body" data-title="Aggregate Link Master, Admin Down" rel="tooltip" data-animation=""></i></small>';
+                } else if (row.agg_master_up === 'up') {
+                  cellContent += '<small><i class="icon-group text-success" data-container="body" data-title="Aggregate Link Master, Admin Up, Link Up" rel="tooltip" data-animation="" ></i></small>';
+                } else {
+                  cellContent += '<small><i class="icon-group text-error" data-container="body" data-title="Agggregate Link Master: Admin Up, Link Down" rel="tooltip" data-animation=""></i></small>';
+                }
+                cellContent += '<a class="nd_this-port-only" href="[% uri_for("/device") %]'
+                  + '&q=' + formatURI(row.ip) 
+                  + '&f=' + formatURI(row.port)
+                  + '&prefer=port">'
+                  + formatValue(row.slave_of)
+                  + '</a>';
+              }
+              return cellContent;
+            }
+            return formatValue(row.port);
+          }
+          [% IF user_can_port_control AND params.c_admin %]
+          ,createdCell: function(td, cell, row, r, c){
+            var t = $(td);
+            if (row.up_admin === 'up'){
+              td.dataset.action = "down";
+            } else {
+              td.dataset.action = "up";
+            }          
+            td.dataset.field = "c_port";
+            td.dataset.forDevice = formatValue(row.ip);
+            td.dataset.forPort = formatValue(row.port);
+            td.className += " nd_editable-cell";
+          }
+          [% END %]
+        }
+        [% END %]
+
+
+        [% FOREACH config IN settings._extra_device_port_cols %]
+        [% NEXT UNLESS config.position == 'left' AND item.name == config.name %]
+        [%   TRY %]
+        [%     INCLUDE "plugin/${config.name}/device_port_column-json.tt" %]
+        [%   CATCH %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            
+            return "MISSING";
+          }
+        }
+        [%   END %]
+        [% END %]
+
+
+        [% IF item.name == 'c_descr' %]
+        ,{ // status text column
+          data: null,
+          type: 'portsort',
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.descr);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF item.name == 'c_type' %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.type);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF item.name == 'c_duplex' %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.duplex);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF item.name == 'c_name' %]
+        ,{ // status text column
+          data: null,
+          type: 'portsort',
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.name);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF item.name == 'c_speed' %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.speed);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF item.name == 'c_mac' %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.mac);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF item.name == 'c_mtu' %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.mtu);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF item.name == 'c_pvid' %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            // FIXME 
+            var cell_str = formatValue(row.vlan);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF item.name == 'c_vmember' %]
+        ,{ // status text column
+          data: 'all_port_vlans',
+          "render": function(data, type, row, meta) {
+            if (type !== 'display' && data) {
+              var array = [];
+              data.forEach(function(el,i){
+                 array[i]=el.vlan; 
+              });
+              return array.join(',');
+            } else {
+              var cellContent = ''; 
+              var vlans = row.all_port_vlans;
+              if (vlans != null && vlans.length){
+                var vlanshtml = '';
+                vlans.forEach(function(el, i){
+                  if (i != 0){ 
+                    vlanshtml += ', '; // add comma if not first vlan
+                  }
+                  vlanshtml +=  '<a href="[% uri_for("/search") %]?tab=vlan&q=' + el.vlan + '">' + el.vlan + '</a>';
+                });
+                if (vlans.length > 10){
+                  cellContent = '<div class="nd_vlan-total">(' + vlans.length
+                    + ')</div><span class="nd_linkcell nd_collapse-vlans">'
+                    + '<div class="nd_arrow-up-down-left icon-chevron-up icon-large"></div>Show VLANs</span>'
+                    + '<div class="nd_collapsing nd_collapse-pre-hidden">'
+                    + vlanshtml
+                    + '</div>';
+                } else {
+                  cellContent = vlanshtml;
+                }
+              }
+              return cellContent;
+            }
+          }
+        }
+        [% END %]
+        [% IF item.name == 'c_stp' %]
+        ,{ // STP status column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.stp);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF item.name == 'c_power' %]
+        ,{ // power column
+          data: 'power',
+          class: 'nd_nowrap',
+          "render": function(data, type, row, meta) {
+            var cellContent = '';
+            if (data != null){
+              if (type === 'display') {
+                if (data.admin){
+                  cellContent += '<i class="icon-off nd_power-on" />'
+                } else {
+                  cellContent += '<i class="icon-off" />'
+                }
+              } else { // sorting + filtering
+                if (data.admin){
+                  cellContent += 'on';
+                } else {
+                  cellContent += 'off';
+                }
+              }
+              
+              if (data.power > 0) {
+                cellContent += ' ' + data.power + ' mW';
+              } else {
+                cellContent += ' (' + data.status + ')';
+              }
+            }
+            return cellContent;
+          }
+        }
+        [% END %]
+        [% IF item.name == 'c_ssid' %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = (row.ssid != null) ? formatValue(row.ssid.ssid) : ""; 
+            return cell_str;
+          }
+        }
+        [% END %]
+        
+        [% FOREACH config IN settings._extra_device_port_cols %]
+        [% NEXT UNLESS config.position == 'mid' AND item.name == config.name %]
+        [%   TRY %]
+        [%     INCLUDE "plugin/${config.name}/device_port_column-json.tt" %]
+        [%   CATCH %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            
+            return "MISSING";
+          }
+        }
+        [%   END %]
+        [% END %]
+        
+        [% IF item.name == 'c_nodes' or item.name == 'c_neighbors' %]
+        ,{ // status text column
+          data: '[% nodes_name %]',
+          orderable: false,
+          defaultContent: "",
+          "render": function(data, type, row, meta) {
+            var cellContent = '';
+
+            [% IF params.c_neighbors %]
+            // neighbor device
+            if (row.remote_ip != null || row.is_uplink) {
+              if (row.neighbor_alias != null && row.neighbor_alias.device != null) {
+                // icons
+                if (row.manual_topo){
+                  cellContent += '<i class="icon-link text-warning"></i> ';
+                } else {
+                  cellContent += '<i class="icon-link"></i> ';
+                }
+                if (row.remote_type && row.remote_type.match(/ip.phone/i)){
+                  cellContent += '<i class="icon-phone"></i>&nbsp;';
+                } else if (row.remote_type && row.remote_type.match(/^AP:\s/)) {
+                  cellContent += '<i class="icon-signal"></i>&nbsp;';
+                }
+                
+                // neighbor link
+                if (row.neighbor_alias.device.dns){
+                  cellContent += '<a href="[% uri_for("/device", self_options) %]&q='
+                    + formatURI(row.neighbor_alias.device.ip) + '">'
+                    + formatValue(row.neighbor_alias.device.dns.replace(/[% settings.domain_suffix %]$/, ''))
+                    + '</a>';
+                } else {
+                  cellContent += '<a href="[% uri_for("/device", self_options) %]&q='
+                    + formatURI(row.neighbor_alias.device.ip) + '">'
+                    + formatValue(row.neighbor_alias.device.ip)
+                    + '</a>';
+                }
+                
+                // neighbor port link
+                if (row.remote_port != null) {
+                    cellContent += ' - <a href="[% uri_for("/device", self_options) %]&q='
+                      + formatURI (row.neighbor_alias.device.ip)
+                      + '&f=' + formatURI(row.remote_port)
+                      + '&prefer=port">'
+                      + formatValue(row.remote_port)
+                      + '</a>';
+                }
+                cellContent += '<br/>';
+                
+                [% IF params.neigh_id %]
+                // additional neighbor info
+                if (row.remote_id || row.remote_type) {
+                  cellContent += '(';
+                  if (row.remote_id) { cellContent += 'id: ' + row.remote_id; }
+                  if (row.remote_type) { cellContent += ' type: ' + row.remote_type; }
+                  cellContent += ')';
+                }
+                [% END %]
+              } else if (row.remote_ip) {
+                // icons
+                if (row.remote_type && row.remote_type.match(/ip.phone/i)){
+                  cellContent += '<i class="icon-phone"></i>&nbsp;';
+                } else if (row.remote_type && row.remote_type.match(/^AP:\s/)) {
+                  cellContent += '<i class="icon-signal"></i>&nbsp;';
+                }
+                cellContent += '<i class="icon-unlink text-error"></i>&nbsp;';
+                
+                // remote device link
+                cellContent += '<a href="[% search_node %]&q='
+                  + formatURI(row.remote_ip) + '">'
+                  + formatValue(row.remote_ip);
+                if (row.remote_port != null) { 
+                  cellContent += ' - '
+                    + formatValue(row.remote_port);
+                }  
+                cellContent += '</a><br/>';
+                
+                [% IF params.neigh_id %]
+                // additional neighbor info
+                if (row.remote_id || row.remote_type) {
+                  cellContent += '(';
+                  if (row.remote_id) { cellContent += 'id: ' + row.remote_id; }
+                  if (row.remote_type) { cellContent += ' type: ' + row.remote_type; }
+                  cellContent += ')';
+                }
+                [% END %]
+              } else {
+                cellContent += '<i class="icon-unlink text-error"></i>&nbsp; (possible uplink)';
+              }
+              [% IF params.c_nodes %]
+              if (data != null && data.length){
+                cellContent += '<hr />';
+              }
+              [% END %]
+            }
+            [% END %]
+            
+            [% IF params.c_nodes %]
+            // nodes
+            if (data != null) {
+              var NODE_LIST_LENGTH = 3; 
+              var shown_ips_length = 0;
+              cellContent += '<ul class="nd_node-list icons-ul">';
+              
+              data.forEach(function(node, i){
+                if (i >= NODE_LIST_LENGTH && !row.show_all_nodes) { return; }
+                
+                cellContent += '<li>';
+                if (!node.active){
+                  cellContent += '<i class="icon-book"></i>&nbsp; ';
+                }
+                
+                // node icon
+                if (row.remote_type && row.remote_type.match(/ip.phone/i)) {
+                  cellContent += '<i class="icon-li icon-phone"></i>';
+                } else if ((node.wireless != null)
+                    || (row.remote_type && row.remote_type.match(/^AP:\s/))) {
+                  cellContent += '<i class="icon-li icon-signal"></i>';
+                } else {
+                  cellContent += '<i class="icon-li icon-hdd"></i>';
+                }
+                
+                // mac address
+                cellContent += '<a href="[% search_node %]&q=' + formatURI(node.mac) + '">'
+                  + formatMac(node.mac) + '</a>';
+                if (node.vlan > 0 && (node.vlan != row.vlan)) {
+                  cellContent += ' (on vlan ' + formatValue(node.vlan) + ')';
+                }
+                
+                // wireless
+                [% IF params.n_ssid %]
+                if (node.wireless != null && node.wireless.length){
+                  cellContent += ' (SSID: ';
+                  node.wireless.forEach(function(wlan){
+                    cellContent += '<a href="[% uri_for("/report/portssid") %]?ssid=' 
+                      + formatURI(wlan.ssid) + '">'
+                      + formatValue(wlan.ssid) + '</a> ';
+                  });
+                  cellContent += ')';
+                }
+                [% END %]
+                
+                // OUI info
+                [% IF params.n_vendor %]
+                if (node.oui != null 
+                    && node.oui.abbrev != null 
+                    && node.oui.abbrev.trim()){
+                  cellContent += '('
+                    + '<a href="[% uri_for("/report/nodevendor") %]?vendor=' 
+                    + formatURI(node.oui.abbrev) + '">'
+                    + formatValue(node.oui.abbrev) + '</a> '
+                    + ')';
+                }
+                [% END %]
+                
+                // Age
+                [% IF params.n_age %]
+                cellContent += '<br />(' + formatValue(node.time_last_age) + ')';
+                [% END %]
+
+                // ips of node
+                [% IF params.n_ip %]
+                if (node.ips != null){
+                  cellContent += '<ul class="nd_node-ip-list">';
+                  shown_ips_length += node.ips.length;
+                  node.ips.forEach(function(ip) {
+                    cellContent += '<li>';
+                    if (!node.active) {
+                      cellContent += '<i class="icon-book"></i>&nbsp; ';
+                    }
+                    if (ip.dns) {
+                      cellContent +=  '<a href="[% search_node %]&q=' + formatURI(ip.ip) + '">'
+                        + formatValue(ip.dns) 
+                        + '<br />(' + formatValue(ip.ip) + ')'
+                        + '</a>';
+                    } else {
+                      cellContent +=  '<a href="[% search_node %]&q=' + formatURI(ip.ip) + '">'
+                        + formatValue(ip.ip)
+                        + '</a>';
+                    }
+                    cellContent += '</li>';
+                  });
+                  
+                  cellContent += '</ul>';
+                }
+                [% END %]
+                [% IF params.n_netbios %]
+                if (node.netbios) {
+                  node.netbios.forEach(function(nbt, i) {
+                    cellContent += '<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\\\\'
+                      + '<a href="[% uri_for("/report/netbios") %]?domain='
+                      + formatURI(nbt.domain) 
+                      + '" data-container="body" data-title="Nodes in this Domain">'
+                      + formatValue(nbt.domain)
+                      + '</a>'
+                      + '\\<a href="[% search_node %]&q='
+                      + formatURI(nbt.nbname)
+                      + '">'
+                      + formatValue(nbt.nbname) 
+                      + '</a>';
+                      
+                    cellContent += '<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                      + formatValue((nbt.nbuser) ? nbt.nbuser : '[No User]')
+                      + '@<a href="[% search_node %]&q=' + formatURI(nbt.ip) + '">'
+                      + formatValue(nbt.ip)
+                      + '</a>';
+                  });
+                }
+                [% END %]
+                
+                cellContent += '</li>';
+                });
+              var nodes = (data != null) ? data.length : 0;
+              [% IF NOT params.n_archived %]
+              var remaining_node_count = nodes - NODE_LIST_LENGTH;
+              if (remaining_node_count < 0) { remaining_node_count = 0; }
+              [% ELSE %]
+              var remaining_node_count = nodes - NODE_LIST_LENGTH;
+              if (remaining_node_count < 0) { remaining_node_count = 0; }
+              [% END %]
+              if (!row.show_all_nodes && remaining_node_count > 0) {
+                var remaining 
+                cellContent += '<li>'
+                  + '<i class="icon-li icon-ellipsis-vertical"></i>'
+                  + '<a href="" class="show_nodes">Show '
+                  + remaining_node_count + ' more nodes'
+                  + '</a></li>';
+              }
+              cellContent += '</ul>';
+            }
+            [% END %]
+            return cellContent;
+          }, 
+          createdCell: function(td, cell, row){
+            $(td).on('click', '.show_nodes', function(event) {
+              event.preventDefault();
+              event.stopPropagation();
+              
+              var r = table.row(td.parentNode);
+              var data = r.data();
+              data.show_all_nodes = true;
+              r.data(data).invalidate().draw('page');
+            });
+          }
+        }
+        [% END %]
+        [% IF item.name == 'c_comment' %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.last_comment);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% IF item.name == 'c_lastchange' %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            var cell_str = formatValue(row.lastchange_stamp);
+            return cell_str;
+          }
+        }
+        [% END %]
+        [% FOREACH config IN settings._extra_device_port_cols %]
+        [% NEXT UNLESS config.position == 'right' AND item.name == config.name %]
+        [%   TRY %]
+        [%     INCLUDE "plugin/${config.name}/device_port_column-json.tt" %]
+        [%   CATCH %]
+        ,{ // status text column
+          data: null,
+          "render": function(data, type, row, meta) {
+            
+            return "MISSING";
+          }
+        }
+        [%   END %]
+        [% END %]
+        
+        [% END %]
+      ],
+  [% INCLUDE 'ajax/datatabledefaults.tt' -%]
+    });
+  });
+  //]]>
+  </script>
+</table>
+
+

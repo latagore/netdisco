@@ -114,11 +114,6 @@ function addPortInfoInteractiveListeners (){
 
       var td = $(this).closest("td");
       td[0].style.backgroundColor = "";
-      // more hacks... autosuggest has hidden text for accessibility
-      // we save only the data we want, even though it has a performance
-      // impact
-      // we do this so we can have sorting on current values in columns
-      $('#dp-data-table').DataTable().cell(td).data(this.outerHTML);
     }
   );
 
