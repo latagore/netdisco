@@ -95,7 +95,7 @@
               } else if (row.up_admin === 'up' && row.up != 'up' && row.up !== 'dormant') {
                 cell_str = '<i class="icon-arrow-down text-error" data-container="body" data-title="Not Connected" rel="tooltip" data-animation=""></i>';
               } else {
-                cell_str = '<i class="icon-angle-up text-success" data-container="body" data-title="Connected"  rel="tooltip" data-animation=""></i>';
+                cell_str = '<i class="icon-arrow-up text-success" data-container="body" data-title="Connected"  rel="tooltip" data-animation=""></i>';
               }
 
               if (row.is_free) {
