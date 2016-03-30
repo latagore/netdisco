@@ -61,6 +61,8 @@
             <h4>March 29, 2016</h4>
             <ul>
               <li>Make port views considerably faster.</li>
+              <li>Change status icon for ports that are up into a up arrow</li>
+              <li>Make ports that are up as not free.</li>
             </ul>
           </div>
           <div class="log">
