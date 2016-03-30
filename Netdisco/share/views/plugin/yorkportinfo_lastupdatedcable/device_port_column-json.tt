@@ -1,5 +1,5 @@
         ,{ 
-          data: "port_info.last_modified_by",
+          data: "port_info.last_modified",
           render : function(data, type, row, meta) {
             return formatValue(data);
           }
