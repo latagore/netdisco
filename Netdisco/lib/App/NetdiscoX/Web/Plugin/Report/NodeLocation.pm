@@ -68,7 +68,7 @@ sub get_nodes {
   
   my @macmatches;
   my @ipmatches;
-  my @hostnamematches;
+  my @dnsmatches;
   
   for my $match (@matches){
     if ($match =~ /^$macregex$/gx) {
@@ -76,140 +76,133 @@ sub get_nodes {
     } elsif ($match =~ /^$ipregex$/gx) {
       push @ipmatches, $match;
     } elsif ($match =~ /^$hostnameregex$/gx){
-      push @hostnamematches, $match;
+      push @dnsmatches, $match;
+    }
+  }
+
+  my @results;
+  my $macsearch = schema('netdisco')->resultset('Virtual::NodeNodeIpByMac')->search(
+      undef,
+      {
+        alias => 'me',
+        join => 
+          {
+            'device_port' => [
+              {'port_info' => 
+                {'building' => 'official_name'}
+              },
+              'device'
+            ]
+          },
+        '+select' => [qw/device.dns device_port.port port_info.jack port_info.room official_name.name/,
+                      \qq/replace( date_trunc( 'minute', age( now(), me.time_last ) ) ::text, 'mon', 'month') AS age/],
+        '+as' => [qw/device_port.device.dns device_port.port device_port.port_info.jack device_port.port_info.room device_port.port_info.building.official_name.name/,
+                  'age']
+      });
+  for my $mac(@macmatches){
+    my $netmac = NetAddr::MAC->new($mac);
+    my $result = [ $macsearch->search(
+        undef, { bind => [$netmac->as_ieee] })->hri->all ];
+    if (scalar @$result){
+      for my $entry (@$result){
+        push @results, $entry;
+      }
+    } else { # push a blank entry to indicate nothing was found
+      $result = { ident => $netmac->as_ieee };
+      push @results, $result;
     }
   }
   
   
-  my @nodewhere;
-  my @nodeipwhere;
-  for my $match (@macmatches){
-    my $mac = NetAddr::MAC->new($match);
-    push @nodewhere, {"nodes.mac" => $mac->as_ieee};
-  }
-  for my $match (@ipmatches){
-    my $ip = NetAddr::IP->new($match);
-    push @nodeipwhere, {"ips.ip" => $ip->addr};
-  }
-  for my $match (@hostnamematches){
-    my $uc_match = uc $match; # upper case
-    push @nodeipwhere, 
-      \["upper(ips.dns) like ?", "${uc_match}%"];
-  }
-
-  my %where;
-  unless (defined $n_archived and $n_archived eq 'on'){
-      $where{'nodes.active'} = 'true'; 
-  }
-
-
-  my $node_rs_sub = schema('netdisco')->resultset('Node')->search(
+  my $ipsearch = schema('netdisco')->resultset('Virtual::NodeNodeIpByIp')->search(
+      undef,
       {
-        -and => [
-            {"-or" => \@nodewhere},
-            \%where
-          ]
-      },
-      {
-        columns => 'nodes.mac',
-        '+select' => {max => 'nodes.time_last'},
-        '+as' => 'time_last',
-        alias => "nodes",
-        group_by => [qw/nodes.mac/]
+        alias => 'me',
+        join => 
+          {
+            'device_port' => [
+              {'port_info' => 
+                {'building' => 'official_name'}
+              },
+              'device'
+            ]
+          },
+        '+select' => [qw/device.dns device_port.port port_info.jack port_info.room official_name.name/,
+                      \qq/replace( date_trunc( 'minute', age( now(), me.time_last ) ) ::text, 'mon', 'month') AS age/],
+        '+as' => [qw/device_port.device.dns device_port.port device_port.port_info.jack device_port.port_info.room device_port.port_info.building.official_name.name/,
+                  'age']
+      });
+  for my $ip(@ipmatches){
+    my $netip = NetAddr::IP->new($ip);
+    my $result = [ $ipsearch->search(
+        undef, { bind => [$netip->addr] })->hri->all ];
+    if (scalar @$result){
+      for my $entry (@$result){
+        push @results, $entry;
       }
-    );
-  my $node_rs = schema('netdisco')->resultset('Node')->search(
-      {
-        '(nodes.mac, nodes.time_last)' => {-in => $node_rs_sub->as_query}
-      },
-      {
-        columns => [qw/nodes.mac nodes.switch nodes.port nodes.vlan nodes.time_last nodes.active/],
-        group_by => [qw/nodes.mac nodes.switch nodes.port nodes.vlan nodes.time_last nodes.active/],
-        alias => 'nodes'
-      }
-    );
-    
-  my $node_ip_rs = schema('netdisco')->resultset('Node')->search(
-      {
-        -and => [
-            {"-or" => \@nodeipwhere},
-            \%where
-          ]
-      },
-      {
-        join => 'ips',
-        columns => 'nodes.mac',
-        '+select' => {max => 'ips.time_last'},
-        '+as' => 'time_last',
-        alias => "nodes",
-        group_by => [qw/nodes.mac/]
-      }
-    );
-  $node_ip_rs = schema('netdisco')->resultset('Node')->search(
-      {
-        '(nodes.mac, nodes.time_last)' => {-in => $node_ip_rs->as_query}
-      },
-      {
-        columns => [qw/nodes.mac nodes.switch nodes.port nodes.vlan nodes.time_last nodes.active/],
-        group_by => [qw/nodes.mac nodes.switch nodes.port nodes.vlan nodes.time_last nodes.active/],
-        alias => 'nodes'
-      }
-    );
+    } else { # push a blank entry to indicate nothing was found
+      $result = { ident => $netip->addr };
+      push @results, $result;
+    }
+  }
   
-  my $node_port_rs;
-  if (scalar @nodewhere and scalar @nodeipwhere){
-    $node_port_rs = $node_rs->union($node_ip_rs);
-  } elsif (scalar @nodewhere) {
-    $node_port_rs = $node_rs
-  } elsif (scalar @nodeipwhere) {
-    $node_port_rs = $node_ip_rs;
+    my $dnssearch = schema('netdisco')->resultset('Virtual::NodeNodeIpByDns')->search(
+      undef,
+      {
+        alias => 'me',
+        join => 
+          {
+            'device_port' => [
+              {'port_info' => 
+                {'building' => 'official_name'}
+              },
+              'device'
+            ]
+          },
+        '+select' => [qw/device.dns device_port.port port_info.jack port_info.room official_name.name/,
+                      \qq/replace( date_trunc( 'minute', age( now(), me.time_last ) ) ::text, 'mon', 'month') AS age/],
+        '+as' => [qw/device_port.device.dns device_port.port device_port.port_info.jack device_port.port_info.room device_port.port_info.building.official_name.name/,
+                  'age']
+      });
+  for my $dns(@dnsmatches){
+    # two bind identical values because need to filter subquery
+    # to improve performance..
+    my $result = [ $dnssearch->search(
+        undef, { bind => [$dns, $dns] })->hri->all ];
+    if (scalar @$result){
+      for my $entry (@$result){
+        push @results, $entry;
+      }
+    } else { # push a blank entry to indicate nothing was found
+      $result = { ident => $dns };
+      push @results, $result;
+    }
   }
-  $node_port_rs = $node_port_rs->search(undef, {
-      '+select'  => 
-        \qq/replace( date_trunc( 'minute', age( now(), nodes.time_last ) ) ::text, 'mon', 'month') AS age/
-      ,
-      '+as' => 'age',
-      alias => 'nodes'
-    });
-  return $node_port_rs;
+  return [@results];
 }
 
 post '/ajax/content/report/nodelocation' => require_login sub {
 
     my $q;
     my $file = request->upload('file');
-    use Data::Dumper;
     if ($file){
       $q = $file->content;
     } else {
       send_error('must provide a valid query', 400);
     }
 
-    
-    my $node_rs = get_nodes($q, param('n_archived'))
-      ->search_rs(
-        undef,
-        {
-          prefetch => [
-            {
-              'device_port' => [
-                {'port_info' => 
-                  {'building' => 'official_name'}
-                }, 
-                'device'
-              ]
-            },
-            'current_ips'
-          ]
-        }
-      );
-    
-    my @results = $node_rs->hri->all;
-    return unless scalar @results;
+    my $node_rs = get_nodes($q, param('n_archived'));
 
+    my @results = @$node_rs;
+
+    return unless scalar @results;
+    
     if ( request->is_ajax ) {
         my $json = to_json( \@results );
-        template 'plugin/nodelocation/nodelocation.tt', { results => $json },
+        template 'plugin/nodelocation/nodelocation.tt', 
+            { 
+              results => $json
+            },
             { layout => undef };
     }
     #else {

@@ -1,7 +1,8 @@
 <table id="node-location-data-table" class="table table-striped table-bordered" width="100%" cellspacing="0">
   <thead>
     <tr>
-      <th>Node</th>
+      <th>Search</th>
+      <th>Node Info</th>
       <th>Switch Port</th>     
       <th>Cable</th>
       <th>Room</th>
@@ -21,33 +22,51 @@ $(document).ready(function() {
     "data": [% results %],
     "columns": [
       {
-        "data": 'current_ips',
+        "data": 'ident',
         "render": function(data, type, row, meta) {
-          var cellContent = '';
-          if (type === 'display') {
-            cellContent += '<a href="[% uri_for("/search") %]?tab=node&&deviceports=on&stamps=on&q='
+          return formatValue(data);
+        }
+      },
+      {
+        "data": null,
+        "orderable": false,
+        "render": function(data, type, row, meta) {
+          if (type === 'display'){
+            if (row.mac){
+              var content =  '<a href="[% uri_for("/search") %]?tab=node&&deviceports=on&stamps=on&q='
                 + formatValue(row.mac) + '">' + formatValue(row.mac)
-                + '</a><ul>';
-            data.forEach(function (el, i){
-              cellContent += '<li><a href="[% uri_for("/search") %]?tab=node&deviceports=on&stamps=on&q='
-                + formatValue(el.ip) + '">'
-              if (el.dns != null){
-                cellContent += formatValue(el.dns) 
-                  + ' (' + formatValue(el.ip) + ')';
-              } else {
-                cellContent += formatValue(el.ip);
+                + '</a>';
+              
+              if (row.dns || row.ip){
+                content += ' - <a href="[% uri_for("/search") %]?tab=node&deviceports=on&stamps=on&q='
+                    + formatValue(row.ip) + '">';
+                if (row.dns){
+                  content += formatValue(row.dns) 
+                    + ' (' + formatValue(row.ip) + ')';
+                } else {
+                  content += formatValue(row.ip);
+                }
+                content += '</a>';
               }
-              cellContent += '</a></li>';
-            });
-            cellContent += "</ul>";
-          } else if (type === 'filter'){
-            var entries = data.slice();
-            entries.unshift(formatValue(row.mac));
-            cellContent = entries.join(', ');
+              return content;
+            }
           } else {
-            cellContent = formatValue(row.mac);
+            if (row.mac){
+              var content = formatValue(row.mac)
+              
+              if (row.dns || row.ip){
+                content += ' - ';
+                if (row.dns){
+                  content += formatValue(row.dns) 
+                    + ' (' + formatValue(row.ip) + ')';
+                } else {
+                  content += formatValue(row.ip);
+                }
+              }
+              return content;
+            }
           }
-          return cellContent;
+          return '';
         }
       },
       {
@@ -94,14 +113,14 @@ $(document).ready(function() {
         }
       }, 
       {
-        "data": 'age',
+        data: 'hello',
         "render": function(data, type, row, meta) {
           if (type == 'display') {
-            return he.encode(data || 'Never');
+            return he.encode(row.age || 'Never');
           }
           else {
             // so that sorting works correctly on this column
-            return row.time_last;
+            return -row.time_last || 0;
           }
         }
       }
