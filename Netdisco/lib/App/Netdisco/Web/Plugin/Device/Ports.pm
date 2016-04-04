@@ -175,11 +175,10 @@ get '/ajax/content/device/ports' => require_login sub {
 
     # sort ports (empty set would be a 'no records' msg)
     my @results = sort { &App::Netdisco::Util::Web::sort_device_and_port($a, $b) } $set->merge_rs(\@extra_rs);
-    #my @results = $set->hri->all;
     return unless scalar @results;
     
-    my $json =  to_json(\@results);
     if (request->is_ajax) {
+        my $json =  to_json(\@results);
         template 'ajax/device/ports-json.tt', {
           results => $json,
           nodes_name => $nodes_name
@@ -188,7 +187,7 @@ get '/ajax/content/device/ports' => require_login sub {
     else {
         header( 'Content-Type' => 'text/comma-separated-values' );
         template 'ajax/device/ports_csv.tt', {
-          results => @results,
+          results => \@results,
           nodes_name => $nodes_name
         }, { layout => undef };
     }

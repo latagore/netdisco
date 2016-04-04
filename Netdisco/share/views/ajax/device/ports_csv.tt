@@ -97,7 +97,7 @@
     [% IF row.all_port_vlans.size %]
       [% SET output = '' %]
       [% SET vlanlist = [] %]
-      [% FOREACH vlan IN row.all_port_vlans %][% vlanlist.push(vlan.get_column('vlan')) %][% END %]
+      [% FOREACH vlan IN row.all_port_vlans %][% vlanlist.push(vlan.vlan) %][% END %]
       [% FOREACH vlan IN vlanlist.nsort %]
         [% SET output = output _ ',' IF NOT loop.first %]
         [% SET output = output _ vlan %]
@@ -135,15 +135,6 @@
     [% END %]
   [% END %]
 
-  [% IF params.c_nodes %]
-    [% myport.push('') %]
-    [% myport.push('') %]
-    [% myport.push('') IF params.n_age %]
-    [% myport.push('') IF params.n_ip %]
-    [% myport.push('') IF params.n_ip %]
-    [% myport.push('') IF params.n_ip %]
-  [% END %]
-
   [% IF params.c_neighbors %]
     [% IF (row.remote_ip OR row.is_uplink) %]
       [% IF row.neighbor %]
@@ -160,6 +151,15 @@
       [% myport.push('') %]
       [% myport.push('') %]
     [% END %]
+  [% END %]
+  
+  [% IF params.c_nodes %]
+    [% myport.push('') %]
+    [% myport.push('') %]
+    [% myport.push('') IF params.n_age %]
+    [% myport.push('') IF params.n_ip %]
+    [% myport.push('') IF params.n_ip %]
+    [% myport.push('') IF params.n_ip %]
   [% END %]
 
   [% FOREACH config IN settings._extra_device_port_cols %]
@@ -181,9 +181,7 @@
 
   [% SET has_nodes = 0 %]
   [% IF params.c_nodes %]
-    [% # prefetch related node data and order it
-        SET nodes = row.search_related(nodes_name, [], { prefetch => ["netbios", "wireless", "oui", "ips"], order_by => [ { "-desc" = "me.time_last"} ]}) %]
-    [% FOREACH node IN nodes %]
+    [% FOREACH node IN row.$nodes_name %]
       [% SET has_nodes = 1 %]
       [% SET mynode = [] %]
 
