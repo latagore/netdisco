@@ -188,7 +188,7 @@
       [% SET has_nodes = 1 %]
       [% SET mynode = [] %]
 
-      [% CALL mynode.push(node.net_mac.$mac_format_call) %]
+      [% CALL mynode.push(node.mac.$mac_format_call) %]
       [% CALL mynode.push((node.active ? 'No' : 'Yes')) %]
 
       [% CALL mynode.push(node.time_last_age) IF params.n_age %]
