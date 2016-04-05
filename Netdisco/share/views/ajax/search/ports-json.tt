@@ -109,7 +109,7 @@
             if (type === 'display') {
               if (row.up_admin !== 'up'){
                 cell_str = '<i class="icon-remove" data-container="body" data-title="Shutdown" rel="tooltip" data-animation=""></i>';
-              } else if (row.up === 'up' && row.stp == 'blocking' && row.all_port_vlans && row.all_port_vlans.length > 2) { // FIXME vlans
+              } else if (row.up === 'up' && row.stp == 'blocking' && row.all_port_vlans && row.all_port_vlans.length > 2) {
                 cell_str = '<i class="icon-fullscreen text-info" data-container="body" data-title="STP Blocking" rel="tooltip" data-animation=""></i>';
               } else if (row.up_admin === 'up' && row.up != 'up' && row.up !== 'dormant') {
                 cell_str = '<i class="icon-arrow-down text-error" data-container="body" data-title="Not Connected" rel="tooltip" data-animation=""></i>';
