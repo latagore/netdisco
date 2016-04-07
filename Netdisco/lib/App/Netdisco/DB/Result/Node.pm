@@ -112,19 +112,6 @@ the current Node's.
 __PACKAGE__->has_many( ips => 'App::Netdisco::DB::Result::NodeIp',
   { 'foreign.mac' => 'self.mac', 'foreign.active' => 'self.active' } );
 
-=head2 current_ips
-
-Returns the set of C<node_ip> entries associated with this Node that have the same
-time_last column.
-
-Note that the Active status of the returned IP entries will all be the same as
-the current Node's.
-
-=cut
-
-__PACKAGE__->has_many( current_ips => 'App::Netdisco::DB::Result::Virtual::CurrentIPs',
-  { 'foreign.mac' => 'self.mac', 'foreign.active' => 'self.active' } );
-  
 =head2 netbios
 
 Returns the C<node_nbt> entry associated with this Node if one exists. That
