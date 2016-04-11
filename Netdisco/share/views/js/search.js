@@ -12,10 +12,24 @@
   // but which cannot use jQuery delegation via .on()
   function inner_view_processing(tab) {
     
-    // LT wanted the page title to reflect what's on the page :)
-    document.title = $('#nq').val()
-      +' - Search '+ $('#'+ tab + '_link').text() + "s - Netdisco";
-
+    
+    // Change page title so it displays cable data if searching for ports
+    if (tab === 'ports'){
+      var list = new Array();
+      var form = $('#ports_form');
+      form.find('input[type=text]').each(function(i, el){
+        var val = $(el).val();
+        if (val){
+          list.push(val);
+        }
+      });
+      document.title = list.join(' ') + " - Search Ports - Netdisco";
+    } else {
+      document.title = $('#nq').val()
+        +' - Search '+ $('#'+ tab + '_link').text() + "s - Netdisco";
+    }
+    
+    
     // used for contenteditable cells to find out whether the user has made
     // changes, and only reset when they submit or cancel the change
     var dirty = false;
