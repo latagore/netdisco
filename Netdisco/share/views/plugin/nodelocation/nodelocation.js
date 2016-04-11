@@ -1,4 +1,15 @@
 $(document).ready(function() {
+  $('#nd_csv-download').click(function(){
+    // when trying to click download, load the next page with post
+    // so we actually send the file with all the necessary infomation
+    var form = $('#nodelocation_form').clone();
+    form.hide();
+    form.get(0).action = '/ajax/content/report/nodelocation';
+    form.get(0).enctype = 'multipart/form-data';
+    form.get(0).method = 'POST';
+    form.appendTo('body').submit();
+  });
+   
   $('#nodelocation_form').submit( function (event) {
     // override the default submit handler in do_search because it won't send post data...
     

@@ -11,6 +11,7 @@ register_report({
   category => 'Node',
   tag => 'nodelocation',
   label => 'Node Location',
+  provides_csv => 1
 });
 register_javascript('nodelocation');
 
@@ -205,11 +206,11 @@ post '/ajax/content/report/nodelocation' => require_login sub {
             },
             { layout => undef };
     }
-    #else {
-    #    header( 'Content-Type' => 'text/comma-separated-values' );
-    #    template 'ajax/report/ipinventory_csv.tt', { results => \@results, },
-    #        { layout => undef };
-    #}
+    else {
+       header( 'Content-Type' => 'text/comma-separated-values' );
+       template 'plugin/nodelocation/nodelocation_csv.tt', { results => \@results, },
+           { layout => undef };
+    }
 };
 
 1;
