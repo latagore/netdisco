@@ -39,7 +39,7 @@ function do_search (event, tab) {
   // submit the query and put results into the tab pane
   search_xhr = $.ajax( uri_base + '/ajax/content/' + path + '/' + tab + '?' + query,
     {
-      timeout: 55000,
+      timeout: 175000, // timeout at 3 minutes - 5 seconds
       error: function(xhr, status, errorThrown){
         if (status === "timeout") {
           $(target).html(
