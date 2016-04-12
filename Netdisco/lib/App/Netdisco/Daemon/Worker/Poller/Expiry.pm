@@ -53,6 +53,15 @@ sub expire {
       });
   }
 
+  if (setting('node_freshness') and setting('node_freshness') > 0) {
+    schema('netdisco')->resultset('NodeIp')->search({
+      time_last => \[ "< (now() - ?::interval)",
+      
+        setting('node_freshness') .' minutes' ],
+      "-bool" => "active"
+    })->update({ active => \'false' });
+  }
+  
   if (setting('expire_jobs') and setting('expire_jobs') > 0) {
       schema('netdisco')->txn_do(sub {
         schema('netdisco')->resultset('Admin')->search({
