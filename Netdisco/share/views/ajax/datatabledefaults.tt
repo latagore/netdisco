@@ -27,7 +27,7 @@
       data.keyTable = null;
     },"scrollX": true
     ,"scrollY": "800px"
-    ,"keys": true
+    ,"keys": false
     ,colReorder: {
       realtime: false
     }
