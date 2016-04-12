@@ -1,0 +1,12 @@
+[% USE CSV -%]
+[% CSV.dump([ 'Search' 'MAC' 'IP' 'Switch' 'Port' 'Cable' 'Room' 'Building' 'Age' ]) %]
+
+[% FOREACH row IN results %]
+  [% mylist = [] %]
+  [% name = row.device_port.device.dns || row.device_port.ip %]
+  [% FOREACH col IN [ row.ident row.mac row.ip name row.device_port.port row.device_port.port_info.jack  row.device_port.port_info.room  row.device_port.port_info.building.official_name.name row.age ] %]
+    [% mylist.push(col) %]
+  [% END %]
+  [% CSV.dump(mylist) %]
+
+[% END %]
