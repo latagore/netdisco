@@ -33,6 +33,54 @@ function disableTabsOnAdvancedPortSearch(){
   });
 }
 
+// Add DataTable AutoFill customization
+function addDTAutoFill(){
+    var num_regex = /\d+$/;
+    
+    // pads numbers with 0 to at least <size> characters
+    function zeropad(number, size) {
+      number = number.toString();
+      while (number.length < size) number = "0" + number;
+      return number;
+    }
+    
+    $.fn.dataTable.AutoFill.actions.cables = {
+      available: function ( dt, cells ) {
+        var n = $(cells[0][0].cell.node());
+        var text = n.text();
+        return n.hasClass('autofill-td') && num_regex.test(text);
+      },
+      option: function ( dt, cells ) {
+        return 'Pad with zeros and increment / decrement each cell by <input value="1" type="number"></input>';
+      },
+    
+      execute: function ( dt, cells, node ) {
+        var inc = parseInt($(node).find("input").val());
+        
+
+        // Modify the name and set the new values
+        for ( var j=0, cols=cells[0].length; j < cols; j++) {
+          var matches = cells[0][j].data.match(num_regex);
+          
+          if (matches.length) {
+            
+            var num = parseInt(matches[0]);
+            var val = cells[0][j].data;
+
+            for ( var i=0, rows=cells.length ; i<rows ; i++ ) {
+              var length = num.toString().length;
+              length = length < 4 ? 4 : length;
+              val = val.replace(num_regex, zeropad(num, length));
+              num += inc;
+              cells[i][j].set = val;
+            }
+          }
+        }
+      }
+    };
+}
+
+
 // functions that add bits of features to the page
 function addSavePortInfoButton(){
   // use a mutation observer because we don't know when the data-table will be loaded
@@ -114,6 +162,10 @@ function addPortInfoInteractiveListeners (){
 
       var td = $(this).closest("td");
       td[0].style.backgroundColor = "";
+            
+      // set datatables data
+      var div = td.find("div.york-port-info");
+      $('#dp-data-table').DataTable().cell(td).data($(div).text());
     }
   );
 
@@ -154,7 +206,8 @@ function addPortInfoInteractiveListeners (){
       // save attr to td to proper css appearance
       td[0].title = "This change has not been saved.";
       td.addClass("nd_portinfo-data-dirty");
-
+      
+      // enable portinfo button
       $('#dp-data-table_submit-port-info').prop("disabled", false);
     }
 
@@ -176,6 +229,25 @@ function addPortInfoInteractiveListeners (){
     $("html, body").animate({ scrollTop: 0 }, 2000, 'easeInOutQuart' );
   });
 }
+
+function addDTAutoFillListeners() {
+  // mark cells as dirty
+  $('.tab-content').on( 'init.dt', '#dp-data-table', function () {
+    $('#dp-data-table').DataTable().on( 'autoFill', function ( e, datatable, cells ) {
+        for ( var j=0, cols=cells[0].length; j < cols; j++) {
+          for ( var i=0, rows=cells.length ; i < rows ; i++ ) {
+            var td = $(cells[i][j].cell.node());
+            td[0].title = "This change has not been saved.";
+            td.addClass("nd_portinfo-data-dirty");
+            
+            // enable portinfo button
+            $('#dp-data-table_submit-port-info').prop("disabled", false);
+          }
+        }
+      });
+  });
+}
+
 function addBuildingSuggestionsToPortsTable() {
   var buildings;
   // Add a building dropdown
@@ -526,9 +598,11 @@ function addPortInfoFunctionality(){
     addSavePortInfoButton();
     addBuildingSuggestionsToPortsTable();
     addBuildingSuggestionsToPortsSidebar();
+    addDTAutoFillListeners();
   });
   $('.nd_sidebar').on('submit', '#ports_form', function() {
     addSavePortInfoButton();
+    addDTAutoFillListeners();
   });
 
   //make sure that we only do this on the right page
@@ -539,6 +613,7 @@ function addPortInfoFunctionality(){
     addPortInfoInteractiveListeners();
     addSavePortInfoButton();
     addBuildingSuggestionsToPortsTable();
+    addDTAutoFillListeners();
   }
 }
 
@@ -632,6 +707,7 @@ $.widget( "custom.buildingAutocomplete", $.ui.autocomplete, {
 
 $(document).ready(function() {
   loadParameterDictionary();
+  addDTAutoFill();
   disableTabsOnAdvancedPortSearch();
   addPortInfoFunctionality();
   addNavBarFunctionality();

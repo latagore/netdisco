@@ -1,4 +1,5 @@
         ,{ 
+          class: 'autofill-td',
           data: "port_info.riser2",
           render : function(data, type, row, meta) {
             var column = 'riser2';

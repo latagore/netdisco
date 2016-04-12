@@ -92,6 +92,9 @@
       "deferRender": true,
       "data": [% results %],
       "order": [],
+      "autoFill": {
+        columns: '.autofill-td'
+      },
       "columns": [
         { // status icon column
           searchable: false,

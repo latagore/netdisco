@@ -1,4 +1,5 @@
         ,{ 
+          class: 'autofill-td',
           data: "port_info.wired",
           render : function(data, type, row, meta) {
             var column = 'wired';

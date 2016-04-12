@@ -1,4 +1,5 @@
-        ,{ 
+        ,{
+          class: 'autofill-td',
           data: "port_info.building.official_name.name",
           render : function(data, type, row, meta) {
             var column = 'building';
