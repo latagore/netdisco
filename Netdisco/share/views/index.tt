@@ -53,10 +53,19 @@
             <a href="http://netinfo.yorku.ca/">Old Netinfo</a>
           </p>
           <span id="nd_changelog-toggle" data-toggle="collapse" data-target="#changelog">
-            <a>Changelog (Last Updated: April 04, 2016)
+            <a>Changelog (Last Updated: April 13, 2016)
             <i class="icon-chevron-up nd_chevron"></i></a>
           </span>
           <div id="changelog" class="collapse">
+          <div class="log">
+            <h4>April 13, 2016</h4>
+            <ul>
+              <li>Remove key stroke functionality which caused the table to move oddly.</li>
+              <li>Node and their IPs are archived after 8 hours.</li>
+              <li>Add CSV for node location report.</li>
+              <li>Increase timeout to 3 minutes for odd searches.</li>
+            </ul>
+          </div>
           <div class="log">
             <h4>April 04, 2016</h4>
             <ul>
