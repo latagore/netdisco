@@ -35,6 +35,17 @@ hook 'before' => sub {
       params->{$col->{name}} = 'checked'
         if not param('tab') or param('tab') ne 'device';
   }
+  
+  # record search history into table
+  debug cookie("dancer.session");
+  schema('netdisco')->resultset('SearchLog')
+    ->create(
+        {
+          "time" => \"now()",
+          "session_id" => cookie("dancer.session"),
+          "uri" => request->uri
+        }
+      );
 };
 
 hook 'before_template' => sub {
