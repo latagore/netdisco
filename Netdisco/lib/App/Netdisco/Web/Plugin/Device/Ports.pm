@@ -145,6 +145,11 @@ get '/ajax/content/device/ports' => require_login sub {
     # put in the York specific port information
     $set = $set->with_york_port_info;
 
+    # join building official name if asked for
+    $set = $set->search_rs (undef, {
+        prefetch => { "port_info" => { building =>  "official_name" } }
+    }) if param('yorkportinfo_building');
+    
     # get the one-to-many information like VLANs and some nodes
     my @extra_rs;
     if (param('c_vmember')){
