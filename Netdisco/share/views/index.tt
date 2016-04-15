@@ -61,6 +61,7 @@
             <h4>April 15, 2016</h4>
             <ul>
               <li>Make node IPs expire every eight hours.</li>
+              <li>Add missing building information to Device Ports.</li>
             </ul>
           </div>
           <div class="log">
