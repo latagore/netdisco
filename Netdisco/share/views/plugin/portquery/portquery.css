@@ -1,0 +1,21 @@
+.portQueryData {
+  white-space: pre;
+  font-family: "Lucida Console", Monaco, monospace;
+  overflow-x: auto;
+}
+
+.portQueryBtn {
+  color: #555;
+}
+.portQueryBtn:hover {
+  color: #999;
+  text-decoration: none;
+}
+
+/* make port query dialogs bigger */
+@media screen and (min-width: 764px){
+   .modal.large{
+    width: 80%; /* respsonsive width */
+    margin-left:-40%; /* width/2) */ 
+   }
+}

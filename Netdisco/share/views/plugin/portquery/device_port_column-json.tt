@@ -1,0 +1,6 @@
+        ,{ 
+          data: null,
+          render : function(data, type, row, meta) {
+            return '<a href="#" class="portQueryBtn" rel="tooltip" data-container="body" data-title="Get live data for this port."><i class="icon-question"></i></a>';
+          }
+        }
