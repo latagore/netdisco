@@ -138,7 +138,13 @@ sub hostnames_resolve_async {
 
     $done->begin;
     AnyEvent::DNS::reverse_lookup $ip,
-            sub { $hash_ref->{'dns'} = shift; $done->end; };
+            sub { 
+              $hash_ref->{'dns'} = shift; 
+              # sanitize dns names if the names have invalid UTF8 byte sequences
+              my $valid = Encode::decode('utf8', $hash_ref->{'dns'}, Encode::FB_QUIET);
+              $hash_ref->{'dns'} = Encode::encode('utf8', $valid);
+              $done->end; 
+            };
   }
 
   # Decrement the cv counter to cancel out the send declaration
