@@ -587,23 +587,6 @@
                   </div>
                 </li>
                 <li>
-                  <a><h4>Why am I getting &quot;Search failed! Contact your network administrator for details.&quot;?</h4></a>
-                  <div class="answer">
-                    <p>
-                      Usually, this happens when searches have too many results. If this error pops up after a minute, then likely the issue is caused by too many results. Limit your search by filtering on additional criteria such as <emph>Horizontal Cable</emph> or <emph>Port</emph>.
-                    </p>
-                    <p>
-                      Additionally, to further improve performance, hide historical node data by the following steps:
-                    </p>
-                    <ol>
-                        <li>Open Advanced Port Search.</li>
-                        <li>Perform any quick search. For example, search for "Steacie" in Building and "1" in Horizontal Cable.</li>
-                        <li>On the right sidebar, scroll down to Node Properties.</li>
-                        <li>Uncheck Archived Data and click Update View to save your preferences. Future searches will not include archived nodes, which will speed them up.</li>
-                    </ol>
-                  </div>
-                </li>
-                <li>
                   <a><h4>I was familiar with the previous version of Netdisco/Netinfo.  Why did it need to be changed?</h4></a>
                   <div class="answer">
                     <p>
@@ -614,12 +597,6 @@
                       <li>minimize negative impact to frequently used functions in Netdisco</li>
                       <li>make available new functions which have been added since Netdisco v0.9x</li>
                     </ul>
-                  </div>
-                </li>
-                <li>
-                  <a><h4>Netdisco V2 returns answers more slowly than Netdisco/Netinfo.  Can this be corrected?</h4></a>
-                  <div class="answer">
-                    This is a known problem.  It is due to an unfortunate design choice by developers of Netdisco V2 and is not something that we can resolve in the near term. Since Netdisco V2 is an open-source project, UIT will seek funding approval for a new project whose objectives will include improving performance of Netdisco at YorkU.
                   </div>
                 </li>
                 <li>
