@@ -56,7 +56,7 @@ sub query_device {
 }
 
 # allows uploading of port info data from CSV
-get '/ajax/content/portquery' => require_role 'admin' => sub {
+get '/ajax/content/portquery' => require_login sub {
     my $device = schema('netdisco')->resultset('Device')
        ->search_for_device(param('device')) or send_error('Bad device', 400);
     my $port = param('port') or send_error('missing port', 400);
