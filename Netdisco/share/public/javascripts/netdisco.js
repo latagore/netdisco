@@ -175,11 +175,6 @@ function device_form_state(e) {
     var id = '#' + e.attr('name') + '_clear_btn';
     $(id).show();
 
-    // if form still has any field val, set strikethough
-    if (e.parents('form[action="/search"]').length > 0 && with_val != 0) {
-      $('#nq').css('text-decoration', 'line-through');
-    }
-
     // if we're text, hide copy icon when we get a val
     if (e.attr('type') == 'text') {
       $('.nd_field-copy-icon').hide();
