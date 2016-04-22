@@ -1,0 +1,184 @@
+          <span id="nd_changelog-toggle" data-toggle="collapse" data-target="#changelog">
+            <a>Changelog (Last Updated: April 20, 2016)
+            <i class="icon-chevron-up nd_chevron"></i></a>
+          </span>
+          <div id="changelog" class="collapse">
+          <div class="log">
+            <h4>April 20, 2016</h4>
+            <ul>
+              <li>Add port query feature from old Netdisco.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>April 15, 2016</h4>
+            <ul>
+              <li>Make node IPs expire every eight hours.</li>
+              <li>Add missing building information to Device Ports.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>April 13, 2016</h4>
+            <ul>
+              <li>Remove key stroke functionality which caused the table to move oddly.</li>
+              <li>Node and their IPs are archived after 8 hours.</li>
+              <li>Add CSV for node location report.</li>
+              <li>Increase timeout to 3 minutes for odd searches.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>April 04, 2016</h4>
+            <ul>
+              <li>Fix bug where port CSVs were empty.</li>
+              <li>Fix bug where port tables would not show in MAC format other than IEEE.</li>
+              <li>Fix last modified column in ports table.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>March 29, 2016</h4>
+            <ul>
+              <li>Make port views considerably faster.</li>
+              <li>Change status icon for ports that are up into a up arrow</li>
+              <li>Make ports that are up as not free.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>March 14, 2016</h4>
+            <ul>
+              <li>Make Node Location report available to non-administrators.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>March 9, 2016</h4>
+            <ul>
+              <li>Find Anything only searches for VLAN if it's not 12 characters long.</li>
+              <li>Add Node Location report. Provide a file with a list of MAC/IP addresses/host names 
+              and the report provides the last physical location, switch port and time it was last active.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>March 1, 2016</h4>
+            <ul>
+              <li>Allow building search to search on any of the historical names for buildings.</li>
+              <li>Fixed CSV Upload where last modified and last modified by are missing.</li>
+              <li>Fix field that was too wide on device ports page.</li>
+              <li>Enable partial match on Device Port by default.</li>
+              <li>Decrease auto-suggestion size.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>February 29, 2016</h4>
+            <ul>
+              <li>Added nice things to ports tables! You can reorder columns and always see the port name now.</li>
+              <li>Fixed broken tooltips on Advanced Port Search.</li>
+              <li>Deleting devices doesn't take forever now.</li>
+              <li>Fix bug where refreshing search pages gives error</li>
+              <li>Fix bug where typing in a port cell deletes cell content.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>February 23, 2016</h4>
+            <ul>
+              <li>Real back button on advanced port search!</li>
+              <li>Allow searching for port description (often, this is the port configuration template).</li>
+              <li>Fix bug where device and status columns didn't line up with their content when performing Advanced Port Search.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>February 11, 2016</h4>
+            <ul>
+              <li>Remove "Devices" hint in building autocompletes.</li>
+              <li>Add missing building suggestions to Advanced Port Search side bar.</li>
+              <li>Remove minimum length for search suggestions on Find Anything.</li>
+              <li>IP information about nodes is now correctly removed after 14 months.</li>
+              <li>Fix &quot;Never Used&quot; option for IP Inventory.</li>
+              <li>Remove &quot;Change Password&quot; from logout menu.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>February 9, 2016</h4>
+            <ul>
+              <li>Major fix where table appears broken. Caused by addition of keyboard navigation plugin.</li>
+              <li>Fixed problem where VLANs did not appear for ports.</li>
+              <li>Changed appearance of Advanced Port Search and made keyboard accessible.</li>
+              <li>Added icon for Netdisco, so it would be easier to identify Netdisco in browser tabs.</li>
+              <li>VLAN field in Advanced Port Search now searches for all vlans on a port. Trunk ports carrying this VLAN will also appear.<li>
+              <li>Fixed tooltips being cut off. </li>
+              <li>Added hint that Find Anything suggestions are devices only.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>February 8, 2016</h4>
+            <ul>
+              <li>Improved device ports keyboard navigation! Use the arrow keys and tab to navigate the table.</li>
+              <li>Fixed CSV upload, broken by column order changes.</li>
+              <li>Removed age warning popup. Old devices are highlighted on their device details page.</li>
+              <li>Added admin report for viewing devices that have not been discovered in a long time.</li>
+              <li>Fixed hidden tooltips issue for enabling and disabling ports buttons.</li>
+              <li>Added switch ports to IP Inventory.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>February 2, 2016</h4>
+            <ul>
+              <li>Fixed column order in CSV exports.</li>
+              <li>Renamed Computer Science and Engineering Building to Lassonde Building.</li>
+              <li>Renamed Accolade Building West/East to Accolade West/East Building respectively.</li>
+              <li>Fixed hidden tooltips issue for enabling and disabling ports buttons.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>December 22, 2015</h4>
+            <ul>
+              <li>Reorder columns to be similar to old netdisco.</li>
+              <li>Improve building searches.</li>
+              <li>Spaces are removed before and after queries to help with copy-pasted queries.</li>
+              <li>TEL (Technologically Enhanced Learning Building) renamed to DB (Victor Phillip Dahdaleh Building).</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>December 21, 2015</h4>
+            <ul>
+              <li>Fixed editing cable fields for devices.</li>
+              <li>Fixed searching for alterative building names in advanced port search.</li>
+              <li>Advanced Port Search is no longer filled with values from the last search.</li>
+              <li>More informative error on searches that take too long.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>December 18, 2015</h4>
+            <ul>
+              <li>When searching for a building, you can now search by building code. (previously broken)</li>
+              <li>On the device page, the management IP is now shown beside the hostname in the top right.</li>
+              <li>On the ports pages, added definitions to the icons in the legend.</li>
+              <li>On the home page, System Information now only shown to administrators.</li>
+              <li>On the home page, System Information now only shown to administrators.</li>
+              <li>Fixed CSV cable upload issue where buildings would not be uploaded.</li>
+              <li>Fixed CSV results where wrong node data was given.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>December 16, 2015</h4>
+            <ul>
+              <li>When waiting for a long search, making a new search will not be interrupted by the previous one.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>December 15, 2015</h4>
+            <ul>
+              <li>Changed IP Inventory to be more straightforward like old Netdisco</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>December 10, 2015</h4>
+            <ul>
+              <li>Added full user documentation for Netdisco V2.</li>
+            </ul>
+          </div>
+          <div class="log">
+            <h4>December 9, 2015</h4>
+            <ul>
+              <li>Added quick start documentation for Netinfo and Netdisco version 1 users.</li>
+              <li>Fixed node search. Can now search by the first part of a hostname, such as <strong>GL-YH219-LAB02</strong> instead of <strong>GL-YH219-LAB02.yorku.yorku.ca</strong></li>
+            </ul>
+          </div>
+          </div>
