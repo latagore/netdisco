@@ -1,8 +1,19 @@
           <span id="nd_changelog-toggle" data-toggle="collapse" data-target="#changelog">
-            <a>Changelog (Last Updated: April 20, 2016)
+            <a>Changelog (Last Updated: April 26, 2016)
             <i class="icon-chevron-up nd_chevron"></i></a>
           </span>
           <div id="changelog" class="collapse">
+          <div class="log">
+            <h4>April 26, 2016</h4>
+            <ul>
+              <li>Fix permissions on port query. All users can use port query now.</li>
+              <li>Removed close button on Advanced Port Search. Click Advanced Port Search to close it instead.</li>
+              <li>Minor web performance improvement.</li>
+              <li>Remove annoying strikethrough on Find Anything.</li>
+              <li>Sort VLANs in the ports views.</li>
+              <li>Add missing devices behind the firewall service module.</li>
+            </ul>
+          </div>
           <div class="log">
             <h4>April 20, 2016</h4>
             <ul>
