@@ -348,6 +348,7 @@
               data.forEach(function(el,i){
                  array[i]=el.vlan; 
               });
+              array.sort(function(a,b){ return parseInt(a)-parseInt(b) });
               return array.join(',');
             } else {
               var cellContent = ''; 
@@ -356,7 +357,7 @@
                 // sort the list because the server gives unordered list
                 // use numerical sort by using comparison function that returns
                 // a - b
-                vlans.sort(function(a,b){ return a-b });
+                vlans.sort(function(a,b){ return parseInt(a)-parseInt(b) });
                 
                 var vlanshtml = '';
                 vlans.forEach(function(el, i){
