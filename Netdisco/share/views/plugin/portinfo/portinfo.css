@@ -19,25 +19,15 @@
 }
 
 #dp-data-table .york-port-info[data-column=building]{
-  white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100px;
-  margin-right: 0;
+  width: 10em;
 }
 
-#dp-data-table td:hover .york-port-info[data-column=building],
-#dp-data-table .york-port-info[data-column=building]:focus
-{
-  overflow: visible;
-  white-space: normal;
-}
-
-#dp-data-table td:hover .york-port-info[data-column=building][contenteditable],
+/* #dp-data-table td:hover .york-port-info[data-column=building][contenteditable],
 #dp-data-table .york-port-info[data-column=building]:focus[contenteditable]
 {
   margin-right: 25px;
-}
+} */
 
 #dp-data-table .york-port-info-last-updated-by{
   min-width: 100px;
