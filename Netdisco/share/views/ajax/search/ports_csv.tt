@@ -140,9 +140,9 @@
 
   [% IF params.c_neighbors %]
     [% IF (row.remote_ip OR row.is_uplink) %]
-      [% IF row.neighbor %]
-        [% myport.push( row.neighbor.ip ) %]
-        [% myport.push( row.neighbor.dns.remove(settings.domain_suffix) ) %]
+      [% IF row.neighbor_alias %]
+        [% myport.push( row.neighbor_alias.ip ) %]
+        [% myport.push( row.neighbor_alias.device.dns.remove(settings.domain_suffix) ) %]
       [% ELSIF row.remote_ip AND row.remote_port %]
         [% myport.push( row.remote_ip ) %]
         [% myport.push('') %]
