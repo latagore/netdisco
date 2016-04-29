@@ -1,0 +1,19 @@
+Recently created indices
+
+	node_ip_idx_ip_active		16384		node_ip	
+	device_port_vlan_pkey		16384		device_port_vlan	
+	portinfo_pkey		16384		portinfo	
+	building_pkey		16384		building	
+	fki_building_name_building		16384		building_name	
+	idx_building_name_name		16384		building_name	
+	idx_building_name_name_type		16384		building_name	
+	idx_building_name_name_name_type		16384		building_name	
+	building_name_unique		16384		building_name	
+	idx_node_ip_dns		16384		node_ip	
+	building_name_unique_official		16384		building_name	
+	aidx_node_ip_time_last		16384		node_ip	
+	aidx_node_ip_dns_uc		16384		node_ip	
+	aidx_node_ip_mac_time_last		16384		node_ip	
+	aidx_node_ip_active_time_last		16384		node_ip	
+	search_log_pkey		16384		search_log	
+
