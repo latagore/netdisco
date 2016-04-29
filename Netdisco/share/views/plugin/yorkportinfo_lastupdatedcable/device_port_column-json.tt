@@ -1,5 +1,4 @@
         ,{ 
-          class: 'autofill-td',
           data: "port_info.last_modified",
           render : function(data, type, row, meta) {
             return formatValue(data);

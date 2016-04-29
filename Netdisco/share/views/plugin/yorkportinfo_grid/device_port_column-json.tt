@@ -1,5 +1,4 @@
         ,{ 
-          class: 'autofill-td',
           data: "port_info.grid",
           render : function(data, type, row, meta) {
             var column = 'grid';

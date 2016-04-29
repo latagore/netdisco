@@ -1,5 +1,4 @@
         ,{ 
-          class: 'autofill-td',
           data: "port_info.phoneext",
           render : function(data, type, row, meta) {
             var column = 'phoneext';

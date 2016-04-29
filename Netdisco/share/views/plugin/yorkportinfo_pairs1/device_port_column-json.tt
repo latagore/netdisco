@@ -1,5 +1,4 @@
         ,{ 
-          class: 'autofill-td',
           data: "port_info.pairs1",
           render : function(data, type, row, meta) {
             var column = 'pairs1';

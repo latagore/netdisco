@@ -28,10 +28,9 @@
   <link rel="stylesheet" href="[% uri_base %]/css/keyTable.bootstrap.css"/>
   <link rel="stylesheet" href="[% uri_base %]/css/fixedColumns.bootstrap.min.css"/>
   <link rel="stylesheet" href="[% uri_base %]/css/colReorder.bootstrap.min.css"/>
-  <link rel="stylesheet" href="[% uri_base %]/css/autoFill.bootstrap.min.css"/>
   <link rel="stylesheet" href="[% uri_base %]/css/nd_print.css" media="print"/>
   <link rel="stylesheet" href="[% uri_base %]/css/chosen.min.css" />
-  
+
   [% FOREACH add_css IN settings._additional_css %]
   <link rel="stylesheet" href="[% uri_base %]/plugin/[% add_css %]/[% add_css %].css"/>
   [% END %]
@@ -52,11 +51,9 @@
   <script type="text/javascript" src="[% uri_base %]/javascripts/moment.min.js"></script>
   <script type="text/javascript" src="[% uri_base %]/javascripts/jquery.dataTables.min.js"></script>
   <script type="text/javascript" src="[% uri_base %]/javascripts/dataTables.bootstrap.js"></script>
-  <script type="text/javascript" src="[% uri_base %]/javascripts/dataTables.autoFill.min.js"></script>
   <script type="text/javascript" src="[% uri_base %]/javascripts/dataTables.keyTable.min.js"></script>
   <script type="text/javascript" src="[% uri_base %]/javascripts/dataTables.fixedColumns.min.js"></script>
   <script type="text/javascript" src="[% uri_base %]/javascripts/dataTables.colReorder.min.js"></script>
-  <script type="text/javascript" src="[% uri_base %]/javascripts/autoFill.bootstrap.min.js"></script>
   <script type="text/javascript" src="[% uri_base %]/javascripts/dataTables.ip-address-detect.js"></script>
   <script type="text/javascript" src="[% uri_base %]/javascripts/dataTables.ip-address-sort.js"></script>
   <script type="text/javascript" src="[% uri_base %]/javascripts/he.js"></script>
@@ -64,6 +61,7 @@
   <script type="text/javascript" src="[% uri_base %]/javascripts/portsort.js"></script>
   <script type="text/javascript" src="[% uri_base %]/javascripts/chosen.jquery.min.js"></script>
   <script type="text/javascript" src="[% uri_base %]/javascripts/jquery.validate.min.js"></script>
+
   <script type="text/javascript">
     var uri_base = '[% uri_base %]';
     var nd_check_userlog = '[% settings.check_userlog %]';

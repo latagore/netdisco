@@ -1,5 +1,4 @@
         ,{ 
-          class: 'autofill-td',
           data: "port_info.room",
           render : function(data, type, row, meta) {
             var column = 'room';
