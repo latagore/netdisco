@@ -1,8 +1,16 @@
           <span id="nd_changelog-toggle" data-toggle="collapse" data-target="#changelog">
-            <a>Changelog (Last Updated: April 26, 2016)
+            <a>Changelog (Last Updated: April 29, 2016)
             <i class="icon-chevron-up nd_chevron"></i></a>
           </span>
           <div id="changelog" class="collapse">
+          <div class="log">
+            <h4>April 29, 2016</h4>
+            <ul>
+              <li>Column headers line up again.</li>
+              <li>Fix neighbor DNS name in CSV file.</li>
+              <li>Stop building cells from moving when hovering over them.</li>
+            </ul>
+          </div>
           <div class="log">
             <h4>April 26, 2016</h4>
             <ul>
