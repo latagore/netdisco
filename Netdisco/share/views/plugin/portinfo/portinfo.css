@@ -168,22 +168,25 @@
   width: 163px !important;
 }
 
-/* nav bar width when the screen is too small */
-@media (min-width: 801px) and (max-width: 1200px) {
-  body {
-    padding-top: 80px;
-  }
-}
-@media (max-width: 800px) {
+/* nav bar appearance when the screen is too small */
+@media (max-width: 1200px){
   body {
     padding-top: 0px;
   }
   
+  .nd_navbar-text {
+    display: none;
+  }
+  
+  .navbar .nav.pull-right {
+    clear: both;
+    float: none;
+  }
+
   .navbar {
     position: static;
   }
 }
-
 /* upload CSV feature styling */
 #nd_csv_upload-icon,
 #nd_csv-upload-modal,
