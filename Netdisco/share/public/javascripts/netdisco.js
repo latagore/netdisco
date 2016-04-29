@@ -403,17 +403,14 @@ $(document).ready(function() {
   // dynamically resize data table size
   function resizeTable() {
     var e = $('.tab-content .dataTables_scrollBody');    
-    e.height(Math.max(window.innerHeight - 200,300));
+    e.height(Math.max(window.innerHeight - 250,300));
   }
-  resizeTable();
-  $(".dataTable").DataTable().draw();
-  
+
   var d = debounce(resizeTable, 500);
   // resize on datatables init event because fixed columns 
   // plugin isn't robust
   $(document).on("init.dt", resizeTable);
   $(document).on("ajaxComplete", d);
-  $(window).on("resize", d);
 
   // change sidebar selects to use jQuery Chosen plugin
   $('.nd_sidebar select').each(function() {
